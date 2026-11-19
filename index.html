@@ -1087,11 +1087,16 @@ details[open] > *:not(summary) {
           </div>
         </div>
 
-        <!-- Right Status & Resume Exam Pills (Single Slim Row) -->
+        <!-- Right Status, Sound Toggle & Resume Exam Pills (Single Slim Row) -->
         <div class="flex items-center gap-1.5 sm:gap-2 shrink-0">
           <a id="online-sync-badge" href="https://onthithptanninh.pages.dev/" target="_blank" rel="noopener noreferrer" class="hidden lg:inline-flex items-center gap-1 px-2.5 py-1 text-[11px] font-bold rounded-full bg-sky-100 text-sky-800 border border-sky-200 hover:bg-sky-200 transition-colors whitespace-nowrap shrink-0">
             <i data-lucide="globe" class="w-3 h-3"></i> onthithptanninh.pages.dev • Không giới hạn
           </a>
+
+          <button type="button" id="btn-header-sound-toggle" onclick="toggleSoundEnabled()" aria-label="Bật hoặc tắt âm thanh thông báo" aria-pressed="true" data-sound-enabled="true" data-sound-play-count="0" data-last-sound-type="none" title="Bật/Tắt âm thanh thông báo" class="inline-flex items-center gap-1 px-2 sm:px-2.5 py-1 text-[11px] font-extrabold rounded-full bg-pink-50 hover:bg-pink-100 text-pink-700 border border-pink-200 shadow-sm transition-all cursor-pointer whitespace-nowrap shrink-0">
+            <span id="header-sound-icon-wrap" class="inline-flex items-center justify-center"><i data-lucide="volume-2" class="w-3.5 h-3.5"></i></span>
+            <span id="header-sound-label" class="hidden sm:inline">Âm thanh</span>
+          </button>
 
           <button type="button" id="header-streak-badge" onclick="checkInStudyStreak(true)" title="Chuỗi ngày học liên tục (Study Streak)" class="inline-flex items-center gap-1 px-2 sm:px-2.5 py-1 text-[11px] font-extrabold rounded-full bg-gradient-to-r from-orange-100 to-amber-100 text-orange-700 border border-orange-300 shadow-sm hover:scale-105 transition-transform cursor-pointer whitespace-nowrap shrink-0">
             <span class="animate-flame-pulse inline-block">🔥</span>
@@ -3121,6 +3126,9 @@ ANSWER KEYS
           </div>
         </div>
         <div class="flex items-center gap-1">
+          <button type="button" id="btn-pomodoro-sound-toggle" onclick="toggleSoundEnabled()" aria-label="Bật hoặc tắt âm thanh Pomodoro" aria-pressed="true" title="Bật/Tắt âm thanh thông báo" class="w-7 h-7 rounded-full bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 flex items-center justify-center text-xs font-black cursor-pointer transition-colors">
+            <span id="pomodoro-sound-icon-wrap" class="inline-flex items-center justify-center"><i data-lucide="volume-2" class="w-3.5 h-3.5"></i></span>
+          </button>
           <button type="button" onclick="togglePomodoroCollapse(true)" title="Thu gọn đồng hồ" class="w-7 h-7 rounded-full bg-slate-100 hover:bg-amber-100 text-slate-600 flex items-center justify-center text-xs font-black cursor-pointer">
             –
           </button>
@@ -3398,6 +3406,7 @@ ANSWER KEYS
     const STORAGE_STREAK_KEY = 'thpt_anninh_study_streak_v1';
     const STORAGE_FLASHCARD_KEY = 'thpt_anninh_flashcard_state_v1';
     const STORAGE_SPEEDRUN_KEY = 'thpt_anninh_speedrun_best_v1';
+    const STORAGE_SOUND_KEY = 'thpt_anninh_sound_enabled_v1';
 
     let examsList = [];
     let resultsList = [];
@@ -3439,6 +3448,144 @@ ANSWER KEYS
       running: false,
       timerId: null
     };
+    let soundEnabled = true;
+    let sharedAudioCtx = null;
+    let soundPlayCount = 0;
+    let lastSoundType = 'none';
+
+    function syncSoundDebugAttributes() {
+      const ctxState = sharedAudioCtx ? String(sharedAudioCtx.state || 'unknown') : 'uninitialized';
+      const headerBtn = document.getElementById('btn-header-sound-toggle');
+      const pomoBtn = document.getElementById('btn-pomodoro-sound-toggle');
+      [headerBtn, pomoBtn].forEach(btn => {
+        if (!btn) return;
+        btn.setAttribute('data-sound-enabled', soundEnabled ? 'true' : 'false');
+        btn.setAttribute('data-sound-play-count', String(soundPlayCount));
+        btn.setAttribute('data-last-sound-type', lastSoundType);
+        btn.setAttribute('data-audio-ctx-state', ctxState);
+        btn.setAttribute('aria-pressed', soundEnabled ? 'true' : 'false');
+      });
+    }
+
+    function updateSoundToggleUI() {
+      const iconName = soundEnabled ? 'volume-2' : 'volume-x';
+      const headerBtn = document.getElementById('btn-header-sound-toggle');
+      const headerWrap = document.getElementById('header-sound-icon-wrap');
+      const headerLabel = document.getElementById('header-sound-label');
+      if (headerBtn) {
+        headerBtn.className = soundEnabled
+          ? 'inline-flex items-center gap-1 px-2 sm:px-2.5 py-1 text-[11px] font-extrabold rounded-full bg-pink-50 hover:bg-pink-100 text-pink-700 border border-pink-200 shadow-sm transition-all cursor-pointer whitespace-nowrap shrink-0'
+          : 'inline-flex items-center gap-1 px-2 sm:px-2.5 py-1 text-[11px] font-extrabold rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 border border-slate-300 shadow-sm transition-all cursor-pointer whitespace-nowrap shrink-0';
+        headerBtn.title = soundEnabled ? 'Đang bật âm thanh (Nhấn để tắt)' : 'Đang tắt âm thanh (Nhấn để bật)';
+      }
+      if (headerWrap) {
+        headerWrap.innerHTML = `<i data-lucide="${iconName}" class="w-3.5 h-3.5"></i>`;
+        if (typeof refreshIconsAndMath === 'function') refreshIconsAndMath(headerWrap);
+      }
+      if (headerLabel) {
+        headerLabel.textContent = soundEnabled ? 'Âm thanh' : 'Đã tắt tiếng';
+      }
+
+      const pomoBtn = document.getElementById('btn-pomodoro-sound-toggle');
+      const pomoWrap = document.getElementById('pomodoro-sound-icon-wrap');
+      if (pomoBtn) {
+        pomoBtn.className = soundEnabled
+          ? 'w-7 h-7 rounded-full bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 flex items-center justify-center text-xs font-black cursor-pointer transition-colors'
+          : 'w-7 h-7 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 border border-slate-300 flex items-center justify-center text-xs font-black cursor-pointer transition-colors';
+        pomoBtn.title = soundEnabled ? 'Đang bật âm thanh (Nhấn để tắt)' : 'Đang tắt âm thanh (Nhấn để bật)';
+      }
+      if (pomoWrap) {
+        pomoWrap.innerHTML = `<i data-lucide="${iconName}" class="w-3.5 h-3.5"></i>`;
+        if (typeof refreshIconsAndMath === 'function') refreshIconsAndMath(pomoWrap);
+      }
+      syncSoundDebugAttributes();
+    }
+
+    function initSoundSettingsStorage() {
+      const raw = safeGetLocalStorage(STORAGE_SOUND_KEY);
+      if (raw === '0' || raw === 'false') {
+        soundEnabled = false;
+      } else {
+        soundEnabled = true;
+      }
+      updateSoundToggleUI();
+    }
+
+    function unlockAudioContext() {
+      try {
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        if (!AudioCtx) return null;
+        if (!sharedAudioCtx || sharedAudioCtx.state === 'closed') {
+          sharedAudioCtx = new AudioCtx();
+        }
+        if (sharedAudioCtx.state === 'suspended' && typeof sharedAudioCtx.resume === 'function') {
+          sharedAudioCtx.resume().then(() => {
+            syncSoundDebugAttributes();
+          }).catch(() => {});
+        }
+        syncSoundDebugAttributes();
+        return sharedAudioCtx;
+      } catch (e) {
+        return null;
+      }
+    }
+
+    function scheduleSoftTone(ctx, freq, startOffsetSec, durationSec, peakGain, waveType = 'sine') {
+      const now = ctx.currentTime + startOffsetSec;
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = waveType;
+      osc.frequency.setValueAtTime(freq, now);
+
+      gain.gain.setValueAtTime(0.0001, now);
+      gain.gain.linearRampToValueAtTime(peakGain, now + 0.02);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + durationSec);
+
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start(now);
+      osc.stop(now + durationSec + 0.03);
+    }
+
+    function playSoundNotification(type = 'chime') {
+      if (!soundEnabled) return false;
+      const ctx = unlockAudioContext();
+      if (!ctx) return false;
+
+      const normalizedType = type === 'tick' ? 'tick' : 'chime';
+      try {
+        if (normalizedType === 'tick') {
+          // Gentle two-note pastel "tích" confirmation
+          scheduleSoftTone(ctx, 587.33, 0, 0.11, 0.08, 'sine');
+          scheduleSoftTone(ctx, 880.0, 0.055, 0.18, 0.08, 'sine');
+        } else {
+          // Gentle pastel major triad bell chime ("Ting!")
+          scheduleSoftTone(ctx, 523.25, 0, 0.45, 0.10, 'sine');
+          scheduleSoftTone(ctx, 659.25, 0.11, 0.50, 0.10, 'sine');
+          scheduleSoftTone(ctx, 783.99, 0.22, 0.60, 0.11, 'sine');
+          scheduleSoftTone(ctx, 1046.5, 0.34, 0.85, 0.12, 'sine');
+        }
+        soundPlayCount++;
+        lastSoundType = normalizedType;
+        syncSoundDebugAttributes();
+        return true;
+      } catch (e) {
+        return false;
+      }
+    }
+
+    function toggleSoundEnabled() {
+      soundEnabled = !soundEnabled;
+      safeSetLocalStorage(STORAGE_SOUND_KEY, soundEnabled ? '1' : '0');
+      updateSoundToggleUI();
+      if (soundEnabled) {
+        unlockAudioContext();
+        playSoundNotification('tick');
+        showCuteToast('🔔 Đã bật âm thanh thông báo nhẹ nhàng!', '🔔', 'success');
+      } else {
+        showCuteToast('🔕 Đã tắt âm thanh thông báo (Chế độ yên tĩnh).', '🔕', 'info');
+      }
+    }
 
     // Global exam memory cache (ensures newly created exams are always accessible even if Storage is restricted)
     window.examsList = examsList;
@@ -4469,6 +4616,7 @@ ANSWER KEYS
       if (studentName) safeSetLocalStorage('thpt_anninh_last_student_name', studentName);
       if (studentClass) safeSetLocalStorage('thpt_anninh_last_student_class', studentClass);
 
+      unlockAudioContext();
       closeStartExamModal();
       launchActiveExam(examToLaunch, finalName, finalClass, chosenSubCode, isPreviewLaunch);
     }
@@ -4606,6 +4754,7 @@ ANSWER KEYS
         }
         if (activeExamSession.remainingSeconds <= 0) {
           clearInterval(examTimerInterval);
+          playSoundNotification('chime');
           showCuteToast('⏰ Đã hết thời gian làm bài! Hệ thống tự động thu bài.', '🔔');
           submitActiveExam(true);
         }
@@ -4783,6 +4932,7 @@ ANSWER KEYS
         window.scrollTo(0, 0);
       }
 
+      unlockAudioContext();
       startExamCountdownTimer();
     }
 
@@ -5286,6 +5436,9 @@ ANSWER KEYS
       closeSubmitConfirmModal();
       if (!activeExamSession) return;
       if (examTimerInterval) clearInterval(examTimerInterval);
+      if (!isAutoSubmit) {
+        playSoundNotification('tick');
+      }
 
       const session = activeExamSession;
       clearActiveExamDraft(session.exam?.id);
@@ -9365,6 +9518,7 @@ ANSWER KEYS
 
       speedrunState.active = true;
       speedrunState.paused = false;
+      unlockAudioContext();
       speedrunState.remainingSeconds = 300;
       speedrunState.score = 0;
       speedrunState.combo = 0;
@@ -9564,6 +9718,7 @@ ANSWER KEYS
       if (!speedrunState.active) return;
       speedrunState.active = false;
       speedrunState.paused = false;
+      playSoundNotification('chime');
 
       const baselineHigh = Number(speedrunState.sessionStartHighScore || 0);
       const isNewRecord = speedrunState.score > 0 && speedrunState.score > baselineHigh;
@@ -9772,6 +9927,8 @@ ANSWER KEYS
         pomodoroState.timerId = null;
         pomodoroState.running = false;
       } else {
+        unlockAudioContext();
+        playSoundNotification('tick');
         pomodoroState.running = true;
         pomodoroState.timerId = setInterval(() => {
           pomodoroState.remainingSeconds--;
@@ -9781,6 +9938,7 @@ ANSWER KEYS
             pomodoroState.running = false;
             pomodoroState.remainingSeconds = 0;
             renderPomodoroDisplay();
+            playSoundNotification('chime');
             triggerConfettiCelebration(false);
             showCuteToast(
               pomodoroState.mode === 'focus'
@@ -10213,6 +10371,7 @@ ANSWER KEYS
 
       try {
         try { initAppStorage(); } catch (e) {}
+        try { initSoundSettingsStorage(); } catch (e) {}
         try { updateOnlineSyncBadge(); } catch (e) {}
         try {
           hideModalElement('modal-start-exam');
@@ -10266,6 +10425,11 @@ ANSWER KEYS
       renderHomeStatsAndExams,
       updateBackToTopButton,
       scrollToTopSmooth,
+      initSoundSettingsStorage,
+      unlockAudioContext,
+      playSoundNotification,
+      toggleSoundEnabled,
+      updateSoundToggleUI,
       bootstrapApp
     });
   </script>
