@@ -219,9 +219,12 @@ body {
   animation: pulseGentle 2.4s infinite ease-in-out;
 }
 
-/* KaTeX font adjustment */
+/* KaTeX font & mobile safe-wrap adjustment */
 .katex {
   font-size: 1.06em !important;
+  max-width: 100%;
+  white-space: normal !important;
+  overflow-wrap: break-word;
 }
 
 /* Mobile touch, cursor & z-index interaction safety */
@@ -889,107 +892,162 @@ details[open] > *:not(summary) {
   <!-- ===================================================================== -->
   <!-- 1. THANH ĐIỀU HƯỚNG & HEADER (STICKY PASTEL HEADER)                   -->
   <!-- ===================================================================== -->
-  <header id="main-site-header" class="sticky top-0 z-40 glass-nav border-b-2 border-pink-100 transition-all duration-300">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6">
-      <div class="flex flex-col xl:flex-row xl:items-center xl:justify-between py-2.5 sm:py-3 gap-2.5 sm:gap-3">
-        
-        <!-- Brand Logo & School Title -->
-        <div class="flex items-center justify-between gap-2">
-          <div onclick="switchTab('home')" role="button" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();switchTab('home');}" class="flex items-center gap-3 cursor-pointer group">
-            <div class="relative w-11 h-11 sm:w-14 sm:h-14 rounded-full bg-white p-1 border-2 border-pink-200 shadow-md group-hover:scale-105 transition-all duration-300 flex items-center justify-center overflow-hidden shrink-0">
+  <header id="main-site-header" class="sticky top-0 z-50 glass-nav border-b-2 border-pink-100 transition-all duration-300">
+    <div class="max-w-7xl mx-auto px-3 sm:px-6">
+      <div class="h-14 sm:h-16 flex items-center justify-between gap-2 sm:gap-3 flex-nowrap">
+
+        <!-- Left Group: Top-Left Menu Button + Compact Brand Logo & Title -->
+        <div class="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
+          <!-- Top-Left Glassmorphic Menu Dropdown -->
+          <div id="nav-menu-wrapper" class="relative shrink-0 z-50">
+            <button
+              type="button"
+              id="btn-nav-menu"
+              onclick="toggleNavMenuDropdown(event)"
+              aria-haspopup="true"
+              aria-expanded="false"
+              aria-controls="nav-menu-dropdown"
+              class="btn-3d btn-3d-pink cursor-pointer whitespace-nowrap px-3 sm:px-3.5 py-1.5 sm:py-2 rounded-2xl text-xs sm:text-sm font-extrabold flex items-center gap-1.5 shrink-0 bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white"
+            >
+              <i data-lucide="menu" class="w-4 h-4"></i>
+              <span>Menu</span>
+              <i data-lucide="chevron-down" id="nav-menu-chevron" class="w-3.5 h-3.5 transition-transform duration-200"></i>
+            </button>
+
+            <div
+              id="nav-menu-dropdown"
+              role="menu"
+              aria-labelledby="btn-nav-menu"
+              class="hidden absolute left-0 top-full mt-2 z-[90] w-72 sm:w-80 max-w-[calc(100vw-1.5rem)] max-h-[80dvh] overflow-y-auto rounded-3xl glass-floating bg-white/[0.98] backdrop-blur-xl border-2 border-pink-200/90 p-2.5 shadow-cute drawer-reveal-spring"
+            >
+              <div class="px-3 py-2 mb-1.5 rounded-2xl bg-gradient-to-r from-pink-50 via-amber-50/70 to-emerald-50 border border-pink-100 flex items-center justify-between gap-2">
+                <span class="text-[11px] font-extrabold text-pink-700">🌸 Danh mục điều hướng nhanh</span>
+                <span class="px-2 py-0.5 rounded-full bg-white text-slate-600 border border-pink-100 text-[10px] font-extrabold">9 mục</span>
+              </div>
+
+              <div class="space-y-1">
+                <button type="button" role="menuitem" data-menu-target="home" id="menu-item-home" onclick="selectNavMenuItem('home')" class="nav-menu-item w-full text-left px-3 py-2.5 rounded-2xl text-xs sm:text-sm font-bold flex items-center gap-2.5 cursor-pointer transition-all bg-pink-50 text-pink-700 border border-pink-200">
+                  <span class="w-8 h-8 rounded-xl bg-pink-100 text-pink-600 flex items-center justify-center shrink-0">
+                    <i data-lucide="home" class="w-4 h-4"></i>
+                  </span>
+                  <span class="flex-1 truncate">Trang chủ</span>
+                </button>
+
+                <button type="button" role="menuitem" data-menu-target="create" id="menu-item-create" onclick="selectNavMenuItem('create')" class="nav-menu-item w-full text-left px-3 py-2.5 rounded-2xl text-xs sm:text-sm font-bold flex items-center gap-2.5 cursor-pointer transition-all text-slate-700 hover:bg-pink-50/80 hover:text-pink-700 border border-transparent">
+                  <span class="w-8 h-8 rounded-xl bg-rose-100 text-rose-600 flex items-center justify-center shrink-0">
+                    <i data-lucide="file-plus-2" class="w-4 h-4"></i>
+                  </span>
+                  <span class="flex-1 truncate">Tạo đề &amp; Nhập file</span>
+                </button>
+
+                <button type="button" role="menuitem" data-menu-target="guide" id="menu-item-guide" onclick="selectNavMenuItem('guide')" class="nav-menu-item w-full text-left px-3 py-2.5 rounded-2xl text-xs sm:text-sm font-bold flex items-center gap-2.5 cursor-pointer transition-all text-slate-700 hover:bg-amber-50/80 hover:text-amber-800 border border-transparent">
+                  <span class="w-8 h-8 rounded-xl bg-amber-100 text-amber-600 flex items-center justify-center shrink-0">
+                    <i data-lucide="book-open-check" class="w-4 h-4"></i>
+                  </span>
+                  <span class="flex-1 truncate">Hướng dẫn định dạng chuẩn</span>
+                </button>
+
+                <button type="button" role="menuitem" data-menu-target="archive" id="menu-item-archive" onclick="selectNavMenuItem('archive')" class="nav-menu-item w-full text-left px-3 py-2.5 rounded-2xl text-xs sm:text-sm font-bold flex items-center gap-2.5 cursor-pointer transition-all text-slate-700 hover:bg-emerald-50/80 hover:text-emerald-800 border border-transparent">
+                  <span class="w-8 h-8 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center shrink-0">
+                    <i data-lucide="folder-open" class="w-4 h-4"></i>
+                  </span>
+                  <span class="flex-1 truncate">Lưu trữ bài thi</span>
+                </button>
+
+                <button type="button" role="menuitem" data-menu-target="leaderboard" id="menu-item-leaderboard" onclick="selectNavMenuItem('leaderboard')" class="nav-menu-item w-full text-left px-3 py-2.5 rounded-2xl text-xs sm:text-sm font-bold flex items-center gap-2.5 cursor-pointer transition-all text-slate-700 hover:bg-amber-50/80 hover:text-amber-800 border border-transparent">
+                  <span class="w-8 h-8 rounded-xl bg-yellow-100 text-amber-600 flex items-center justify-center shrink-0">
+                    <i data-lucide="trophy" class="w-4 h-4"></i>
+                  </span>
+                  <span class="flex-1 truncate">Bảng xếp hạng</span>
+                </button>
+
+                <button type="button" role="menuitem" data-menu-target="vault" id="menu-item-vault" onclick="selectNavMenuItem('vault')" class="nav-menu-item w-full text-left px-3 py-2.5 rounded-2xl text-xs sm:text-sm font-bold flex items-center gap-2.5 cursor-pointer transition-all text-slate-700 hover:bg-rose-50/80 hover:text-rose-700 border border-transparent">
+                  <span class="w-8 h-8 rounded-xl bg-rose-100 text-rose-600 flex items-center justify-center shrink-0">
+                    <i data-lucide="archive-restore" class="w-4 h-4"></i>
+                  </span>
+                  <span class="flex-1 truncate">Kho câu hay sai</span>
+                  <span id="menu-vault-badge" class="px-2 py-0.5 text-[10px] leading-none rounded-full bg-rose-500 text-white font-extrabold shrink-0">0</span>
+                </button>
+
+                <button type="button" role="menuitem" data-menu-target="flashcard" id="menu-item-flashcard" onclick="selectNavMenuItem('flashcard')" class="nav-menu-item w-full text-left px-3 py-2.5 rounded-2xl text-xs sm:text-sm font-bold flex items-center gap-2.5 cursor-pointer transition-all text-slate-700 hover:bg-sky-50/80 hover:text-sky-700 border border-transparent">
+                  <span class="w-8 h-8 rounded-xl bg-sky-100 text-sky-600 flex items-center justify-center shrink-0">
+                    <i data-lucide="layers" class="w-4 h-4"></i>
+                  </span>
+                  <span class="flex-1 truncate">Flashcard 3D</span>
+                </button>
+
+                <button type="button" role="menuitem" data-menu-target="speedrun" id="menu-item-speedrun" onclick="selectNavMenuItem('speedrun')" class="nav-menu-item w-full text-left px-3 py-2.5 rounded-2xl text-xs sm:text-sm font-bold flex items-center gap-2.5 cursor-pointer transition-all text-slate-700 hover:bg-orange-50/80 hover:text-orange-700 border border-transparent">
+                  <span class="w-8 h-8 rounded-xl bg-orange-100 text-orange-600 flex items-center justify-center shrink-0">
+                    <i data-lucide="zap" class="w-4 h-4"></i>
+                  </span>
+                  <span class="flex-1 truncate">Speedrun 5p</span>
+                </button>
+
+                <button type="button" role="menuitem" data-menu-target="team" id="menu-item-team" onclick="selectNavMenuItem('team')" class="nav-menu-item w-full text-left px-3 py-2.5 rounded-2xl text-xs sm:text-sm font-bold flex items-center gap-2.5 cursor-pointer transition-all text-slate-700 hover:bg-purple-50/80 hover:text-purple-700 border border-transparent">
+                  <span class="w-8 h-8 rounded-xl bg-purple-100 text-purple-600 flex items-center justify-center shrink-0">
+                    <i data-lucide="heart-handshake" class="w-4 h-4"></i>
+                  </span>
+                  <span class="flex-1 truncate">Đội ngũ sáng tạo</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Compact Brand Logo & Single-Line System Title -->
+          <div onclick="switchTab('home')" role="button" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();switchTab('home');}" class="flex items-center gap-2 sm:gap-2.5 cursor-pointer group min-w-0 flex-1">
+            <div class="relative w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-white p-0.5 border-2 border-pink-200 shadow-sm group-hover:scale-105 transition-all duration-300 flex items-center justify-center overflow-hidden shrink-0">
               <img 
                 src="logo.png" 
                 alt="Logo THPT An Ninh" 
                 class="w-full h-full object-contain rounded-full"
                 onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
               />
-              <div style="display:none" class="w-9 h-9 sm:w-12 sm:h-12 rounded-full bg-gradient-to-br from-pink-400 to-emerald-400 text-white font-bold text-[10px] sm:text-xs items-center justify-center text-center leading-tight p-1">
+              <div style="display:none" class="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-gradient-to-br from-pink-400 to-emerald-400 text-white font-bold text-[9px] items-center justify-center text-center leading-tight p-0.5">
                 THPT<br/>AN NINH
               </div>
             </div>
-            <div>
-              <div class="flex items-center gap-1.5 sm:gap-2 flex-wrap">
-                <span class="px-2.5 py-0.5 text-[11px] font-bold rounded-full bg-pink-100 text-pink-700 border border-pink-200">
-                  🌸 THPT AN NINH • TÂY NINH
-                </span>
-                <span class="hidden sm:inline-flex items-center gap-1 px-2.5 py-0.5 text-[11px] font-bold rounded-full bg-emerald-100 text-emerald-700 border border-emerald-200">
-                  <i data-lucide="sparkles" class="w-3 h-3"></i> Định dạng chuẩn 2026
-                </span>
-                <a id="online-sync-badge" href="https://onthithptanninh.pages.dev/" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 px-2.5 py-0.5 text-[11px] font-bold rounded-full bg-sky-100 text-sky-800 border border-sky-200 hover:bg-sky-200 transition-colors">
-                  <i data-lucide="globe" class="w-3 h-3"></i> onthithptanninh.pages.dev • Không giới hạn
-                </a>
-                <button type="button" id="header-streak-badge" onclick="checkInStudyStreak(true)" title="Chuỗi ngày học liên tục (Study Streak)" class="inline-flex items-center gap-1 px-2.5 py-0.5 text-[11px] font-extrabold rounded-full bg-gradient-to-r from-orange-100 to-amber-100 text-orange-700 border border-orange-300 shadow-sm hover:scale-105 transition-transform cursor-pointer">
-                  <span class="animate-flame-pulse inline-block">🔥</span>
-                  <span><span id="header-streak-count">0</span> ngày liên tiếp</span>
-                </button>
-              </div>
-              <h1 class="text-sm sm:text-lg md:text-xl font-bold text-slate-800 tracking-tight group-hover:text-pink-600 transition-colors mt-0.5">
+            <div class="min-w-0 flex items-center gap-2">
+              <h1 class="text-xs sm:text-sm md:text-base font-extrabold text-slate-800 tracking-tight group-hover:text-pink-600 transition-colors truncate whitespace-nowrap">
                 HỆ THỐNG ÔN THI TRỰC TUYẾN - THPT AN NINH
               </h1>
+              <span class="hidden md:inline-flex items-center px-2 py-0.5 text-[10px] font-bold rounded-full bg-pink-100 text-pink-700 border border-pink-200 whitespace-nowrap shrink-0">
+                🌸 Tây Ninh • 2026
+              </span>
             </div>
           </div>
-
-          <!-- Return to ongoing exam button (mobile) -->
-          <button id="btnResumeExamMobile" onclick="resumeOngoingExam()" class="hidden xl:hidden px-3 py-1.5 rounded-full bg-amber-100 border-2 border-amber-300 text-amber-800 text-xs font-bold items-center gap-1.5 animate-pulse-gentle shrink-0">
-            <i data-lucide="clock" class="w-3.5 h-3.5"></i> Đang thi
-          </button>
         </div>
 
-        <!-- Smooth Tab Navigation -->
-        <nav class="flex items-center flex-nowrap overflow-x-auto xl:flex-wrap gap-1.5 sm:gap-2 pb-1 xl:pb-0 no-scrollbar nav-scroll-track" aria-label="Menu điều hướng chính">
-          <button onclick="switchTab('home')" id="nav-home" class="nav-btn btn-3d cursor-pointer whitespace-nowrap px-3.5 py-2 rounded-2xl text-xs sm:text-sm font-bold flex items-center gap-1.5 shrink-0 bg-pink-500 text-white btn-3d-pink is-active">
-            <i data-lucide="home" class="w-4 h-4"></i>
-            <span>Trang chủ</span>
+        <!-- Right Status & Resume Exam Pills (Single Slim Row) -->
+        <div class="flex items-center gap-1.5 sm:gap-2 shrink-0">
+          <a id="online-sync-badge" href="https://onthithptanninh.pages.dev/" target="_blank" rel="noopener noreferrer" class="hidden lg:inline-flex items-center gap-1 px-2.5 py-1 text-[11px] font-bold rounded-full bg-sky-100 text-sky-800 border border-sky-200 hover:bg-sky-200 transition-colors whitespace-nowrap shrink-0">
+            <i data-lucide="globe" class="w-3 h-3"></i> onthithptanninh.pages.dev • Không giới hạn
+          </a>
+
+          <button type="button" id="header-streak-badge" onclick="checkInStudyStreak(true)" title="Chuỗi ngày học liên tục (Study Streak)" class="inline-flex items-center gap-1 px-2 sm:px-2.5 py-1 text-[11px] font-extrabold rounded-full bg-gradient-to-r from-orange-100 to-amber-100 text-orange-700 border border-orange-300 shadow-sm hover:scale-105 transition-transform cursor-pointer whitespace-nowrap shrink-0">
+            <span class="animate-flame-pulse inline-block">🔥</span>
+            <span><span id="header-streak-count">0</span><span class="hidden sm:inline"> ngày liên tiếp</span></span>
           </button>
 
-          <button onclick="switchTab('create')" id="nav-create" class="nav-btn cursor-pointer whitespace-nowrap px-3.5 py-2 rounded-2xl text-xs sm:text-sm font-bold flex items-center gap-1.5 shrink-0 bg-pink-50/80 text-slate-700 hover:bg-pink-100 hover:text-pink-700 border border-pink-100">
-            <i data-lucide="file-plus-2" class="w-4 h-4 text-pink-500"></i>
-            <span>Tạo đề & Nhập file</span>
-          </button>
+          <span class="sm:hidden shrink-0">
+            <button id="btnResumeExamMobile" onclick="resumeOngoingExam()" class="hidden px-2.5 py-1 rounded-full bg-amber-100 border-2 border-amber-300 text-amber-800 text-[11px] font-bold items-center gap-1 animate-pulse-gentle whitespace-nowrap">
+              <i data-lucide="clock" class="w-3.5 h-3.5"></i> Đang thi
+            </button>
+          </span>
 
-          <button onclick="switchTab('guide')" id="nav-guide" class="nav-btn cursor-pointer whitespace-nowrap px-3.5 py-2 rounded-2xl text-xs sm:text-sm font-bold flex items-center gap-1.5 shrink-0 bg-amber-50/80 text-slate-700 hover:bg-amber-100 hover:text-amber-800 border border-amber-100">
-            <i data-lucide="book-open-check" class="w-4 h-4 text-amber-500"></i>
-            <span>Hướng dẫn định dạng chuẩn</span>
-          </button>
-
-          <button onclick="switchTab('archive')" id="nav-archive" class="nav-btn cursor-pointer whitespace-nowrap px-3.5 py-2 rounded-2xl text-xs sm:text-sm font-bold flex items-center gap-1.5 shrink-0 bg-emerald-50/80 text-emerald-800 hover:bg-emerald-100 border border-emerald-100">
-            <i data-lucide="trophy" class="w-4 h-4 text-emerald-500"></i>
-            <span>Lưu trữ bài thi & BXH</span>
-          </button>
-
-          <button onclick="switchTab('team')" id="nav-team" class="nav-btn cursor-pointer whitespace-nowrap px-3.5 py-2 rounded-2xl text-xs sm:text-sm font-bold flex items-center gap-1.5 shrink-0 bg-purple-50/80 text-slate-700 hover:bg-purple-100 hover:text-purple-800 border border-purple-100">
-            <i data-lucide="heart-handshake" class="w-4 h-4 text-purple-500"></i>
-            <span>Đội ngũ sáng tạo</span>
-          </button>
-
-          <button onclick="switchTab('vault')" id="nav-vault" class="nav-btn cursor-pointer whitespace-nowrap px-3.5 py-2 rounded-2xl text-xs sm:text-sm font-bold flex items-center gap-1.5 shrink-0 bg-rose-50/90 text-rose-700 hover:bg-rose-100 border border-rose-200">
-            <i data-lucide="archive-restore" class="w-4 h-4 text-rose-500"></i>
-            <span>Kho câu hay sai</span>
-            <span id="nav-vault-badge" class="px-1.5 py-0.5 text-[10px] leading-none rounded-full bg-rose-500 text-white font-extrabold">0</span>
-          </button>
-
-          <button onclick="switchTab('flashcard')" id="nav-flashcard" class="nav-btn cursor-pointer whitespace-nowrap px-3.5 py-2 rounded-2xl text-xs sm:text-sm font-bold flex items-center gap-1.5 shrink-0 bg-sky-50/90 text-sky-700 hover:bg-sky-100 border border-sky-200">
-            <i data-lucide="layers" class="w-4 h-4 text-sky-500"></i>
-            <span>Flashcard 3D</span>
-          </button>
-
-          <button onclick="switchTab('speedrun')" id="nav-speedrun" class="nav-btn cursor-pointer whitespace-nowrap px-3.5 py-2 rounded-2xl text-xs sm:text-sm font-bold flex items-center gap-1.5 shrink-0 bg-orange-50/90 text-orange-700 hover:bg-orange-100 border border-orange-200">
-            <i data-lucide="zap" class="w-4 h-4 text-orange-500"></i>
-            <span>Speedrun 5p</span>
-          </button>
-
-          <button id="btnResumeExamDesktop" onclick="resumeOngoingExam()" class="hidden shrink-0 px-3.5 py-2 rounded-2xl bg-amber-100 hover:bg-amber-200 border-2 border-amber-300 text-amber-900 text-xs sm:text-sm font-bold items-center gap-1.5 transition-all">
-            <i data-lucide="timer" class="w-4 h-4 text-amber-600"></i>
-            <span>Quay lại phòng thi</span>
-          </button>
-        </nav>
+          <span class="hidden sm:inline-flex shrink-0">
+            <button id="btnResumeExamDesktop" onclick="resumeOngoingExam()" class="hidden shrink-0 px-3 py-1.5 rounded-2xl bg-amber-100 hover:bg-amber-200 border-2 border-amber-300 text-amber-900 text-xs font-bold items-center gap-1.5 transition-all whitespace-nowrap">
+              <i data-lucide="timer" class="w-3.5 h-3.5 text-amber-600"></i>
+              <span>Quay lại phòng thi</span>
+            </button>
+          </span>
+        </div>
 
       </div>
     </div>
   </header>
 
   <!-- Main Content Wrapper -->
-  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-6 sm:py-8">
+  <main class="flex-1 min-w-0 max-w-7xl w-full mx-auto px-4 sm:px-6 py-6 sm:py-8">
 
     <!-- ===================================================================== -->
     <!-- 2. TRANG CHỦ (HERO BANNER & THỐNG KÊ TRỰC QUAN)                       -->
@@ -2147,7 +2205,7 @@ ANSWER KEYS
     <!-- ===================================================================== -->
     <!-- 5. GIAO DIỆN PHÒNG THI TRỰC TUYẾN (ONLINE EXAM ROOM)                  -->
     <!-- ===================================================================== -->
-    <section id="tab-exam" class="tab-section hidden space-y-6">
+    <section id="tab-exam" class="tab-section hidden min-w-0 max-w-full overflow-x-hidden space-y-6">
       
       <!-- Sticky Exam Header Bar with Cute Round Countdown Timer Badge -->
       <div id="exam-sticky-bar" class="sticky top-2 z-40 bg-white/95 backdrop-blur-md rounded-3xl border-2 border-pink-200 p-3 sm:p-5 shadow-cute flex flex-wrap items-center justify-between gap-2.5 sm:gap-4">
@@ -2223,15 +2281,15 @@ ANSWER KEYS
       </div>
 
       <!-- Exam Room Main Layout: Left Questions (8 cols) | Right Question Palette (4 cols) -->
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start min-w-0 max-w-full">
         
         <!-- Questions Column -->
-        <div id="exam-questions-container" class="lg:col-span-8 space-y-6">
+        <div id="exam-questions-container" class="lg:col-span-8 min-w-0 max-w-full space-y-6">
           <!-- Rendered dynamically by JS (Part 1, Part 2, Part 3) -->
         </div>
 
         <!-- Question Palette Sidebar -->
-        <div class="lg:col-span-4 lg:sticky lg:top-[116px] bg-white rounded-3xl border-2 border-pink-200 p-6 shadow-cute space-y-5">
+        <div class="lg:col-span-4 min-w-0 max-w-full lg:sticky lg:top-[116px] bg-white rounded-3xl border-2 border-pink-200 p-6 shadow-cute space-y-5">
           <div class="flex items-center justify-between border-b border-pink-100 pb-3">
             <div>
               <h3 class="text-base font-bold text-slate-800">Bảng Điều Hướng Câu Hỏi</h3>
@@ -2934,7 +2992,7 @@ ANSWER KEYS
   </main>
 
   <!-- Floating Collapsible Pomodoro Study Widget (Bottom-Right Corner) -->
-  <div id="pomodoro-widget" class="fixed bottom-3 right-3 sm:bottom-5 sm:right-5 z-40 hidden no-print max-w-[calc(100vw-1.5rem)]">
+  <div id="pomodoro-widget" class="fixed bottom-3 right-3 sm:bottom-5 sm:right-5 z-30 hidden no-print max-w-[calc(100vw-1.5rem)]">
     <!-- Collapsed Pill -->
     <button id="pomodoro-collapsed-pill" type="button" onclick="togglePomodoroCollapse(false)" class="hidden glass-floating pomodoro-spring-enter btn-3d btn-3d-emerald items-center gap-2 px-3.5 py-2.5 rounded-full bg-gradient-to-r from-emerald-500 to-teal-500 text-white font-black text-xs sm:text-sm cursor-pointer">
       <span>🍅</span>
@@ -4620,7 +4678,7 @@ ANSWER KEYS
       }
 
       return `
-        <div id="exam-qcard-${safeQId}" class="bg-white rounded-3xl border-2 border-pink-200 p-6 shadow-sm space-y-3 scroll-mt-32">
+        <div id="exam-qcard-${safeQId}" class="bg-white rounded-3xl border-2 border-pink-200 p-6 shadow-sm space-y-3 scroll-mt-32 min-w-0 max-w-full overflow-hidden">
           <div class="flex items-center justify-between gap-2">
             <div class="flex items-center gap-2">
               <span class="px-3.5 py-1 rounded-full bg-pink-500 text-white text-xs sm:text-sm font-bold shadow-sm">
@@ -4641,7 +4699,7 @@ ANSWER KEYS
             </button>
           </div>
 
-          <div class="text-base sm:text-lg font-bold text-slate-800 leading-relaxed pt-1 whitespace-pre-line break-words">
+          <div class="text-base sm:text-lg font-bold text-slate-800 leading-relaxed pt-1 whitespace-pre-line break-words min-w-0 max-w-full overflow-x-auto">
             ${formatSafeExamHTML(q.text)}
           </div>
           ${imgHTML}
@@ -4891,13 +4949,17 @@ ANSWER KEYS
       if (!s) return '';
       s = s
         .replace(/^\$+|\$+$/g, '')
+        .replace(/\{,\}/g, '.')
         .replace(/\\(?:d|t)?frac\s*\{([^{}]+)\}\s*\{([^{}]+)\}/g, '($1)/($2)')
-        .replace(/[\u2212\u2013\u2014]/g, '-')
+        .replace(/[\u2212\u2013\u2014\uFE63\uFF0D]/g, '-')
+        .replace(/[\u2044\u2215\uFF0F]/g, '/')
         .replace(/\s+/g, '')
         .replace(/,/g, '.')
         .toLowerCase();
-      // Remove simple outer parens on fraction args like (1)/(2) -> 1/2
+      // Remove simple outer parens on fraction args like (1)/(2) or (-1)/(2) -> -1/2
       s = s.replace(/\(([+-]?(?:\d+(?:\.\d+)?|\.\d+))\)\/\(([+-]?(?:\d+(?:\.\d+)?|\.\d+))\)/g, '$1/$2');
+      // Collapse duplicate leading signs like --1/2 -> 1/2, +-1/2 -> -1/2
+      s = s.replace(/^\+\+/, '+').replace(/^--/, '').replace(/^(?:\+-|-\+)/, '-');
       return s;
     }
 
@@ -5486,7 +5548,9 @@ ANSWER KEYS
         .replace(/\uFF1A/g, ':')
         .replace(/\uFF08/g, '(')
         .replace(/\uFF09/g, ')')
-        .replace(/[\u2013\u2014]/g, '-');
+        .replace(/\uFF0C/g, ',')
+        .replace(/[\u2044\u2215\uFF0F]/g, '/')
+        .replace(/[\u2212\u2013\u2014\uFE63\uFF0D]/g, '-');
       return str;
     }
 
@@ -5538,7 +5602,7 @@ ANSWER KEYS
         .replace(/<br\s*\/?>/gi, '\n')
         .replace(/<\/(?:td|th)>/gi, '\t')
         .replace(/<\/(?:p|div|li|tr|h[1-6])>/gi, '\n')
-        .replace(/<\/?(?:p|div|li|ul|ol|table|tbody|thead|tr|td|th|h[1-6]|strong|b|em|i|span|u|font)(?=[\s>/])(?:\s+[^>]*)?>/gi, '')
+        .replace(/<\/?(?:p|div|li|ul|ol|table|tbody|thead|tr|td|th|h[1-6]|strong|b|em|i|span|u|font)(?:\s+[a-zA-Z_:][-a-zA-Z0-9_:.]*(?:\s*=\s*(?:"[^"]*"|'[^']*'|[^\s"'=<>`]+))?)*\s*\/?>/gi, '')
         .replace(/\t+/g, '   ');
 
       // Strictly 3 parts only: automatically strip any Tự luận (Essay) section
@@ -5559,10 +5623,10 @@ ANSWER KEYS
         rawSegments.forEach(seg => {
           const cleanSeg = seg.trim();
           if (!cleanSeg) return;
-          // Split multiple keys on the same segment while preserving spaced decimals like "23. 1.5"
+          // Split multiple keys on the same segment while preserving spaced decimals/negatives/fractions
           const subLines = cleanSeg
-            .replace(/(\S+)\s+(?=(?:C[aâ]u\s*)?\d+\s*[\.\:\)\-]\s*\S)/gi, (m, prevTok) => {
-              if (/^(?:C[aâ]u\s*)?\d+[\.\:\)\-]$/i.test(prevTok)) {
+            .replace(/(\S+)\s+(?=(?:C[aâ]u\s*)?\d+\s*(?:[\.\:\)]|\-\s)\s*\S)/gi, (m, prevTok) => {
+              if (/^(?:C[aâ]u|\d+[\.\:\)\-]?|[+\-\/])$/i.test(prevTok)) {
                 return m;
               }
               return `${prevTok}\n`;
@@ -5571,8 +5635,8 @@ ANSWER KEYS
           subLines.forEach(cleanLineRaw => {
             const cleanLine = cleanLineRaw.trim();
             if (!cleanLine) return;
-            // Match patterns like "23.0,5", "1. 123", "24: 9", "Câu 26. 0,64", "1) 123"
-            const m = cleanLine.match(/^(?:C[aâ]u\s*)?(\d+)\s*[\.\:\)\-]\s*(.+)$/i);
+            // Match patterns like "23.0,5", "1. 3.14", "2.-0,25", "2 -0,25", "4. 3/4", "5.-1/2", "Câu 26. 0,64"
+            const m = cleanLine.match(/^(?:C[aâ]u\s*)?(\d+)\s*(?:[\.\:\)]\s*|\-\s+|\s+(?=[+-]?\d))(.+)$/i);
             if (m) {
               const kNum = parseInt(m[1], 10);
               const kVal = m[2].trim();
@@ -5876,22 +5940,32 @@ ANSWER KEYS
       };
 
       const part3List = parsedQuestions.filter(q => q.part === 3);
-      const nonPart3Nums = new Set(parsedQuestions.filter(q => q.part !== 3).map(q => q.number));
-      const allPart3AboveRelative = part3List.every((q, i) => q.number > part3List.length);
+      const part3Nums = new Set(part3List.map(q => q.number));
       const numericKeysSeq = answerKeysSequential.filter(k => isShortAnswerKeyVal(k.val));
+      const isRelativeKeyScheme =
+        part3List.length > 0 &&
+        numericKeysSeq.length > 0 &&
+        (
+          (numericKeysSeq[0].keyNum === 1 && !part3Nums.has(1)) ||
+          numericKeysSeq.every((k, i) => k.keyNum === i + 1 && !part3Nums.has(1))
+        );
+      const hasAnyAbsOverlap = numericKeysSeq.some(k => part3Nums.has(k.keyNum));
+
       part3List.forEach((q, idxInPart3) => {
         if (q.shortAnswer && String(q.shortAnswer).trim() !== '') return;
         const relativeIndex = idxInPart3 + 1;
-        if (answerKeysMap[q.number] !== undefined && isShortAnswerKeyVal(answerKeysMap[q.number])) {
-          q.shortAnswer = String(answerKeysMap[q.number]);
-        } else if (
-          answerKeysMap[relativeIndex] !== undefined &&
-          isShortAnswerKeyVal(answerKeysMap[relativeIndex]) &&
-          (allPart3AboveRelative || !nonPart3Nums.has(relativeIndex))
-        ) {
-          q.shortAnswer = String(answerKeysMap[relativeIndex]);
-        } else if (numericKeysSeq[idxInPart3]) {
-          q.shortAnswer = String(numericKeysSeq[idxInPart3].val);
+        if (isRelativeKeyScheme) {
+          if (answerKeysMap[relativeIndex] !== undefined && isShortAnswerKeyVal(answerKeysMap[relativeIndex])) {
+            q.shortAnswer = String(answerKeysMap[relativeIndex]);
+          } else if (numericKeysSeq[idxInPart3]) {
+            q.shortAnswer = String(numericKeysSeq[idxInPart3].val);
+          }
+        } else {
+          if (answerKeysMap[q.number] !== undefined && isShortAnswerKeyVal(answerKeysMap[q.number])) {
+            q.shortAnswer = String(answerKeysMap[q.number]);
+          } else if (!hasAnyAbsOverlap && numericKeysSeq[idxInPart3]) {
+            q.shortAnswer = String(numericKeysSeq[idxInPart3].val);
+          }
         }
       });
 
@@ -5901,7 +5975,7 @@ ANSWER KEYS
     function updateOnlineSyncBadge() {
       const badge = document.getElementById('online-sync-badge');
       if (!badge) return;
-      badge.className = 'inline-flex items-center gap-1 px-2.5 py-0.5 text-[11px] font-bold rounded-full bg-sky-100 text-sky-800 border border-sky-200 hover:bg-sky-200 transition-colors';
+      badge.className = 'hidden lg:inline-flex items-center gap-1 px-2.5 py-1 text-[11px] font-bold rounded-full bg-sky-100 text-sky-800 border border-sky-200 hover:bg-sky-200 transition-colors whitespace-nowrap shrink-0';
       badge.innerHTML = '<i data-lucide="globe" class="w-3 h-3"></i> onthithptanninh.pages.dev • Không giới hạn';
       if (badge.tagName === 'A') {
         badge.href = OFFICIAL_SITE_URL;
@@ -6670,11 +6744,16 @@ ANSWER KEYS
         if (!col0) return;
         if (rowIdx === 0 && /^(stt|câu hỏi|question|nội dung|loại)/i.test(col0)) return;
 
-        const lineStr = r.filter(v => v !== undefined && v !== null && String(v).trim() !== '').join(' ').trim();
-        if (/^Câu\s*\d+/i.test(lineStr) || /^(PHẦN|Phần)\s+[I123]/i.test(lineStr) || /^(\*?[A-Da-d][\.\)]|ANSWER)/i.test(lineStr)) {
+        const nonEmptyCells = r.filter(v => v !== undefined && v !== null && String(v).trim() !== '');
+        const lineStr = nonEmptyCells.join(' ').trim();
+        if (
+          nonEmptyCells.length === 1 &&
+          (/^Câu\s*\d+/i.test(lineStr) || /^(PHẦN|Phần)\s+[I123]/i.test(lineStr) || /^(\*?[A-Da-d][\.\)]|ANSWER)/i.test(lineStr))
+        ) {
           passthrough.push(lineStr);
           return;
         }
+        const cleanCol0 = col0.replace(/^Câu\s*\d+\s*[\.\:\)\-]?\s*/i, '').trim() || col0;
 
         const rawOpts = [r[1], r[2], r[3], r[4]].map(v => String(v ?? '').trim());
         const hasAnyOpt = rawOpts.some(Boolean);
@@ -6683,7 +6762,7 @@ ANSWER KEYS
         if (r.length >= 5 && hasAnyOpt) {
           const tfTokens = ansCell.split(/[\s,;\/\-]+/).map(t => t.toUpperCase()).filter(Boolean);
           const looksLikeTf = tfTokens.length === 4 && tfTokens.every(t => ['Đ', 'D', 'T', 'S', 'F', '1', '0'].includes(t));
-          if (looksLikeTf || /\[\s*(?:Đ\/S|T\/F|Đúng\s*\/\s*Sai)\s*\]/i.test(col0)) {
+          if (looksLikeTf || /\[\s*(?:Đ\/S|T\/F|Đúng\s*\/\s*Sai)\s*\]/i.test(cleanCol0)) {
             const stLines = ['a', 'b', 'c', 'd'].map((lbl, i) => {
               let textVal = rawOpts[i] || '';
               const tk = tfTokens[i] || '';
@@ -6691,7 +6770,7 @@ ANSWER KEYS
               textVal = textVal.replace(/^\*\s*/, '');
               return `${isTrue ? '*' : ''}${lbl}) ${textVal}`;
             });
-            outP2.push(`Câu ${qCounter++}. ${col0}\n${stLines.join('\n')}`);
+            outP2.push(`Câu ${qCounter++}. ${cleanCol0}\n${stLines.join('\n')}`);
           } else {
             const ansUpper = ansCell.toUpperCase();
             let correctIdx = ['A', 'B', 'C', 'D'].indexOf(ansUpper);
@@ -6704,13 +6783,13 @@ ANSWER KEYS
               textVal = textVal.replace(/^\*\s*/, '');
               return `${isRight ? '*' : ''}${lbl}. ${textVal}`;
             });
-            outP1.push(`Câu ${qCounter++}. ${col0}\n${optLines.join('\n')}`);
+            outP1.push(`Câu ${qCounter++}. ${cleanCol0}\n${optLines.join('\n')}`);
           }
         } else if (!hasAnyOpt && ansCell) {
-          outP3.push(`Câu ${qCounter++}. ${col0}`);
+          outP3.push(`Câu ${qCounter++}. ${cleanCol0}`);
           p3Keys.push(`${p3Keys.length + 1}. ${ansCell}`);
         } else if (r.length === 2 && rawOpts[0] && !rawOpts[1] && !rawOpts[2] && !rawOpts[3] && !ansCell) {
-          outP3.push(`Câu ${qCounter++}. ${col0}`);
+          outP3.push(`Câu ${qCounter++}. ${cleanCol0}`);
           p3Keys.push(`${p3Keys.length + 1}. ${rawOpts[0]}`);
         } else {
           passthrough.push(lineStr);
@@ -7132,11 +7211,13 @@ ANSWER KEYS
 
     function filterLeaderboardByExam(examId) {
       switchTab('archive');
+      updateNavMenuActiveState('leaderboard');
       const lbSelect = document.getElementById('leaderboard-exam-select');
-      lbSelect.value = examId;
+      if (lbSelect) lbSelect.value = examId || 'ALL';
       renderLeaderboardTable();
       setTimeout(() => {
-        document.getElementById('leaderboard-section').scrollIntoView({ behavior: 'smooth' });
+        const sec = document.getElementById('leaderboard-section');
+        if (sec) sec.scrollIntoView({ behavior: 'smooth' });
       }, 100);
     }
 
@@ -7826,10 +7907,10 @@ ANSWER KEYS
     }
 
     function updateEdTechSummaryBadges() {
-      const vaultBadge = document.getElementById('nav-vault-badge');
+      const menuVaultBadge = document.getElementById('menu-vault-badge');
       const homeVaultCount = document.getElementById('home-vault-count');
       const homeHighScore = document.getElementById('home-speedrun-highscore');
-      if (vaultBadge) vaultBadge.textContent = wrongVaultList.length;
+      if (menuVaultBadge) menuVaultBadge.textContent = wrongVaultList.length;
       if (homeVaultCount) homeVaultCount.textContent = wrongVaultList.length;
       if (homeHighScore) homeHighScore.textContent = speedrunState.highScore;
     }
@@ -9471,7 +9552,89 @@ ANSWER KEYS
     // ---------------------------------------------------------------------
     // 5. NAVIGATION & TAB CONTROLLER
     // ---------------------------------------------------------------------
+    function openNavMenuDropdown() {
+      const dropdown = document.getElementById('nav-menu-dropdown');
+      const btn = document.getElementById('btn-nav-menu');
+      const chevron = document.getElementById('nav-menu-chevron');
+      if (!dropdown) return;
+      dropdown.classList.remove('hidden');
+      if (btn) btn.setAttribute('aria-expanded', 'true');
+      if (chevron) chevron.classList.add('rotate-180');
+      refreshIconsAndMath(dropdown);
+    }
+
+    function closeNavMenuDropdown() {
+      const dropdown = document.getElementById('nav-menu-dropdown');
+      const btn = document.getElementById('btn-nav-menu');
+      const chevron = document.getElementById('nav-menu-chevron');
+      if (!dropdown) return;
+      dropdown.classList.add('hidden');
+      if (btn) btn.setAttribute('aria-expanded', 'false');
+      if (chevron) chevron.classList.remove('rotate-180');
+    }
+
+    function toggleNavMenuDropdown(event) {
+      if (event && typeof event.stopPropagation === 'function') {
+        event.stopPropagation();
+      }
+      const dropdown = document.getElementById('nav-menu-dropdown');
+      if (!dropdown) return;
+      if (dropdown.classList.contains('hidden')) {
+        openNavMenuDropdown();
+      } else {
+        closeNavMenuDropdown();
+      }
+    }
+
+    function updateNavMenuActiveState(activeKey) {
+      const activeStyles = {
+        home: 'bg-pink-50 text-pink-700 border-pink-200',
+        create: 'bg-pink-50 text-pink-700 border-pink-200',
+        guide: 'bg-amber-50 text-amber-800 border-amber-200',
+        archive: 'bg-emerald-50 text-emerald-800 border-emerald-200',
+        leaderboard: 'bg-amber-50 text-amber-800 border-amber-200',
+        vault: 'bg-rose-50 text-rose-700 border-rose-200',
+        flashcard: 'bg-sky-50 text-sky-700 border-sky-200',
+        speedrun: 'bg-orange-50 text-orange-700 border-orange-200',
+        team: 'bg-purple-50 text-purple-700 border-purple-200'
+      };
+      const hoverStyles = {
+        home: 'hover:bg-pink-50/80 hover:text-pink-700',
+        create: 'hover:bg-pink-50/80 hover:text-pink-700',
+        guide: 'hover:bg-amber-50/80 hover:text-amber-800',
+        archive: 'hover:bg-emerald-50/80 hover:text-emerald-800',
+        leaderboard: 'hover:bg-amber-50/80 hover:text-amber-800',
+        vault: 'hover:bg-rose-50/80 hover:text-rose-700',
+        flashcard: 'hover:bg-sky-50/80 hover:text-sky-700',
+        speedrun: 'hover:bg-orange-50/80 hover:text-orange-700',
+        team: 'hover:bg-purple-50/80 hover:text-purple-700'
+      };
+      document.querySelectorAll('#nav-menu-dropdown .nav-menu-item').forEach(item => {
+        const key = item.getAttribute('data-menu-target');
+        const isCurrent = key === activeKey;
+        const baseCls = 'nav-menu-item w-full text-left px-3 py-2.5 rounded-2xl text-xs sm:text-sm font-bold flex items-center gap-2.5 cursor-pointer transition-all border ';
+        item.className = baseCls + (isCurrent
+          ? (activeStyles[key] || activeStyles.home)
+          : (`text-slate-700 border-transparent ${hoverStyles[key] || hoverStyles.home}`));
+      });
+    }
+
+    function selectNavMenuItem(target) {
+      closeNavMenuDropdown();
+      if (target === 'leaderboard') {
+        filterLeaderboardByExam('ALL');
+        return;
+      }
+      if (target === 'archive') {
+        switchTab('archive');
+        return;
+      }
+      switchTab(target);
+    }
+
     function switchTab(tabName) {
+      closeNavMenuDropdown();
+      updateNavMenuActiveState(tabName);
       if (tabName !== 'speedrun' && typeof pauseSpeedrunIfActive === 'function') {
         pauseSpeedrunIfActive();
       }
@@ -9489,43 +9652,6 @@ ANSWER KEYS
       const mainHeader = document.getElementById('main-site-header');
       if (mainHeader) {
         mainHeader.classList.toggle('hidden', tabName === 'exam');
-      }
-
-      // Highlight active nav button with consistent .btn-3d spring physics
-      const navMap = {
-        home: 'btn-3d bg-pink-500 text-white btn-3d-pink is-active',
-        create: 'btn-3d bg-pink-500 text-white btn-3d-pink is-active',
-        guide: 'btn-3d bg-amber-500 text-white btn-3d-amber is-active',
-        archive: 'btn-3d bg-emerald-500 text-white btn-3d-emerald is-active',
-        team: 'btn-3d bg-purple-500 text-white btn-3d-purple is-active',
-        vault: 'btn-3d bg-rose-500 text-white btn-3d-pink is-active',
-        flashcard: 'btn-3d bg-sky-500 text-white btn-3d-sky is-active',
-        speedrun: 'btn-3d bg-orange-500 text-white btn-3d-amber is-active'
-      };
-
-      const idleNavStyles = {
-        home: 'bg-pink-50/80 text-slate-700 border border-pink-100',
-        create: 'bg-pink-50/80 text-slate-700 border border-pink-100',
-        guide: 'bg-amber-50/80 text-slate-700 border border-amber-100',
-        archive: 'bg-emerald-50/80 text-emerald-800 border border-emerald-100',
-        team: 'bg-purple-50/80 text-slate-700 border border-purple-100',
-        vault: 'bg-rose-50/90 text-rose-700 border border-rose-200',
-        flashcard: 'bg-sky-50/90 text-sky-700 border border-sky-200',
-        speedrun: 'bg-orange-50/90 text-orange-700 border border-orange-200'
-      };
-
-      ['home', 'create', 'guide', 'archive', 'team', 'vault', 'flashcard', 'speedrun'].forEach(n => {
-        const btn = document.getElementById('nav-' + n);
-        if (!btn) return;
-        btn.className = 'nav-btn cursor-pointer whitespace-nowrap px-3.5 py-2 rounded-2xl text-xs sm:text-sm font-bold flex items-center gap-1.5 shrink-0 ';
-        btn.className += (n === tabName) ? navMap[n] : (idleNavStyles[n] || idleNavStyles.home);
-      });
-
-      const activeBtn = document.getElementById('nav-' + tabName);
-      if (activeBtn && window.innerWidth < 1280) {
-        try {
-          activeBtn.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
-        } catch (e) {}
       }
 
       // Show "Return to ongoing exam" button if user navigated away during an active exam
@@ -9633,8 +9759,17 @@ ANSWER KEYS
     // ---------------------------------------------------------------------
     // 15. BOOTSTRAP ON PAGE LOAD (CLOUDFLARE PAGES STATIC 100%)
     // ---------------------------------------------------------------------
+    document.addEventListener('click', (e) => {
+      const wrapper = document.getElementById('nav-menu-wrapper');
+      const dropdown = document.getElementById('nav-menu-dropdown');
+      if (wrapper && dropdown && !dropdown.classList.contains('hidden') && !wrapper.contains(e.target)) {
+        closeNavMenuDropdown();
+      }
+    });
+
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') {
+        closeNavMenuDropdown();
         closeStartExamModal();
         closeShareExamModal();
         closeSubmitConfirmModal();
@@ -9695,6 +9830,9 @@ ANSWER KEYS
     });
 
     Object.assign(window, {
+      toggleNavMenuDropdown,
+      closeNavMenuDropdown,
+      selectNavMenuItem,
       switchTab,
       scrollToQuickExams,
       renderHomeStatsAndExams,
