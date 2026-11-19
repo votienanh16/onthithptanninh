@@ -130,6 +130,23 @@ body {
   visibility: hidden !important;
 }
 
+@media (min-width: 640px) {
+  .hidden.sm\:inline { display: inline !important; visibility: visible !important; }
+  .hidden.sm\:inline-flex { display: inline-flex !important; visibility: visible !important; pointer-events: auto !important; }
+  .hidden.sm\:flex { display: flex !important; visibility: visible !important; pointer-events: auto !important; }
+  .hidden.sm\:block { display: block !important; visibility: visible !important; pointer-events: auto !important; }
+}
+@media (min-width: 768px) {
+  .hidden.md\:inline-flex { display: inline-flex !important; visibility: visible !important; pointer-events: auto !important; }
+  .hidden.md\:flex { display: flex !important; visibility: visible !important; pointer-events: auto !important; }
+  .hidden.md\:block { display: block !important; visibility: visible !important; pointer-events: auto !important; }
+}
+@media (min-width: 1024px) {
+  .hidden.lg\:inline-flex { display: inline-flex !important; visibility: visible !important; pointer-events: auto !important; }
+  .hidden.lg\:flex { display: flex !important; visibility: visible !important; pointer-events: auto !important; }
+  .hidden.lg\:block { display: block !important; visibility: visible !important; pointer-events: auto !important; }
+}
+
 #cute-toast {
   pointer-events: none;
 }
@@ -3107,7 +3124,7 @@ ANSWER KEYS
   </main>
 
   <!-- Floating Collapsible Pomodoro Study Widget (Bottom-Right Corner) -->
-  <div id="pomodoro-widget" class="fixed bottom-3 right-3 sm:bottom-5 sm:right-5 z-30 hidden no-print max-w-[calc(100vw-1.5rem)]">
+  <div id="pomodoro-widget" class="fixed bottom-3 right-2.5 sm:bottom-5 sm:right-5 z-30 hidden no-print max-w-[calc(100vw-1.5rem)]">
     <!-- Collapsed Pill -->
     <button id="pomodoro-collapsed-pill" type="button" onclick="togglePomodoroCollapse(false)" class="hidden glass-floating pomodoro-spring-enter btn-3d btn-3d-emerald items-center gap-2 px-3.5 py-2.5 rounded-full bg-gradient-to-r from-emerald-500 to-teal-500 text-white font-black text-xs sm:text-sm cursor-pointer">
       <span>🍅</span>
@@ -3116,7 +3133,7 @@ ANSWER KEYS
     </button>
 
     <!-- Expanded Panel -->
-    <div id="pomodoro-expanded-panel" class="w-64 sm:w-72 glass-floating pomodoro-spring-enter rounded-3xl border-2 border-emerald-300 p-4 space-y-3">
+    <div id="pomodoro-expanded-panel" class="w-56 sm:w-72 glass-floating pomodoro-spring-enter rounded-3xl border-2 border-emerald-300 p-3 sm:p-4 space-y-2.5 sm:space-y-3">
       <div class="flex items-center justify-between gap-2">
         <div class="flex items-center gap-2">
           <span class="text-lg">🍅</span>
@@ -3169,9 +3186,9 @@ ANSWER KEYS
     onclick="scrollToTopSmooth()"
     aria-label="Lên đầu trang"
     title="Cuộn lên đầu trang"
-    class="fixed bottom-3.5 left-3.5 sm:bottom-5 sm:left-5 z-30 hidden no-print btn-3d btn-3d-pink rounded-full px-3.5 py-2.5 bg-white/95 hover:bg-pink-50 text-pink-600 border-2 border-pink-300 shadow-cute items-center gap-1.5 text-xs font-extrabold cursor-pointer transition-all duration-200"
+    class="fixed bottom-3 left-2.5 sm:bottom-5 sm:left-5 z-30 hidden no-print btn-3d btn-3d-pink rounded-full px-2.5 py-2 sm:px-3.5 sm:py-2.5 bg-white/95 hover:bg-pink-50 text-pink-600 border-2 border-pink-300 shadow-cute items-center gap-1 sm:gap-1.5 text-[10px] sm:text-xs font-extrabold cursor-pointer transition-all duration-200"
   >
-    <i data-lucide="arrow-up" class="w-4 h-4 shrink-0"></i>
+    <i data-lucide="arrow-up" class="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0"></i>
     <span>Lên đầu trang</span>
   </button>
 
