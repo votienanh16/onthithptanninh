@@ -5,14 +5,22 @@
   <meta http-equiv="Content-Language" content="vi" />
   <meta name="google" content="notranslate" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>HỆ THỐNG ÔN THI TRỰC TUYẾN - THPT AN NINH</title>
-  <meta name="description" content="Hệ thống ôn thi trực tuyến 3 phần chuẩn Bộ GD&ĐT của Trường THPT An Ninh - Tây Ninh. Hỗ trợ công thức Toán Lý Hóa KaTeX, chấm điểm tự động 100% trên Cloudflare Pages." />
+  <title>AN NINH EDUTECH - Hệ thống Ôn luyện &amp; Khảo sát Trực tuyến THPT An Ninh</title>
+  <meta name="description" content="AN NINH EDUTECH - Hệ thống Ôn luyện &amp; Khảo sát Trực tuyến THPT An Ninh (Tây Ninh). Chuẩn cấu trúc 3 phần Bộ GD&amp;ĐT, hỗ trợ công thức Toán Lý Hóa KaTeX và chấm điểm tự động 100%." />
   <link rel="canonical" href="https://onthithptanninh.pages.dev/" />
-  <meta property="og:title" content="HỆ THỐNG ÔN THI TRỰC TUYẾN - THPT AN NINH" />
-  <meta property="og:description" content="Hệ thống ôn luyện trực tuyến chuẩn cấu trúc 3 phần (Trắc nghiệm 4 lựa chọn, Đúng/Sai, Trả lời ngắn) - Chấm điểm tự động 100%." />
+  <meta property="og:title" content="AN NINH EDUTECH - Hệ thống Ôn luyện &amp; Khảo sát Trực tuyến THPT An Ninh" />
+  <meta property="og:description" content="AN NINH EDUTECH - Hệ thống Ôn luyện &amp; Khảo sát Trực tuyến THPT An Ninh (Tây Ninh). Chuẩn cấu trúc 3 phần (Trắc nghiệm 4 lựa chọn, Đúng/Sai, Trả lời ngắn) - Hỗ trợ KaTeX &amp; chấm điểm tự động 100%." />
+  <meta property="og:image" content="logo.png" />
+  <meta property="og:image:alt" content="AN NINH EDUTECH - Hệ thống Ôn luyện &amp; Khảo sát Trực tuyến THPT An Ninh" />
   <meta property="og:url" content="https://onthithptanninh.pages.dev/" />
   <meta property="og:type" content="website" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="AN NINH EDUTECH - Hệ thống Ôn luyện &amp; Khảo sát Trực tuyến THPT An Ninh" />
+  <meta name="twitter:description" content="AN NINH EDUTECH - Hệ thống Ôn luyện &amp; Khảo sát Trực tuyến THPT An Ninh (Tây Ninh)." />
+  <meta name="twitter:image" content="logo.png" />
   <link rel="icon" type="image/png" href="logo.png" />
+  <link rel="shortcut icon" type="image/png" href="logo.png" />
+  <link rel="apple-touch-icon" href="logo.png" />
 
   <!-- Google Fonts: Quicksand (Cute, rounded, friendly) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -198,6 +206,8 @@ body {
 /* Tab & Content Transitions */
 .tab-section,
 .tab-content {
+  min-width: 0;
+  max-width: 100%;
   animation: fadeInCute 0.36s var(--smooth-out-easing);
 }
 @keyframes fadeInCute {
@@ -219,12 +229,45 @@ body {
   animation: pulseGentle 2.4s infinite ease-in-out;
 }
 
-/* KaTeX font & mobile safe-wrap adjustment */
+/* KaTeX font & mobile safe-wrap / horizontal scroll safety */
 .katex {
   font-size: 1.06em !important;
   max-width: 100%;
   white-space: normal !important;
   overflow-wrap: break-word;
+}
+.katex-display {
+  display: block;
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  padding: 0.25rem 0;
+}
+.table-scroll-wrap {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+@media (max-width: 640px) {
+  .katex {
+    max-width: 100%;
+    white-space: normal !important;
+    overflow-wrap: break-word;
+  }
+  #tab-home table,
+  #tab-create table,
+  #tab-guide table,
+  #tab-archive table,
+  #tab-exam table,
+  #tab-result table,
+  #tab-vault table {
+    display: block;
+    max-width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
 }
 
 /* Mobile touch, cursor & z-index interaction safety */
@@ -990,6 +1033,33 @@ details[open] > *:not(summary) {
                   <span class="flex-1 truncate">Đội ngũ sáng tạo</span>
                 </button>
               </div>
+
+              <div class="mt-2 pt-2 border-t border-pink-100 space-y-1.5">
+                <div class="px-2 text-[10px] font-extrabold uppercase tracking-wider text-slate-400 flex items-center gap-1">
+                  <i data-lucide="cloud" class="w-3 h-3 text-pink-500"></i>
+                  <span>Sao lưu &amp; Khôi phục khi đổi thiết bị</span>
+                </div>
+                <div class="grid grid-cols-1 gap-1.5">
+                  <button
+                    id="btn-menu-export-json"
+                    type="button"
+                    onclick="exportAllBackupJSON(); closeNavMenuDropdown();"
+                    class="w-full text-left px-3 py-2 rounded-2xl text-xs font-extrabold flex items-center gap-2 cursor-pointer transition-all bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200"
+                  >
+                    <i data-lucide="download-cloud" class="w-3.5 h-3.5 text-emerald-600 shrink-0"></i>
+                    <span class="truncate">Xuất dữ liệu học tập (.json)</span>
+                  </button>
+                  <button
+                    id="btn-menu-import-json"
+                    type="button"
+                    onclick="triggerImportBackupJSON(); closeNavMenuDropdown();"
+                    class="w-full text-left px-3 py-2 rounded-2xl text-xs font-extrabold flex items-center gap-2 cursor-pointer transition-all bg-purple-50 hover:bg-purple-100 text-purple-800 border border-purple-200"
+                  >
+                    <i data-lucide="upload" class="w-3.5 h-3.5 text-purple-600 shrink-0"></i>
+                    <span class="truncate">Nhập dữ liệu (.json)</span>
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
 
@@ -1050,268 +1120,147 @@ details[open] > *:not(summary) {
   <main class="flex-1 min-w-0 max-w-7xl w-full mx-auto px-4 sm:px-6 py-6 sm:py-8">
 
     <!-- ===================================================================== -->
-    <!-- 2. TRANG CHỦ (HERO BANNER & THỐNG KÊ TRỰC QUAN)                       -->
+    <!-- 2. TRANG CHỦ (HERO GỌN, THỐNG KÊ MỎNG, ĐỀ THI TRUNG TÂM, TIỆN ÍCH)  -->
     <!-- ===================================================================== -->
-    <section id="tab-home" class="tab-section space-y-8">
+    <section id="tab-home" class="tab-section space-y-7 sm:space-y-8">
       
-      <!-- Hero Banner Card (Pastel Pink - Mint Green - Butter Yellow) -->
-      <div class="relative rounded-3xl bg-gradient-to-br from-rose-100/90 via-amber-50/90 to-emerald-100/90 border-2 border-pink-200 p-6 sm:p-10 lg:p-12 shadow-cute overflow-hidden">
-        <!-- Decorative Pastel Circles -->
-        <div class="absolute -top-12 -right-12 w-52 h-52 rounded-full bg-pink-200/40 blur-2xl pointer-events-none"></div>
-        <div class="absolute -bottom-16 -left-12 w-60 h-60 rounded-full bg-emerald-200/40 blur-2xl pointer-events-none"></div>
-        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-72 h-72 rounded-full bg-amber-200/30 blur-3xl pointer-events-none"></div>
-
-        <div class="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-          <div class="lg:col-span-7 space-y-5 text-center lg:text-left">
-            <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/90 border-2 border-pink-200 text-pink-700 text-xs sm:text-sm font-bold shadow-sm">
-              <span class="text-base">🌷</span>
-              <span>Chào mừng các sĩ tử Trường THPT An Ninh - Tây Ninh!</span>
+      <!-- 1. Compact Airy Hero Banner (Title, 1-line description, 2 Primary CTAs) -->
+      <div id="home-hero-card" class="relative rounded-3xl bg-gradient-to-r from-rose-50/90 via-white to-sky-50/85 border-2 border-pink-100 p-5 sm:p-7 shadow-cute overflow-hidden">
+        <div class="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-5">
+          <div class="space-y-2 text-center lg:text-left min-w-0">
+            <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/95 border border-pink-200 text-pink-700 text-xs font-bold shadow-sm">
+              <span>🌷</span>
+              <span>Trường THPT An Ninh • Tây Ninh</span>
             </div>
 
-            <h2 class="text-3xl sm:text-4xl lg:text-5xl font-bold text-slate-800 leading-tight">
-              Ôn Luyện Nhẹ Nhàng, <br class="hidden sm:inline" />
+            <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-800 leading-snug tracking-tight">
+              Ôn Luyện Nhẹ Nhàng,
               <span class="text-transparent bg-clip-text bg-gradient-to-r from-pink-600 via-rose-500 to-emerald-600">
-                Bứt Phá Điểm Cao Mỗi Ngày ✨
+                Bứt Phá Điểm Cao ✨
               </span>
             </h2>
 
-            <p class="text-slate-600 text-base sm:text-lg font-medium leading-relaxed max-w-2xl mx-auto lg:mx-0">
-              Hệ thống luyện thi trực tuyến thông minh hỗ trợ công thức <strong>Toán - Lý - Hóa (KaTeX)</strong>, nhập đề tự động theo <strong>định dạng chuẩn 3 phần</strong>, chế độ <strong>Kiểm tra & Luyện tập</strong> linh hoạt cùng giám sát chống gian lận hiện đại.
+            <p class="text-slate-600 text-sm sm:text-base font-medium leading-relaxed max-w-2xl mx-auto lg:mx-0">
+              Hệ thống ôn luyện &amp; khảo sát trực tuyến chuẩn cấu trúc 3 phần — Hỗ trợ công thức KaTeX và chấm điểm tự động 100%.
             </p>
-
-            <!-- Hero Action Buttons -->
-            <div class="pt-2 flex flex-wrap items-center justify-center lg:justify-start gap-3.5">
-              <button onclick="scrollToQuickExams()" class="btn-3d btn-3d-pink px-7 py-3.5 rounded-2xl bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white font-bold text-base flex items-center gap-2.5">
-                <i data-lucide="rocket" class="w-5 h-5"></i>
-                <span>Bắt đầu ôn thi ngay</span>
-              </button>
-
-              <button onclick="switchTab('create')" class="btn-3d btn-3d-emerald px-6 py-3.5 rounded-2xl bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-base flex items-center gap-2">
-                <i data-lucide="plus-circle" class="w-5 h-5"></i>
-                <span>Tạo đề & Nhập file</span>
-              </button>
-
-              <button onclick="switchTab('guide')" class="btn-3d btn-3d-amber px-5 py-3.5 rounded-2xl bg-amber-100 hover:bg-amber-200 text-amber-900 border-2 border-amber-300 font-bold text-sm sm:text-base flex items-center gap-2">
-                <i data-lucide="sparkles" class="w-5 h-5 text-amber-600"></i>
-                <span>Hướng dẫn định dạng chuẩn</span>
-              </button>
-            </div>
-
-            <!-- Highlights Pills -->
-            <div class="pt-3 flex flex-wrap items-center justify-center lg:justify-start gap-2.5 text-xs font-bold text-slate-600">
-              <span class="px-3 py-1.5 rounded-xl bg-white/80 border border-pink-200 flex items-center gap-1.5">
-                <i data-lucide="check-circle-2" class="w-4 h-4 text-pink-500"></i> Chuẩn 3 phần chấm tự động 100%
-              </span>
-              <span class="px-3 py-1.5 rounded-xl bg-white/80 border border-emerald-200 flex items-center gap-1.5">
-                <i data-lucide="sigma" class="w-4 h-4 text-emerald-500"></i> Hiển thị công thức LaTeX
-              </span>
-              <span class="px-3 py-1.5 rounded-xl bg-white/80 border border-amber-200 flex items-center gap-1.5">
-                <i data-lucide="shield-check" class="w-4 h-4 text-amber-500"></i> Cảnh báo chuyển Tab tự động
-              </span>
-            </div>
           </div>
 
-          <!-- Right Mascot / School Emblem Showcase Card -->
-          <div class="lg:col-span-5 flex justify-center">
-            <div class="w-full max-w-md bg-white/90 backdrop-blur-md rounded-3xl border-2 border-pink-200 p-6 shadow-cute space-y-4">
-              <div class="flex items-center gap-4 border-b border-pink-100 pb-4">
-                <img src="logo.png" alt="Logo trường THPT An Ninh" class="w-16 h-16 rounded-full border-2 border-pink-200 object-contain bg-white p-0.5 shadow-sm shrink-0" onerror="this.style.display='none'" />
-                <div>
-                  <span class="text-xs font-bold uppercase tracking-wider text-pink-500">Góc Học Tập Số</span>
-                  <h3 class="text-lg font-bold text-slate-800">THPT An Ninh • Lớp 11A1</h3>
-                  <p class="text-xs text-slate-500 font-medium">Nền tảng luyện đề thông minh & thân thiện</p>
-                </div>
-              </div>
+          <!-- Maximum 2 Primary Action Buttons -->
+          <div class="flex flex-wrap items-center justify-center lg:justify-end gap-3 shrink-0">
+            <button id="btn-hero-start-exam" type="button" onclick="scrollToQuickExams()" class="btn-3d btn-3d-pink cursor-pointer px-5 py-3 rounded-2xl bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white font-extrabold text-xs sm:text-sm flex items-center gap-2 whitespace-nowrap">
+              <i data-lucide="rocket" class="w-4 h-4"></i>
+              <span>Bắt đầu làm bài</span>
+            </button>
 
-              <div class="space-y-2.5 text-xs sm:text-sm">
-                <div class="p-3 rounded-2xl bg-pink-50/90 border border-pink-200 flex items-center gap-3">
-                  <div class="w-9 h-9 rounded-xl bg-pink-500 text-white flex items-center justify-center shrink-0 font-bold">1</div>
-                  <div>
-                    <div class="font-bold text-pink-900">Trắc nghiệm 4 lựa chọn (A, B, C, D)</div>
-                    <div class="text-xs text-pink-700">Chấm điểm tự động, hỗ trợ đảo câu & đáp án</div>
-                  </div>
-                </div>
-                <div class="p-3 rounded-2xl bg-emerald-50/90 border border-emerald-200 flex items-center gap-3">
-                  <div class="w-9 h-9 rounded-xl bg-emerald-500 text-white flex items-center justify-center shrink-0 font-bold">2</div>
-                  <div>
-                    <div class="font-bold text-emerald-900">Trắc nghiệm Đúng / Sai (a, b, c, d)</div>
-                    <div class="text-xs text-emerald-700">Tính điểm chi tiết từng mệnh đề chuẩn cấu trúc mới</div>
-                  </div>
-                </div>
-                <div class="p-3 rounded-2xl bg-amber-50/90 border border-amber-200 flex items-center gap-3">
-                  <div class="w-9 h-9 rounded-xl bg-amber-500 text-white flex items-center justify-center shrink-0 font-bold">3</div>
-                  <div>
-                    <div class="font-bold text-amber-900">Trả lời ngắn & ANSWER KEYS</div>
-                    <div class="text-xs text-amber-700">Đối chiếu đáp án số chính xác từ bảng cuối đề</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Visual Statistics Cards (4 Pastel Cards) -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-        <!-- Stat 1: Pastel Pink -->
-        <div class="bg-gradient-to-br from-pink-50 to-rose-100/70 rounded-3xl p-6 border-2 border-pink-200 shadow-sm hover:shadow-cute hover:-translate-y-1 transition-all duration-300 flex items-center gap-4">
-          <div class="w-14 h-14 rounded-2xl bg-pink-500 text-white flex items-center justify-center shadow-md shadow-pink-200 shrink-0">
-            <i data-lucide="book-marked" class="w-7 h-7"></i>
-          </div>
-          <div>
-            <p class="text-xs font-bold uppercase tracking-wider text-pink-600">Tổng số đề thi</p>
-            <h3 id="stat-total-exams" class="text-3xl font-bold text-slate-800 mt-0.5">0</h3>
-            <p class="text-xs text-slate-500 font-semibold">Đề chuẩn cấu trúc 3 phần</p>
-          </div>
-        </div>
-
-        <!-- Stat 2: Pastel Mint Green -->
-        <div class="bg-gradient-to-br from-emerald-50 to-teal-100/70 rounded-3xl p-6 border-2 border-emerald-200 shadow-sm hover:shadow-mint hover:-translate-y-1 transition-all duration-300 flex items-center gap-4">
-          <div class="w-14 h-14 rounded-2xl bg-emerald-500 text-white flex items-center justify-center shadow-md shadow-emerald-200 shrink-0">
-            <i data-lucide="help-circle" class="w-7 h-7"></i>
-          </div>
-          <div>
-            <p class="text-xs font-bold uppercase tracking-wider text-emerald-700">Ngân hàng câu hỏi</p>
-            <h3 id="stat-total-questions" class="text-3xl font-bold text-slate-800 mt-0.5">0</h3>
-            <p class="text-xs text-slate-500 font-semibold">Tích hợp công thức KaTeX</p>
-          </div>
-        </div>
-
-        <!-- Stat 3: Pastel Butter Yellow -->
-        <div class="bg-gradient-to-br from-amber-50 to-yellow-100/70 rounded-3xl p-6 border-2 border-amber-200 shadow-sm hover:shadow-butter hover:-translate-y-1 transition-all duration-300 flex items-center gap-4">
-          <div class="w-14 h-14 rounded-2xl bg-amber-500 text-white flex items-center justify-center shadow-md shadow-amber-200 shrink-0">
-            <i data-lucide="users" class="w-7 h-7"></i>
-          </div>
-          <div>
-            <p class="text-xs font-bold uppercase tracking-wider text-amber-700">Lượt thi hoàn thành</p>
-            <h3 id="stat-total-attempts" class="text-3xl font-bold text-slate-800 mt-0.5">0</h3>
-            <p class="text-xs text-slate-500 font-semibold">Lưu trữ & xếp hạng tự động</p>
-          </div>
-        </div>
-
-        <!-- Stat 4: Pastel Lavender -->
-        <div class="bg-gradient-to-br from-purple-50 to-indigo-100/70 rounded-3xl p-6 border-2 border-purple-200 shadow-sm hover:shadow-cute hover:-translate-y-1 transition-all duration-300 flex items-center gap-4">
-          <div class="w-14 h-14 rounded-2xl bg-purple-500 text-white flex items-center justify-center shadow-md shadow-purple-200 shrink-0">
-            <i data-lucide="award" class="w-7 h-7"></i>
-          </div>
-          <div>
-            <p class="text-xs font-bold uppercase tracking-wider text-purple-700">Điểm trung bình</p>
-            <h3 id="stat-avg-score" class="text-3xl font-bold text-slate-800 mt-0.5">0.00</h3>
-            <p id="stat-avg-score-sub" class="text-xs text-slate-500 font-semibold">Chưa có lượt thi nào</p>
-          </div>
-        </div>
-      </div>
-
-      <!-- Study Streak Banner & EdTech 3D Smart Practice Hub -->
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
-        <!-- Study Streak Card -->
-        <div id="home-streak-card" class="lg:col-span-5 bg-gradient-to-br from-amber-50 via-orange-50 to-rose-50 rounded-3xl border-2 border-orange-200 p-5 sm:p-6 shadow-cute flex flex-col justify-between gap-4 relative overflow-hidden">
-          <div class="flex items-start justify-between gap-3">
-            <div class="flex items-center gap-3.5">
-              <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-orange-400 to-rose-500 text-white flex items-center justify-center text-3xl shadow-md shrink-0">
-                <span class="animate-flame-pulse">🔥</span>
-              </div>
-              <div>
-                <span class="inline-flex items-center gap-1 text-[11px] font-extrabold uppercase tracking-wider text-orange-600 bg-orange-100 px-2.5 py-0.5 rounded-full border border-orange-200">
-                  Study Streak • Chuỗi ngày học
-                </span>
-                <div class="flex items-baseline gap-2 mt-1">
-                  <span id="home-streak-days" class="text-3xl sm:text-4xl font-black text-orange-600">0</span>
-                  <span class="text-sm font-bold text-slate-700">ngày ôn tập liên tiếp</span>
-                </div>
-              </div>
-            </div>
-            <button type="button" onclick="checkInStudyStreak(true)" class="btn-3d btn-3d-amber px-3.5 py-2 rounded-2xl bg-amber-400 hover:bg-amber-500 text-slate-900 font-extrabold text-xs shrink-0 cursor-pointer flex items-center gap-1.5">
-              <i data-lucide="flame" class="w-4 h-4"></i>
-              <span>Điểm danh</span>
+            <button id="btn-hero-create-exam" type="button" onclick="switchTab('create')" class="btn-3d btn-3d-emerald cursor-pointer px-5 py-3 rounded-2xl bg-emerald-500 hover:bg-emerald-600 text-white font-extrabold text-xs sm:text-sm flex items-center gap-2 whitespace-nowrap">
+              <i data-lucide="plus-circle" class="w-4 h-4"></i>
+              <span>Tạo đề &amp; Nhập file</span>
             </button>
           </div>
-
-          <div class="bg-white/85 rounded-2xl p-3.5 border border-orange-100 space-y-2.5">
-            <div class="flex items-center justify-between text-xs font-bold text-slate-600">
-              <span>Nhịp độ 7 ngày gần nhất</span>
-              <span id="home-streak-status" class="text-orange-600 font-extrabold">Chưa điểm danh hôm nay</span>
-            </div>
-            <div id="home-streak-week-dots" class="grid grid-cols-7 gap-1.5">
-              <!-- Populated by JS -->
-            </div>
-          </div>
-        </div>
-
-        <!-- 4 EdTech Quick-Launch 3D Cards -->
-        <div class="lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <button type="button" onclick="switchTab('vault')" class="btn-3d btn-3d-pink text-left bg-gradient-to-br from-rose-50 to-pink-50 hover:from-rose-100 hover:to-pink-100 rounded-3xl border-2 border-rose-200 p-4 sm:p-5 flex items-start gap-3.5 cursor-pointer group">
-            <div class="w-12 h-12 rounded-2xl bg-rose-500 text-white flex items-center justify-center shrink-0 shadow-sm group-hover:scale-105 transition-transform">
-              <i data-lucide="radar" class="w-6 h-6"></i>
-            </div>
-            <div class="min-w-0 flex-1">
-              <div class="flex items-center justify-between gap-2">
-                <h3 class="font-extrabold text-rose-800 text-sm sm:text-base">Kho Câu Hay Sai</h3>
-                <span class="px-2 py-0.5 rounded-full bg-rose-500 text-white text-[10px] font-black shrink-0"><span id="home-vault-count">0</span> câu</span>
-              </div>
-              <p class="text-xs text-slate-600 mt-1 leading-relaxed">Biểu đồ mạng nhện chuyên đề yếu & lặp lại ngắt quãng 1-3-7 ngày.</p>
-            </div>
-          </button>
-
-          <button type="button" onclick="switchTab('flashcard')" class="btn-3d btn-3d-sky text-left bg-gradient-to-br from-sky-50 to-cyan-50 hover:from-sky-100 hover:to-cyan-100 rounded-3xl border-2 border-sky-200 p-4 sm:p-5 flex items-start gap-3.5 cursor-pointer group">
-            <div class="w-12 h-12 rounded-2xl bg-sky-500 text-white flex items-center justify-center shrink-0 shadow-sm group-hover:scale-105 transition-transform">
-              <i data-lucide="layers" class="w-6 h-6"></i>
-            </div>
-            <div class="min-w-0 flex-1">
-              <div class="flex items-center justify-between gap-2">
-                <h3 class="font-extrabold text-sky-800 text-sm sm:text-base">Flashcard Lật 3D</h3>
-                <span class="px-2 py-0.5 rounded-full bg-sky-500 text-white text-[10px] font-black shrink-0">Vuốt & Chạm</span>
-              </div>
-              <p class="text-xs text-slate-600 mt-1 leading-relaxed">Ôn nhanh lý thuyết & Đúng/Sai với thẻ lật 3D và đánh dấu "Đã nhớ".</p>
-            </div>
-          </button>
-
-          <button type="button" onclick="switchTab('speedrun')" class="btn-3d btn-3d-amber text-left bg-gradient-to-br from-amber-50 to-yellow-50 hover:from-amber-100 hover:to-yellow-100 rounded-3xl border-2 border-amber-200 p-4 sm:p-5 flex items-start gap-3.5 cursor-pointer group">
-            <div class="w-12 h-12 rounded-2xl bg-amber-500 text-white flex items-center justify-center shrink-0 shadow-sm group-hover:scale-105 transition-transform">
-              <i data-lucide="zap" class="w-6 h-6"></i>
-            </div>
-            <div class="min-w-0 flex-1">
-              <div class="flex items-center justify-between gap-2">
-                <h3 class="font-extrabold text-amber-800 text-sm sm:text-base">Speedrun 5 Phút</h3>
-                <span class="px-2 py-0.5 rounded-full bg-amber-500 text-white text-[10px] font-black shrink-0">Kỷ lục: <span id="home-speedrun-highscore">0</span></span>
-              </div>
-              <p class="text-xs text-slate-600 mt-1 leading-relaxed">Trả lời siêu tốc 300s, tích chuỗi Combo x1-x2-x3 & mascot cổ vũ!</p>
-            </div>
-          </button>
-
-          <button type="button" onclick="togglePomodoroWidget(true)" class="btn-3d btn-3d-emerald text-left bg-gradient-to-br from-emerald-50 to-teal-50 hover:from-emerald-100 hover:to-teal-100 rounded-3xl border-2 border-emerald-200 p-4 sm:p-5 flex items-start gap-3.5 cursor-pointer group">
-            <div class="w-12 h-12 rounded-2xl bg-emerald-500 text-white flex items-center justify-center shrink-0 shadow-sm group-hover:scale-105 transition-transform text-xl">
-              🍅
-            </div>
-            <div class="min-w-0 flex-1">
-              <div class="flex items-center justify-between gap-2">
-                <h3 class="font-extrabold text-emerald-800 text-sm sm:text-base">Đồng Hồ Pomodoro</h3>
-                <span class="px-2 py-0.5 rounded-full bg-emerald-500 text-white text-[10px] font-black shrink-0">25p / 5p</span>
-              </div>
-              <p class="text-xs text-slate-600 mt-1 leading-relaxed">Bật đồng hồ tập trung thu gọn ở góc màn hình khi ôn luyện.</p>
-            </div>
-          </button>
         </div>
       </div>
 
-      <!-- Featured Exams Section on Home Page -->
-      <div id="quick-exams-section" class="bg-white/90 rounded-3xl border-2 border-pink-100 p-6 sm:p-8 shadow-cute space-y-6">
+      <!-- 2. Slim 1-Row Statistics Strip -->
+      <div id="home-stats-strip" class="bg-white/95 rounded-3xl border-2 border-pink-100 px-4 py-3 sm:px-6 sm:py-3.5 shadow-sm grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:divide-x lg:divide-pink-100">
+        <div class="flex items-center gap-2.5 sm:gap-3 min-w-0 lg:pr-2">
+          <div class="w-9 h-9 rounded-xl bg-pink-50 text-pink-600 border border-pink-100 flex items-center justify-center shrink-0">
+            <i data-lucide="book-marked" class="w-4 h-4"></i>
+          </div>
+          <div class="min-w-0">
+            <div class="text-[11px] font-bold text-slate-500 leading-tight">Tổng số đề</div>
+            <div id="stat-total-exams" class="text-xl sm:text-2xl font-black text-slate-800 leading-tight">0</div>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-2.5 sm:gap-3 min-w-0 lg:px-3">
+          <div class="w-9 h-9 rounded-xl bg-sky-50 text-sky-600 border border-sky-100 flex items-center justify-center shrink-0">
+            <i data-lucide="help-circle" class="w-4 h-4"></i>
+          </div>
+          <div class="min-w-0">
+            <div class="text-[11px] font-bold text-slate-500 leading-tight">Ngân hàng câu hỏi</div>
+            <div id="stat-total-questions" class="text-xl sm:text-2xl font-black text-slate-800 leading-tight">0</div>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-2.5 sm:gap-3 min-w-0 lg:px-3">
+          <div class="w-9 h-9 rounded-xl bg-emerald-50 text-emerald-600 border border-emerald-100 flex items-center justify-center shrink-0">
+            <i data-lucide="users" class="w-4 h-4"></i>
+          </div>
+          <div class="min-w-0">
+            <div class="text-[11px] font-bold text-slate-500 leading-tight">Lượt thi</div>
+            <div id="stat-total-attempts" class="text-xl sm:text-2xl font-black text-slate-800 leading-tight">0</div>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-2.5 sm:gap-3 min-w-0 lg:pl-3">
+          <div class="w-9 h-9 rounded-xl bg-rose-50 text-rose-600 border border-rose-100 flex items-center justify-center shrink-0">
+            <i data-lucide="award" class="w-4 h-4"></i>
+          </div>
+          <div class="min-w-0">
+            <div class="text-[11px] font-bold text-slate-500 leading-tight">Điểm TB</div>
+            <div class="flex items-baseline gap-2">
+              <span id="stat-avg-score" class="text-xl sm:text-2xl font-black text-slate-800 leading-tight">0.00</span>
+              <span id="stat-avg-score-sub" class="sr-only">Chưa có lượt thi nào</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. Featured Exams Section (Centerpiece right after slim stats) -->
+      <div id="quick-exams-section" class="bg-white/95 rounded-3xl border-2 border-pink-100 p-6 sm:p-8 shadow-cute space-y-6">
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-pink-100 pb-4">
           <div>
             <div class="inline-flex items-center gap-1.5 text-xs font-bold text-pink-600 bg-pink-50 px-3 py-1 rounded-full border border-pink-200 mb-1.5">
               <i data-lucide="flame" class="w-3.5 h-3.5"></i> Đề Thi Sẵn Sàng Chinh Phục
             </div>
-            <h3 class="text-2xl font-bold text-slate-800">Danh Sách Đề Ôn Tập Mới Nhất</h3>
-            <p class="text-sm text-slate-500 font-medium">Chọn một đề thi bên dưới để bắt đầu làm bài ngay hoặc vào mục Tạo Đề để thêm đề của bạn</p>
+            <h3 class="text-xl sm:text-2xl font-bold text-slate-800">Danh Sách Đề Ôn Tập Mới Nhất</h3>
+            <p class="text-xs sm:text-sm text-slate-500 font-medium">Chọn một đề thi bên dưới để bắt đầu làm bài ngay hoặc lọc nhanh theo tên và khối lớp</p>
           </div>
-          <div class="flex items-center gap-2.5">
-            <button onclick="switchTab('archive')" class="px-4 py-2.5 rounded-2xl bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 font-bold text-xs sm:text-sm transition-all flex items-center gap-1.5">
+          <div class="flex items-center gap-2.5 shrink-0">
+            <button type="button" onclick="switchTab('archive')" class="cursor-pointer px-4 py-2.5 rounded-2xl bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 font-bold text-xs sm:text-sm transition-all flex items-center gap-1.5">
               <i data-lucide="folder-heart" class="w-4 h-4"></i>
-              <span>Xem tất cả & BXH</span>
+              <span>Xem tất cả &amp; BXH</span>
             </button>
-            <button onclick="switchTab('create')" class="px-4 py-2.5 rounded-2xl bg-pink-500 hover:bg-pink-600 text-white font-bold text-xs sm:text-sm shadow-sm transition-all flex items-center gap-1.5">
+            <button type="button" onclick="switchTab('create')" class="cursor-pointer px-4 py-2.5 rounded-2xl bg-pink-500 hover:bg-pink-600 text-white font-bold text-xs sm:text-sm shadow-sm transition-all flex items-center gap-1.5">
               <i data-lucide="plus" class="w-4 h-4"></i>
               <span>Tạo đề mới</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Quick Search & Grade Filter Bar on Home Page -->
+        <div id="home-exams-filter-bar" class="flex flex-col md:flex-row md:items-center justify-between gap-3 bg-pink-50/50 p-3.5 sm:p-4 rounded-2xl border border-pink-100">
+          <div class="relative flex-1 min-w-0">
+            <i data-lucide="search" class="w-4 h-4 text-pink-500 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none"></i>
+            <input
+              id="home-exam-search"
+              type="text"
+              oninput="renderHomeStatsAndExams()"
+              placeholder="Tìm nhanh theo tên đề thi, môn học..."
+              aria-label="Tìm kiếm đề thi trên trang chủ"
+              class="w-full pl-10 pr-9 py-2.5 rounded-xl border-2 border-pink-200 focus:border-pink-400 focus:outline-none bg-white text-xs sm:text-sm font-bold text-slate-700 placeholder:text-slate-400 transition-all"
+            />
+            <button
+              id="home-exam-search-clear"
+              type="button"
+              onclick="resetHomeExamFilters()"
+              title="Xóa tìm kiếm"
+              aria-label="Xóa bộ lọc tìm kiếm"
+              class="hidden absolute right-2.5 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-pink-100 hover:bg-pink-200 text-pink-600 items-center justify-center text-xs font-black cursor-pointer"
+            >×</button>
+          </div>
+          <div class="flex flex-wrap items-center gap-1.5 sm:gap-2" role="group" aria-label="Lọc nhanh theo khối lớp">
+            <button id="home-grade-btn-ALL" type="button" data-grade="ALL" onclick="setHomeGradeFilter('ALL')" class="home-grade-filter-btn btn-3d btn-3d-pink px-3.5 py-2 rounded-xl bg-pink-500 text-white border border-pink-500 text-xs font-extrabold cursor-pointer transition-all">
+              Tất cả
+            </button>
+            <button id="home-grade-btn-10" type="button" data-grade="10" onclick="setHomeGradeFilter('10')" class="home-grade-filter-btn px-3.5 py-2 rounded-xl bg-white hover:bg-pink-50 text-slate-700 border border-pink-200 text-xs font-extrabold cursor-pointer transition-all">
+              Khối 10
+            </button>
+            <button id="home-grade-btn-11" type="button" data-grade="11" onclick="setHomeGradeFilter('11')" class="home-grade-filter-btn px-3.5 py-2 rounded-xl bg-white hover:bg-pink-50 text-slate-700 border border-pink-200 text-xs font-extrabold cursor-pointer transition-all">
+              Khối 11
+            </button>
+            <button id="home-grade-btn-12" type="button" data-grade="12" onclick="setHomeGradeFilter('12')" class="home-grade-filter-btn px-3.5 py-2 rounded-xl bg-white hover:bg-pink-50 text-slate-700 border border-pink-200 text-xs font-extrabold cursor-pointer transition-all">
+              Khối 12
             </button>
           </div>
         </div>
@@ -1319,6 +1268,103 @@ details[open] > *:not(summary) {
         <!-- Dynamic Home Exam Grid -->
         <div id="home-exams-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           <!-- Populated by JS -->
+        </div>
+      </div>
+
+      <!-- 4. Unified 1-Row Compact Study Utilities Strip (Soft Pastel Harmony) -->
+      <div class="space-y-3">
+        <div class="flex items-center justify-between px-1">
+          <h3 class="text-sm sm:text-base font-extrabold text-slate-700 flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full bg-pink-400"></span>
+            <span>Tiện Ích Ôn Tập Nhanh</span>
+          </h3>
+          <span class="text-[11px] font-bold text-slate-400 hidden sm:inline">Đồng bộ tiến độ tự động trên thiết bị</span>
+        </div>
+
+        <div id="home-utilities-row" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3.5">
+          <!-- Utility 1: Study Streak -->
+          <div id="home-streak-card" class="bg-white/95 rounded-2xl border-2 border-pink-100 p-3.5 sm:p-4 shadow-sm flex flex-col justify-between gap-2.5 min-w-0">
+            <div class="flex items-center gap-2.5 min-w-0">
+              <div class="w-9 h-9 rounded-xl bg-pink-50 text-pink-600 border border-pink-100 flex items-center justify-center text-base shrink-0">
+                <span class="animate-flame-pulse">🔥</span>
+              </div>
+              <div class="min-w-0 flex-1">
+                <div class="text-xs font-extrabold text-slate-800 whitespace-nowrap">Study Streak</div>
+                <div class="text-xs font-bold text-slate-600"><span id="home-streak-days" class="text-sm font-black text-pink-600">0</span> ngày</div>
+              </div>
+            </div>
+            <div class="flex items-center justify-between gap-1.5 min-w-0">
+              <p id="home-streak-status" class="text-[11px] text-slate-500 font-semibold truncate">Chưa điểm danh hôm nay</p>
+              <button type="button" onclick="checkInStudyStreak(true)" class="cursor-pointer px-2 py-0.5 rounded-lg bg-pink-50 hover:bg-pink-100 text-pink-700 border border-pink-200 font-extrabold text-[10px] shrink-0 transition-colors">
+                Điểm danh
+              </button>
+            </div>
+            <div id="home-streak-week-dots" class="hidden"></div>
+          </div>
+
+          <!-- Utility 2: Kho câu hay sai -->
+          <button type="button" onclick="switchTab('vault')" class="bg-white/95 hover:bg-pink-50/60 rounded-2xl border-2 border-pink-100 p-3.5 sm:p-4 shadow-sm hover:-translate-y-0.5 transition-all text-left flex flex-col justify-between gap-2.5 cursor-pointer group min-w-0">
+            <div class="flex items-start justify-between gap-2">
+              <div class="flex items-center gap-2.5 min-w-0">
+                <div class="w-9 h-9 rounded-xl bg-pink-50 text-pink-600 border border-pink-100 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+                  <i data-lucide="radar" class="w-4 h-4"></i>
+                </div>
+                <div class="min-w-0">
+                  <div class="text-xs font-extrabold text-slate-800 truncate">Kho Câu Hay Sai</div>
+                  <div class="text-[11px] font-bold text-pink-600"><span id="home-vault-count">0</span> câu cần ôn</div>
+                </div>
+              </div>
+            </div>
+            <p class="text-[11px] text-slate-500 font-semibold truncate">Ôn chuyên đề yếu &amp; lặp 1-3-7 ngày</p>
+          </button>
+
+          <!-- Utility 3: Flashcard 3D -->
+          <button type="button" onclick="switchTab('flashcard')" class="bg-white/95 hover:bg-sky-50/60 rounded-2xl border-2 border-sky-100 p-3.5 sm:p-4 shadow-sm hover:-translate-y-0.5 transition-all text-left flex flex-col justify-between gap-2.5 cursor-pointer group min-w-0">
+            <div class="flex items-start justify-between gap-2">
+              <div class="flex items-center gap-2.5 min-w-0">
+                <div class="w-9 h-9 rounded-xl bg-sky-50 text-sky-600 border border-sky-100 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+                  <i data-lucide="layers" class="w-4 h-4"></i>
+                </div>
+                <div class="min-w-0">
+                  <div class="text-xs font-extrabold text-slate-800 truncate">Flashcard 3D</div>
+                  <div class="text-[11px] font-bold text-sky-600">Lật thẻ ghi nhớ</div>
+                </div>
+              </div>
+            </div>
+            <p class="text-[11px] text-slate-500 font-semibold truncate">Vuốt &amp; chạm ôn nhanh lý thuyết</p>
+          </button>
+
+          <!-- Utility 4: Speedrun 5p -->
+          <button type="button" onclick="switchTab('speedrun')" class="bg-white/95 hover:bg-pink-50/60 rounded-2xl border-2 border-pink-100 p-3.5 sm:p-4 shadow-sm hover:-translate-y-0.5 transition-all text-left flex flex-col justify-between gap-2.5 cursor-pointer group min-w-0">
+            <div class="flex items-start justify-between gap-2">
+              <div class="flex items-center gap-2.5 min-w-0">
+                <div class="w-9 h-9 rounded-xl bg-pink-50 text-pink-600 border border-pink-100 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+                  <i data-lucide="zap" class="w-4 h-4"></i>
+                </div>
+                <div class="min-w-0">
+                  <div class="text-xs font-extrabold text-slate-800 truncate">Speedrun 5p</div>
+                  <div class="text-[11px] font-bold text-pink-600">Kỷ lục: <span id="home-speedrun-highscore">0</span></div>
+                </div>
+              </div>
+            </div>
+            <p class="text-[11px] text-slate-500 font-semibold truncate">Phản xạ trắc nghiệm siêu tốc 300s</p>
+          </button>
+
+          <!-- Utility 5: Pomodoro 25p -->
+          <button type="button" onclick="togglePomodoroWidget(true)" class="bg-white/95 hover:bg-emerald-50/60 rounded-2xl border-2 border-emerald-100 p-3.5 sm:p-4 shadow-sm hover:-translate-y-0.5 transition-all text-left flex flex-col justify-between gap-2.5 cursor-pointer group min-w-0">
+            <div class="flex items-start justify-between gap-2">
+              <div class="flex items-center gap-2.5 min-w-0">
+                <div class="w-9 h-9 rounded-xl bg-emerald-50 text-emerald-600 border border-emerald-100 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+                  <i data-lucide="timer" class="w-4 h-4"></i>
+                </div>
+                <div class="min-w-0">
+                  <div class="text-xs font-extrabold text-slate-800 truncate">Pomodoro 25p</div>
+                  <div class="text-[11px] font-bold text-emerald-600">25p học / 5p nghỉ</div>
+                </div>
+              </div>
+            </div>
+            <p class="text-[11px] text-slate-500 font-semibold truncate">Bật đồng hồ tập trung góc màn hình</p>
+          </button>
         </div>
       </div>
     </section>
@@ -1354,6 +1400,51 @@ details[open] > *:not(summary) {
             <i data-lucide="play" class="w-4 h-4"></i>
             <span>Nạp thử ngay vào Trình Tạo Đề</span>
           </button>
+        </div>
+      </div>
+
+      <!-- System Overview & 3-Part Feature Summary (Moved from Home Hero for cleaner first screen) -->
+      <div id="guide-system-overview" class="bg-white/95 rounded-3xl border-2 border-pink-100 p-5 sm:p-6 shadow-sm space-y-4">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-pink-100 pb-3.5">
+          <div>
+            <h3 class="text-base sm:text-lg font-extrabold text-slate-800">Tổng Quan Cấu Trúc 3 Phần &amp; Tính Năng Hệ Thống</h3>
+            <p class="text-xs sm:text-sm text-slate-500 font-medium">Góc Học Tập Số THPT An Ninh — Chấm điểm tự động chuẩn Bộ GD&amp;ĐT</p>
+          </div>
+          <div class="flex flex-wrap items-center gap-2 text-xs font-bold text-slate-600">
+            <span class="px-3 py-1.5 rounded-xl bg-pink-50 border border-pink-200 flex items-center gap-1.5">
+              <i data-lucide="check-circle-2" class="w-4 h-4 text-pink-500"></i> Chuẩn 3 phần chấm tự động 100%
+            </span>
+            <span class="px-3 py-1.5 rounded-xl bg-emerald-50 border border-emerald-200 flex items-center gap-1.5">
+              <i data-lucide="sigma" class="w-4 h-4 text-emerald-500"></i> Hiển thị công thức LaTeX
+            </span>
+            <span class="px-3 py-1.5 rounded-xl bg-amber-50 border border-amber-200 flex items-center gap-1.5">
+              <i data-lucide="shield-check" class="w-4 h-4 text-amber-500"></i> Cảnh báo chuyển Tab tự động
+            </span>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs sm:text-sm">
+          <div class="p-3.5 rounded-2xl bg-pink-50/90 border border-pink-200 flex items-center gap-3">
+            <div class="w-9 h-9 rounded-xl bg-pink-500 text-white flex items-center justify-center shrink-0 font-bold">1</div>
+            <div>
+              <div class="font-bold text-pink-900">Trắc nghiệm 4 lựa chọn (A, B, C, D)</div>
+              <div class="text-xs text-pink-700">Chấm điểm tự động, hỗ trợ đảo câu &amp; đáp án</div>
+            </div>
+          </div>
+          <div class="p-3.5 rounded-2xl bg-emerald-50/90 border border-emerald-200 flex items-center gap-3">
+            <div class="w-9 h-9 rounded-xl bg-emerald-500 text-white flex items-center justify-center shrink-0 font-bold">2</div>
+            <div>
+              <div class="font-bold text-emerald-900">Trắc nghiệm Đúng / Sai (a, b, c, d)</div>
+              <div class="text-xs text-emerald-700">Tính điểm chi tiết từng mệnh đề chuẩn cấu trúc mới</div>
+            </div>
+          </div>
+          <div class="p-3.5 rounded-2xl bg-amber-50/90 border border-amber-200 flex items-center gap-3">
+            <div class="w-9 h-9 rounded-xl bg-amber-500 text-white flex items-center justify-center shrink-0 font-bold">3</div>
+            <div>
+              <div class="font-bold text-amber-900">Trả lời ngắn &amp; ANSWER KEYS</div>
+              <div class="text-xs text-amber-700">Đối chiếu đáp án số &amp; phân số chính xác từ bảng cuối đề</div>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -1929,14 +2020,14 @@ ANSWER KEYS
             </p>
           </div>
           <div class="flex flex-wrap items-center gap-2.5">
-            <button type="button" onclick="document.getElementById('import-json-input').click()" class="cursor-pointer px-4 py-2.5 rounded-2xl bg-purple-50 hover:bg-purple-100 text-purple-700 border-2 border-purple-300 font-bold text-xs sm:text-sm transition-all flex items-center gap-1.5">
+            <button id="btn-archive-import-json" type="button" onclick="triggerImportBackupJSON()" class="cursor-pointer px-4 py-2.5 rounded-2xl bg-purple-50 hover:bg-purple-100 text-purple-700 border-2 border-purple-300 font-bold text-xs sm:text-sm transition-all flex items-center gap-1.5">
               <i data-lucide="upload" class="w-4 h-4"></i>
-              <span>Nhập dữ liệu (.JSON)</span>
+              <span>Nhập dữ liệu (.json)</span>
             </button>
             <input id="import-json-input" type="file" accept=".json,application/json" onchange="importBackupJSON(event)" class="hidden" />
-            <button type="button" onclick="exportAllBackupJSON()" class="cursor-pointer px-4 py-2.5 rounded-2xl bg-white hover:bg-emerald-50 text-emerald-700 border-2 border-emerald-300 font-bold text-xs sm:text-sm transition-all flex items-center gap-1.5">
+            <button id="btn-archive-export-json" type="button" onclick="exportAllBackupJSON()" class="cursor-pointer px-4 py-2.5 rounded-2xl bg-white hover:bg-emerald-50 text-emerald-700 border-2 border-emerald-300 font-bold text-xs sm:text-sm transition-all flex items-center gap-1.5">
               <i data-lucide="download-cloud" class="w-4 h-4"></i>
-              <span>Sao lưu dữ liệu (.JSON)</span>
+              <span>Xuất dữ liệu học tập (.json)</span>
             </button>
             <button type="button" onclick="resetDefaultSampleData()" class="cursor-pointer px-4 py-2.5 rounded-2xl bg-amber-100 hover:bg-amber-200 text-amber-900 border-2 border-amber-300 font-bold text-xs sm:text-sm transition-all flex items-center gap-1.5">
               <i data-lucide="rotate-ccw" class="w-4 h-4"></i>
@@ -2284,53 +2375,72 @@ ANSWER KEYS
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start min-w-0 max-w-full">
         
         <!-- Questions Column -->
-        <div id="exam-questions-container" class="lg:col-span-8 min-w-0 max-w-full space-y-6">
+        <div id="exam-questions-container" class="order-2 lg:order-1 lg:col-span-8 min-w-0 max-w-full space-y-6">
           <!-- Rendered dynamically by JS (Part 1, Part 2, Part 3) -->
         </div>
 
-        <!-- Question Palette Sidebar -->
-        <div class="lg:col-span-4 min-w-0 max-w-full lg:sticky lg:top-[116px] bg-white rounded-3xl border-2 border-pink-200 p-6 shadow-cute space-y-5">
-          <div class="flex items-center justify-between border-b border-pink-100 pb-3">
-            <div>
-              <h3 class="text-base font-bold text-slate-800">Bảng Điều Hướng Câu Hỏi</h3>
-              <p class="text-xs text-slate-500 font-medium">Nhấn vào số câu để di chuyển nhanh</p>
+        <!-- Question Palette Sidebar (Collapsible on Mobile, Sticky on Desktop) -->
+        <div id="exam-palette-panel" class="order-1 lg:order-2 lg:col-span-4 min-w-0 max-w-full lg:sticky lg:top-[116px] bg-white rounded-3xl border-2 border-pink-200 p-4 sm:p-6 shadow-cute space-y-4">
+          <div class="flex items-start justify-between gap-2 border-b border-pink-100 pb-3">
+            <div class="min-w-0">
+              <div class="flex flex-wrap items-center gap-1.5">
+                <h3 class="text-sm sm:text-base font-bold text-slate-800">Bảng Điều Hướng Câu Hỏi</h3>
+                <span id="exam-draft-saved-badge" class="px-2 py-0.5 rounded-full bg-pink-50 text-pink-600 border border-pink-200 text-[10px] font-extrabold">
+                  💾 Tự động lưu nháp
+                </span>
+              </div>
+              <p class="text-[11px] sm:text-xs text-slate-500 font-medium mt-0.5">Nhấn vào số câu để di chuyển nhanh</p>
             </div>
-            <span id="exam-progress-text" class="px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 text-xs font-bold">
-              0 / 0 câu
-            </span>
+            <div class="flex items-center gap-1.5 shrink-0">
+              <span id="exam-progress-text" class="px-2.5 sm:px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 text-xs font-bold whitespace-nowrap">
+                0 / 0 câu
+              </span>
+              <button
+                id="btn-palette-collapse-toggle"
+                type="button"
+                onclick="toggleMobileQuestionPalette()"
+                aria-expanded="true"
+                aria-controls="exam-palette-collapsible-body"
+                class="lg:hidden px-2.5 py-1 rounded-xl bg-pink-50 hover:bg-pink-100 text-pink-700 border border-pink-200 text-xs font-extrabold flex items-center gap-1 cursor-pointer whitespace-nowrap"
+              >
+                <span id="palette-collapse-label">Thu gọn</span>
+              </button>
+            </div>
           </div>
 
-          <!-- Progress Bar -->
-          <div class="w-full h-3 rounded-full bg-pink-100 overflow-hidden p-0.5">
-            <div id="exam-progress-bar" class="h-full rounded-full bg-gradient-to-r from-pink-400 to-emerald-400 transition-all duration-300" style="width: 0%"></div>
-          </div>
+          <div id="exam-palette-collapsible-body" class="space-y-4">
+            <!-- Progress Bar -->
+            <div class="w-full h-3 rounded-full bg-pink-100 overflow-hidden p-0.5">
+              <div id="exam-progress-bar" class="h-full rounded-full bg-gradient-to-r from-pink-400 to-emerald-400 transition-all duration-300" style="width: 0%"></div>
+            </div>
 
-          <!-- Legend -->
-          <div class="flex flex-wrap items-center gap-3 text-xs font-bold text-slate-600">
-            <span class="flex items-center gap-1.5">
-              <span class="w-3.5 h-3.5 rounded-full bg-emerald-400 inline-block"></span> Đã trả lời
-            </span>
-            <span class="flex items-center gap-1.5">
-              <span class="w-3.5 h-3.5 rounded-full bg-white border-2 border-pink-300 inline-block"></span> Chưa làm
-            </span>
-            <span class="flex items-center gap-1.5">
-              <span class="w-3.5 h-3.5 rounded-full bg-amber-300 inline-block"></span> Đánh dấu
-            </span>
-          </div>
+            <!-- Legend -->
+            <div class="flex flex-wrap items-center gap-3 text-xs font-bold text-slate-600">
+              <span class="flex items-center gap-1.5">
+                <span class="w-3.5 h-3.5 rounded-full bg-emerald-400 inline-block"></span> Đã trả lời
+              </span>
+              <span class="flex items-center gap-1.5">
+                <span class="w-3.5 h-3.5 rounded-full bg-white border-2 border-pink-300 inline-block"></span> Chưa làm
+              </span>
+              <span class="flex items-center gap-1.5">
+                <span class="w-3.5 h-3.5 rounded-full bg-amber-300 inline-block"></span> Đánh dấu
+              </span>
+            </div>
 
-          <!-- Palette Grid -->
-          <div id="exam-palette-grid" class="grid grid-cols-5 sm:grid-cols-6 gap-2.5 max-h-72 overflow-y-auto p-1">
-            <!-- Buttons rendered by JS -->
-          </div>
+            <!-- Palette Grid -->
+            <div id="exam-palette-grid" class="grid grid-cols-5 sm:grid-cols-6 gap-2.5 max-h-72 overflow-y-auto p-1">
+              <!-- Buttons rendered by JS -->
+            </div>
 
-          <div class="pt-2 border-t border-pink-100 space-y-2.5">
-            <button onclick="openSubmitConfirmModal()" class="btn-3d btn-3d-pink w-full py-3.5 rounded-2xl bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white font-bold text-base flex items-center justify-center gap-2">
-              <i data-lucide="check-circle-2" class="w-5 h-5"></i>
-              <span>Hoàn Thành & Nộp Bài Thi</span>
-            </button>
-            <button onclick="confirmExitExamRoom()" class="btn-3d btn-3d-slate w-full py-2.5 rounded-2xl bg-slate-100 hover:bg-rose-50 text-slate-600 hover:text-rose-600 font-bold text-xs">
-              Rời phòng thi (Hủy lượt đang làm)
-            </button>
+            <div class="pt-2 border-t border-pink-100 space-y-2.5">
+              <button type="button" onclick="openSubmitConfirmModal()" class="btn-3d btn-3d-pink cursor-pointer w-full py-3.5 rounded-2xl bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white font-bold text-base flex items-center justify-center gap-2">
+                <i data-lucide="check-circle-2" class="w-5 h-5"></i>
+                <span>Hoàn Thành & Nộp Bài Thi</span>
+              </button>
+              <button type="button" onclick="confirmExitExamRoom()" class="btn-3d btn-3d-slate cursor-pointer w-full py-2.5 rounded-2xl bg-slate-100 hover:bg-rose-50 text-slate-600 hover:text-rose-600 font-bold text-xs">
+                Rời phòng thi (Hủy lượt đang làm)
+              </button>
+            </div>
           </div>
         </div>
 
@@ -2340,10 +2450,10 @@ ANSWER KEYS
     <!-- ===================================================================== -->
     <!-- 6. BÁO CÁO KẾT QUẢ CHI TIẾT (EXAM RESULT & DETAILED REVIEW)           -->
     <!-- ===================================================================== -->
-    <section id="tab-result" class="tab-section hidden space-y-8 print-container">
+    <section id="tab-result" class="tab-section hidden min-w-0 max-w-full overflow-x-hidden space-y-8 print-container">
       
       <!-- Result Summary Hero Card -->
-      <div class="glass-result-hero rounded-3xl border-2 border-pink-200 p-6 sm:p-10 space-y-6">
+      <div class="glass-result-hero min-w-0 max-w-full overflow-hidden rounded-3xl border-2 border-pink-200 p-5 sm:p-10 space-y-6">
         <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
           <div class="space-y-2">
             <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-white text-pink-600 border border-pink-200 text-xs font-bold">
@@ -2543,7 +2653,7 @@ ANSWER KEYS
       </div>
 
       <!-- Detailed Review List (Pastel Green for Correct, Pastel Pink for Incorrect) -->
-      <div class="space-y-4">
+      <div class="space-y-4 min-w-0 max-w-full">
         <div class="flex items-center justify-between flex-wrap gap-2">
           <h3 class="text-xl font-bold text-slate-800 flex items-center gap-2">
             <i data-lucide="list-checks" class="w-6 h-6 text-emerald-500"></i>
@@ -2559,7 +2669,7 @@ ANSWER KEYS
           </div>
         </div>
 
-        <div id="res-detailed-review-list" class="space-y-4">
+        <div id="res-detailed-review-list" class="space-y-4 min-w-0 max-w-full">
           <!-- Populated by JS -->
         </div>
       </div>
@@ -3044,6 +3154,19 @@ ANSWER KEYS
     </div>
   </div>
 
+  <!-- Floating Back to Top Button (Bottom-Left Corner) -->
+  <button
+    id="btn-back-to-top"
+    type="button"
+    onclick="scrollToTopSmooth()"
+    aria-label="Lên đầu trang"
+    title="Cuộn lên đầu trang"
+    class="fixed bottom-3.5 left-3.5 sm:bottom-5 sm:left-5 z-30 hidden no-print btn-3d btn-3d-pink rounded-full px-3.5 py-2.5 bg-white/95 hover:bg-pink-50 text-pink-600 border-2 border-pink-300 shadow-cute items-center gap-1.5 text-xs font-extrabold cursor-pointer transition-all duration-200"
+  >
+    <i data-lucide="arrow-up" class="w-4 h-4 shrink-0"></i>
+    <span>Lên đầu trang</span>
+  </button>
+
   <!-- ===================================================================== -->
   <!-- MODALS (NHẬP THÔNG TIN THÍ SINH, XÁC NHẬN NỘP BÀI, CẢNH BÁO VI PHẠM)  -->
   <!-- ===================================================================== -->
@@ -3072,6 +3195,24 @@ ANSWER KEYS
 
       <div id="modal-preview-badge" class="hidden px-3.5 py-2 rounded-2xl bg-sky-50 border border-sky-200 text-sky-800 text-xs font-bold">
         🧪 Chế độ Thi thử / Kiểm tra đề vừa tạo — Bạn có thể vào làm bài ngay nhiều lần.
+      </div>
+
+      <div id="modal-draft-restore-banner" class="hidden p-3.5 rounded-2xl bg-amber-50 border-2 border-amber-300 text-amber-950 space-y-2.5">
+        <div class="flex items-start gap-2.5">
+          <span class="text-lg leading-none">📝</span>
+          <div class="min-w-0 flex-1">
+            <div class="text-xs font-extrabold text-amber-900">Phát hiện bài đang làm dở chưa nộp!</div>
+            <p id="modal-draft-restore-info" class="text-[11px] font-semibold text-amber-800 mt-0.5"></p>
+          </div>
+        </div>
+        <div class="flex flex-wrap items-center gap-2">
+          <button id="btn-modal-restore-draft" type="button" onclick="restoreDraftFromStartModal()" class="btn-3d btn-3d-emerald cursor-pointer flex-1 py-2 px-3 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-extrabold">
+            🔄 Tiếp tục làm bài dở
+          </button>
+          <button id="btn-modal-discard-draft" type="button" onclick="discardDraftFromStartModal()" class="cursor-pointer py-2 px-3 rounded-xl bg-white hover:bg-rose-50 text-rose-600 border border-rose-200 text-xs font-extrabold">
+            🗑️ Xóa nháp, làm mới
+          </button>
+        </div>
       </div>
 
       <div class="space-y-3.5">
@@ -3252,6 +3393,7 @@ ANSWER KEYS
     const STORAGE_RESULTS_KEY = 'thpt_anninh_results_v1';
     const STORAGE_MY_EXAMS_KEY = 'thpt_anninh_my_exam_ids_v1';
     const STORAGE_ACTIVE_SESSION_KEY = 'thpt_anninh_active_session_v1';
+    const STORAGE_EXAM_DRAFTS_MAP_KEY = 'thpt_anninh_exam_drafts_v1';
     const STORAGE_VAULT_KEY = 'thpt_anninh_wrong_vault_v1';
     const STORAGE_STREAK_KEY = 'thpt_anninh_study_streak_v1';
     const STORAGE_FLASHCARD_KEY = 'thpt_anninh_flashcard_state_v1';
@@ -4122,6 +4264,25 @@ ANSWER KEYS
         else previewBadge.classList.add('hidden');
       }
 
+      const draftBanner = document.getElementById('modal-draft-restore-banner');
+      const draftInfo = document.getElementById('modal-draft-restore-info');
+      const savedDraft = getSavedExamDraft(exam.id);
+      if (draftBanner) {
+        if (savedDraft && Array.isArray(savedDraft.questions) && savedDraft.questions.length > 0) {
+          const doneCnt = savedDraft.questions.filter(q => isQuestionAnswered(q, savedDraft)).length;
+          const totalCnt = savedDraft.questions.length;
+          const remSec = Math.max(1, Number(savedDraft.remainingSeconds) || Math.round(((savedDraft.endAtMs || Date.now()) - Date.now()) / 1000));
+          const remMin = String(Math.floor(remSec / 60)).padStart(2, '0');
+          const remS = String(remSec % 60).padStart(2, '0');
+          if (draftInfo) {
+            draftInfo.textContent = `Đã lưu ${doneCnt}/${totalCnt} câu • Thời gian còn lại: ${remMin}:${remS}`;
+          }
+          draftBanner.classList.remove('hidden');
+        } else {
+          draftBanner.classList.add('hidden');
+        }
+      }
+
       const starName = document.getElementById('modal-req-star-name');
       const starClass = document.getElementById('modal-req-star-class');
       const showReqStar = Boolean(exam.requireInfo) && !pendingStartIsPreview;
@@ -4195,6 +4356,27 @@ ANSWER KEYS
       hideModalElement('modal-start-exam');
       pendingStartExam = null;
       pendingStartIsPreview = false;
+    }
+
+    function restoreDraftFromStartModal() {
+      if (!pendingStartExam) return;
+      const draft = getSavedExamDraft(pendingStartExam.id);
+      if (!draft) {
+        const banner = document.getElementById('modal-draft-restore-banner');
+        if (banner) banner.classList.add('hidden');
+        showCuteToast('⚠️ Không tìm thấy bản nháp đã lưu cho đề này!', '⚠️', 'warning');
+        return;
+      }
+      closeStartExamModal();
+      activateRestoredExamDraft(draft);
+    }
+
+    function discardDraftFromStartModal() {
+      if (!pendingStartExam) return;
+      clearActiveExamDraft(pendingStartExam.id);
+      const banner = document.getElementById('modal-draft-restore-banner');
+      if (banner) banner.classList.add('hidden');
+      showCuteToast('🗑️ Đã xóa bản nháp bài làm cũ, bạn có thể bắt đầu làm mới.', '✨', 'info');
     }
 
     function enterExamAsCreatorPreview() {
@@ -4291,9 +4473,60 @@ ANSWER KEYS
       launchActiveExam(examToLaunch, finalName, finalClass, chosenSubCode, isPreviewLaunch);
     }
 
+    function getExamDraftsMap() {
+      const raw = safeGetLocalStorage(STORAGE_EXAM_DRAFTS_MAP_KEY);
+      if (!raw) return {};
+      try {
+        const parsed = JSON.parse(raw);
+        return (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) ? parsed : {};
+      } catch (e) {
+        return {};
+      }
+    }
+
+    function getSavedExamDraft(examId) {
+      const key = String(examId || '').trim();
+      if (!key) return null;
+      const map = getExamDraftsMap();
+      const fromMap = map[key];
+      if (fromMap && fromMap.exam && Array.isArray(fromMap.questions) && fromMap.questions.length > 0) {
+        return fromMap;
+      }
+      const rawActive = safeGetLocalStorage(STORAGE_ACTIVE_SESSION_KEY);
+      if (rawActive) {
+        try {
+          const parsed = JSON.parse(rawActive);
+          if (parsed && String(parsed.exam?.id || '') === key && Array.isArray(parsed.questions) && parsed.questions.length > 0) {
+            return parsed;
+          }
+        } catch (e) {}
+      }
+      return null;
+    }
+
     function saveActiveExamDraft() {
-      if (!activeExamSession) return;
-      safeSetLocalStorage(STORAGE_ACTIVE_SESSION_KEY, JSON.stringify(activeExamSession));
+      if (!activeExamSession || !activeExamSession.exam) return;
+      if (activeExamSession.endAtMs) {
+        activeExamSession.remainingSeconds = Math.max(0, Math.round((activeExamSession.endAtMs - Date.now()) / 1000));
+      }
+      activeExamSession.savedAtMs = Date.now();
+      const serialized = JSON.stringify(activeExamSession);
+      safeSetLocalStorage(STORAGE_ACTIVE_SESSION_KEY, serialized);
+
+      const examKey = String(activeExamSession.exam.id || '').trim();
+      if (examKey) {
+        const draftsMap = getExamDraftsMap();
+        draftsMap[examKey] = activeExamSession;
+        if (!safeSetLocalStorage(STORAGE_EXAM_DRAFTS_MAP_KEY, JSON.stringify(draftsMap))) {
+          // Quota fallback: keep only the latest exam draft in map
+          safeSetLocalStorage(STORAGE_EXAM_DRAFTS_MAP_KEY, JSON.stringify({ [examKey]: activeExamSession }));
+        }
+      }
+
+      const savedBadge = document.getElementById('exam-draft-saved-badge');
+      if (savedBadge) {
+        savedBadge.textContent = '💾 Đã lưu nháp';
+      }
     }
 
     function debouncedSaveActiveExamDraft() {
@@ -4312,14 +4545,28 @@ ANSWER KEYS
       saveActiveExamDraft();
     }
 
-    function clearActiveExamDraft() {
+    function clearActiveExamDraft(examId = null) {
       if (draftSaveTimeout) {
         clearTimeout(draftSaveTimeout);
         draftSaveTimeout = null;
       }
+      const targetId = String(examId || activeExamSession?.exam?.id || '').trim();
       try {
         localStorage.removeItem(STORAGE_ACTIVE_SESSION_KEY);
       } catch (e) {}
+      if (targetId) {
+        try {
+          const draftsMap = getExamDraftsMap();
+          if (Object.prototype.hasOwnProperty.call(draftsMap, targetId)) {
+            delete draftsMap[targetId];
+            if (Object.keys(draftsMap).length > 0) {
+              safeSetLocalStorage(STORAGE_EXAM_DRAFTS_MAP_KEY, JSON.stringify(draftsMap));
+            } else {
+              localStorage.removeItem(STORAGE_EXAM_DRAFTS_MAP_KEY);
+            }
+          }
+        } catch (e) {}
+      }
     }
 
     function updateExamRoomTopbarUI(session) {
@@ -4345,6 +4592,7 @@ ANSWER KEYS
     function startExamCountdownTimer() {
       if (examTimerInterval) clearInterval(examTimerInterval);
       updateTimerUI();
+      let tickCounter = 0;
       examTimerInterval = setInterval(() => {
         if (!activeExamSession) {
           clearInterval(examTimerInterval);
@@ -4352,6 +4600,10 @@ ANSWER KEYS
         }
         activeExamSession.remainingSeconds = Math.max(0, Math.round((activeExamSession.endAtMs - Date.now()) / 1000));
         updateTimerUI();
+        tickCounter++;
+        if (activeExamSession.remainingSeconds > 0 && tickCounter % 2 === 0) {
+          saveActiveExamDraft();
+        }
         if (activeExamSession.remainingSeconds <= 0) {
           clearInterval(examTimerInterval);
           showCuteToast('⏰ Đã hết thời gian làm bài! Hệ thống tự động thu bài.', '🔔');
@@ -4360,35 +4612,44 @@ ANSWER KEYS
       }, 1000);
     }
 
+    function activateRestoredExamDraft(draft) {
+      if (!draft || !draft.exam || !Array.isArray(draft.questions) || draft.questions.length === 0) {
+        return false;
+      }
+      const rem = Math.max(1, Number(draft.remainingSeconds) > 0
+        ? Number(draft.remainingSeconds)
+        : Math.round(((draft.endAtMs || Date.now()) - Date.now()) / 1000));
+      const nowMs = Date.now();
+      activeExamSession = {
+        ...draft,
+        answers: draft.answers || {},
+        flagged: draft.flagged || {},
+        revealedPractice: draft.revealedPractice || {},
+        violations: draft.violations || 0,
+        remainingSeconds: rem,
+        endAtMs: nowMs + rem * 1000,
+        startedAtMs: draft.startedAtMs || (nowMs - Math.max(0, ((draft.totalSeconds || rem) - rem)) * 1000)
+      };
+      updateExamRoomTopbarUI(activeExamSession);
+      renderExamRoomQuestions();
+      updateExamPaletteAndProgress();
+      saveActiveExamDraft();
+      switchTab('exam');
+      startExamCountdownTimer();
+      showCuteToast('🔄 Đã khôi phục bài thi đang làm dở của bạn!', '✨');
+      return true;
+    }
+
     function restoreActiveExamDraftIfAny() {
       const raw = safeGetLocalStorage(STORAGE_ACTIVE_SESSION_KEY);
       if (!raw) return false;
       try {
         const draft = JSON.parse(raw);
         if (!draft || !draft.exam || !Array.isArray(draft.questions) || draft.questions.length === 0 || !draft.endAtMs) {
-          clearActiveExamDraft();
+          clearActiveExamDraft(draft?.exam?.id);
           return false;
         }
-        const rem = Math.max(0, Math.round((draft.endAtMs - Date.now()) / 1000));
-        activeExamSession = {
-          ...draft,
-          answers: draft.answers || {},
-          flagged: draft.flagged || {},
-          revealedPractice: draft.revealedPractice || {},
-          violations: draft.violations || 0,
-          remainingSeconds: rem
-        };
-        if (rem <= 0) {
-          submitActiveExam(true);
-          return true;
-        }
-        updateExamRoomTopbarUI(activeExamSession);
-        renderExamRoomQuestions();
-        updateExamPaletteAndProgress();
-        switchTab('exam');
-        startExamCountdownTimer();
-        showCuteToast('🔄 Đã khôi phục bài thi đang làm dở của bạn!', '✨');
-        return true;
+        return activateRestoredExamDraft(draft);
       } catch (e) {
         clearActiveExamDraft();
         return false;
@@ -4771,10 +5032,11 @@ ANSWER KEYS
       refreshIconsAndMath(container);
     }
 
-    function isQuestionAnswered(q) {
-      if (!activeExamSession) return false;
+    function isQuestionAnswered(q, sessionOverride = null) {
+      const sess = sessionOverride || activeExamSession;
+      if (!sess) return false;
       const qPart = Number(q.part) || 1;
-      const ans = activeExamSession.answers[q.id];
+      const ans = (sess.answers || {})[q.id];
       if (qPart === 1) return !!ans;
       if (qPart === 2) {
         const stLen = (q.statements || []).length;
@@ -4814,7 +5076,7 @@ ANSWER KEYS
       if (wasAnswered === null || wasAnswered !== isNowAnswered) {
         updateExamPaletteAndProgress();
       }
-      debouncedSaveActiveExamDraft();
+      saveActiveExamDraft();
     }
 
     function toggleFlagQuestion(qId) {
@@ -4830,6 +5092,24 @@ ANSWER KEYS
       activeExamSession.revealedPractice[qId] = !activeExamSession.revealedPractice[qId];
       refreshSingleQuestionCard(qId);
       saveActiveExamDraft();
+    }
+
+    let mobilePaletteCollapsed = false;
+
+    function toggleMobileQuestionPalette(forceCollapsed = null) {
+      const body = document.getElementById('exam-palette-collapsible-body');
+      const toggleBtn = document.getElementById('btn-palette-collapse-toggle');
+      const labelEl = document.getElementById('palette-collapse-label');
+      if (!body) return;
+      mobilePaletteCollapsed = typeof forceCollapsed === 'boolean' ? forceCollapsed : !mobilePaletteCollapsed;
+      body.classList.toggle('hidden', mobilePaletteCollapsed);
+      body.classList.toggle('lg:block', mobilePaletteCollapsed);
+      if (labelEl) {
+        labelEl.textContent = mobilePaletteCollapsed ? 'Mở bảng câu' : 'Thu gọn';
+      }
+      if (toggleBtn) {
+        toggleBtn.setAttribute('aria-expanded', mobilePaletteCollapsed ? 'false' : 'true');
+      }
     }
 
     function updateExamPaletteAndProgress() {
@@ -4854,13 +5134,19 @@ ANSWER KEYS
         } else if (done) {
           btnStyle = 'bg-emerald-400 border-2 border-emerald-500 text-white font-extrabold';
         }
+        const safeQIdAttr = escapeHTML(String(q.id));
+        const doneDot = (flagged && done)
+          ? '<span class="w-2 h-2 rounded-full bg-emerald-600 absolute top-1 right-1" aria-hidden="true"></span>'
+          : '';
         return `
           <button
+            id="palette-btn-${safeQIdAttr}"
+            data-qnum="${q.displayNumber}"
             type="button"
-            onclick="scrollToExamQuestion('${escapeHTML(String(q.id))}')"
-            class="palette-num-btn cursor-pointer h-10 rounded-2xl text-xs font-bold ${btnStyle}"
+            onclick="scrollToExamQuestion('${safeQIdAttr}')"
+            class="palette-num-btn relative cursor-pointer h-10 rounded-2xl text-xs font-bold ${btnStyle}"
           >
-            ${q.displayNumber}
+            <span>${q.displayNumber}</span>${doneDot}
           </button>
         `;
       }).join('');
@@ -4883,7 +5169,7 @@ ANSWER KEYS
         return;
       }
       if (examTimerInterval) clearInterval(examTimerInterval);
-      clearActiveExamDraft();
+      clearActiveExamDraft(activeExamSession?.exam?.id);
       activeExamSession = null;
       switchTab('home');
       showCuteToast('Đã rời khỏi phòng thi.', '🌸');
@@ -5002,7 +5288,7 @@ ANSWER KEYS
       if (examTimerInterval) clearInterval(examTimerInterval);
 
       const session = activeExamSession;
-      clearActiveExamDraft();
+      clearActiveExamDraft(session.exam?.id);
 
       const elapsedFromClock = session.startedAtMs
         ? Math.round((Date.now() - session.startedAtMs) / 1000)
@@ -5313,7 +5599,7 @@ ANSWER KEYS
                   st.isOk ? 'bg-emerald-100/90 border-emerald-300 text-emerald-950' : 'bg-rose-100/90 border-rose-300 text-rose-950'
                 }">
                   <span class="font-bold min-w-0 break-words"><strong>${escapeHTML(st.label)})</strong> ${formatSafeExamHTML(st.text)}</span>
-                  <div class="flex items-center gap-2 shrink-0 text-xs font-bold">
+                  <div class="flex flex-wrap items-center gap-2 shrink-0 text-xs font-bold">
                     <span class="px-2.5 py-0.5 rounded-lg bg-white/90 border">Bạn chọn: ${st.userVal === true ? 'Đúng' : (st.userVal === false ? 'Sai' : 'Bỏ trống')}</span>
                     <span class="px-2.5 py-0.5 rounded-lg bg-emerald-600 text-white">Chuẩn: ${st.correctVal ? 'Đúng' : 'Sai'}</span>
                   </div>
@@ -5335,14 +5621,14 @@ ANSWER KEYS
         }
 
         return `
-          <div class="rounded-3xl p-6 shadow-sm space-y-2.5 ${cardStyle}">
+          <div class="rounded-3xl p-4 sm:p-6 shadow-sm space-y-2.5 min-w-0 max-w-full overflow-hidden ${cardStyle}">
             <div class="flex items-center justify-between gap-2 flex-wrap">
               <span class="px-3.5 py-1 rounded-full bg-white text-slate-800 border border-slate-200 text-xs sm:text-sm font-bold">
                 Câu ${item.displayNumber} (Phần ${itemPart})
               </span>
               ${statusBadge}
             </div>
-            <div class="text-base font-bold text-slate-800 leading-relaxed pt-1 whitespace-pre-line break-words">
+            <div class="text-base font-bold text-slate-800 leading-relaxed pt-1 whitespace-pre-line break-words min-w-0 max-w-full overflow-x-auto">
               ${formatSafeExamHTML(item.text)}
             </div>
             ${imgHTML}
@@ -5427,14 +5713,19 @@ ANSWER KEYS
       hideStartModalError,
       openStartExamModal,
       closeStartExamModal,
+      restoreDraftFromStartModal,
+      discardDraftFromStartModal,
       enterExamAsCreatorPreview,
       confirmEnterExamRoom,
+      getExamDraftsMap,
+      getSavedExamDraft,
       saveActiveExamDraft,
       debouncedSaveActiveExamDraft,
       flushActiveExamDraft,
       clearActiveExamDraft,
       updateExamRoomTopbarUI,
       startExamCountdownTimer,
+      activateRestoredExamDraft,
       restoreActiveExamDraftIfAny,
       shuffleArray,
       launchActiveExam,
@@ -5448,6 +5739,7 @@ ANSWER KEYS
       inputShortAnswer,
       toggleFlagQuestion,
       togglePracticeAnswer,
+      toggleMobileQuestionPalette,
       updateExamPaletteAndProgress,
       scrollToExamQuestion,
       confirmExitExamRoom,
@@ -7000,7 +7292,7 @@ ANSWER KEYS
       markExamAsCreatedLocally(newExam.id);
       const savedOk = persistExamsToLocal();
 
-      // Clear archive filters so the newly saved exam is always immediately visible
+      // Clear archive and home filters so the newly saved exam is always immediately visible
       const fSearch = document.getElementById('filter-search');
       const fGrade = document.getElementById('filter-grade');
       const fSubject = document.getElementById('filter-subject');
@@ -7009,6 +7301,9 @@ ANSWER KEYS
       if (fGrade) fGrade.value = 'ALL';
       if (fSubject) fSubject.value = 'ALL';
       if (fMode) fMode.value = 'ALL';
+      homeSelectedGrade = 'ALL';
+      const hSearch = document.getElementById('home-exam-search');
+      if (hSearch) hSearch.value = '';
 
       renderHomeStatsAndExams();
       renderArchiveAndLeaderboard();
@@ -7638,6 +7933,11 @@ ANSWER KEYS
       openStartExamModal(targetId, isCreator);
     }
 
+    function triggerImportBackupJSON() {
+      const inp = document.getElementById('import-json-input');
+      if (inp) inp.click();
+    }
+
     function importBackupJSON(event) {
       const file = event.target && event.target.files && event.target.files[0];
       if (!file) return;
@@ -7650,11 +7950,15 @@ ANSWER KEYS
 
           if (Array.isArray(parsed)) {
             incomingExams = parsed;
-          } else if (parsed && Array.isArray(parsed.exams)) {
-            incomingExams = parsed.exams;
-            if (Array.isArray(parsed.results)) incomingResults = parsed.results;
-          } else if (parsed && parsed.id && Array.isArray(parsed.questions)) {
-            incomingExams = [parsed];
+          } else if (parsed && typeof parsed === 'object') {
+            if (Array.isArray(parsed.exams)) {
+              incomingExams = parsed.exams;
+            } else if (parsed.id && Array.isArray(parsed.questions)) {
+              incomingExams = [parsed];
+            }
+            if (Array.isArray(parsed.results)) {
+              incomingResults = parsed.results;
+            }
           }
 
           incomingExams = incomingExams
@@ -7675,7 +7979,7 @@ ANSWER KEYS
           );
 
           if (incomingExams.length === 0 && incomingResults.length === 0 && !hasEdTechBackup) {
-            showCuteToast('⚠️ File JSON không chứa dữ liệu đề thi hợp lệ (thuộc 3 phần trắc nghiệm)!', '❌', 'error');
+            showCuteToast('⚠️ File JSON không chứa dữ liệu học tập hoặc đề thi hợp lệ!', '❌', 'error');
             return;
           }
 
@@ -7689,15 +7993,29 @@ ANSWER KEYS
             mergeResultsById(incomingResults);
           }
 
+          let importedVaultCount = 0;
+          let importedStreak = false;
           if (parsed && !Array.isArray(parsed)) {
             if (Array.isArray(parsed.wrongVault)) {
-              const existingSigs = new Set(wrongVaultList.map(v => v.signature || buildVaultQuestionSignature(v.questionObj)));
+              const existingBySig = new Map(
+                wrongVaultList.map(v => [v.signature || buildVaultQuestionSignature(v.questionObj), v])
+              );
               parsed.wrongVault.forEach(item => {
                 if (item && item.questionObj && !String(item.id || '').startsWith('vault_seed_')) {
                   const sig = item.signature || buildVaultQuestionSignature(item.questionObj);
-                  if (!existingSigs.has(sig)) {
-                    existingSigs.add(sig);
-                    wrongVaultList.push({ ...item, signature: sig });
+                  const existing = existingBySig.get(sig);
+                  if (!existing) {
+                    const entry = { ...item, signature: sig };
+                    existingBySig.set(sig, entry);
+                    wrongVaultList.push(entry);
+                    importedVaultCount++;
+                  } else {
+                    existing.wrongCount = Math.max(Number(existing.wrongCount) || 1, Number(item.wrongCount) || 1);
+                    existing.intervalDays = Math.max(Number(existing.intervalDays) || 1, Number(item.intervalDays) || 1);
+                    if (Number(item.nextReviewAt) > Number(existing.nextReviewAt || 0)) {
+                      existing.nextReviewAt = item.nextReviewAt;
+                    }
+                    importedVaultCount++;
                   }
                 }
               });
@@ -7721,6 +8039,7 @@ ANSWER KEYS
                 userCheckedIn: Boolean(studyStreakState.userCheckedIn || parsed.studyStreak.userCheckedIn)
               };
               safeSetLocalStorage(STORAGE_STREAK_KEY, JSON.stringify(studyStreakState));
+              importedStreak = true;
             }
             if (Number.isFinite(Number(parsed.speedrunHighScore))) {
               const incHigh = Math.max(0, parseInt(parsed.speedrunHighScore, 10) || 0);
@@ -7737,7 +8056,16 @@ ANSWER KEYS
           if (typeof renderStudyStreakUI === 'function') renderStudyStreakUI();
           if (typeof updateEdTechSummaryBadges === 'function') updateEdTechSummaryBadges();
 
-          showCuteToast(`🎉 Đã nhập thành công ${incomingExams.length} đề thi${incomingResults.length ? ` & ${incomingResults.length} kết quả` : ''}!`, '💖', 'success');
+          const summaryParts = [];
+          if (incomingExams.length) summaryParts.push(`${incomingExams.length} đề thi`);
+          if (incomingResults.length) summaryParts.push(`${incomingResults.length} lịch sử thi`);
+          if (importedVaultCount) summaryParts.push(`${importedVaultCount} câu hay sai`);
+          if (importedStreak) summaryParts.push(`Study Streak ${studyStreakState.count} ngày`);
+          showCuteToast(
+            `🎉 Đã khôi phục dữ liệu (${summaryParts.join(', ') || 'thành công'})!`,
+            '💖',
+            'success'
+          );
         } catch (err) {
           showCuteToast('❌ Không đọc được file JSON: ' + (err.message || 'Sai định dạng'), '❌', 'error');
         } finally {
@@ -7827,6 +8155,7 @@ ANSWER KEYS
       downloadShareQR,
       exportSingleExamPackageJSON,
       startExamFromShareModal,
+      triggerImportBackupJSON,
       importBackupJSON,
       exportAllBackupJSON
     });
@@ -9344,7 +9673,7 @@ ANSWER KEYS
       if (mCount) mCount.textContent = streakCount;
       if (statusEl) {
         statusEl.textContent = checkedToday ? 'Đã điểm danh hôm nay ✓' : 'Chưa điểm danh hôm nay';
-        statusEl.className = checkedToday ? 'text-emerald-600 font-extrabold' : 'text-orange-600 font-extrabold';
+        statusEl.className = checkedToday ? 'text-[11px] text-emerald-600 font-bold truncate' : 'text-[11px] text-slate-500 font-semibold truncate';
       }
 
       if (dotsEl) {
@@ -9714,6 +10043,29 @@ ANSWER KEYS
     // ---------------------------------------------------------------------
     // 6. HOME DASHBOARD & ARCHIVE RENDERING
     // ---------------------------------------------------------------------
+    let homeSelectedGrade = 'ALL';
+
+    function normalizeHomeSearchText(str) {
+      return String(str || '')
+        .toLowerCase()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .replace(/đ/g, 'd')
+        .trim();
+    }
+
+    function setHomeGradeFilter(grade) {
+      homeSelectedGrade = String(grade || 'ALL');
+      renderHomeStatsAndExams();
+    }
+
+    function resetHomeExamFilters() {
+      homeSelectedGrade = 'ALL';
+      const searchEl = document.getElementById('home-exam-search');
+      if (searchEl) searchEl.value = '';
+      renderHomeStatsAndExams();
+    }
+
     function renderHomeStatsAndExams() {
       const totalExams = examsList.length;
       const totalQuestions = examsList.reduce((acc, ex) => acc + (ex.questions ? ex.questions.length : 0), 0);
@@ -9731,6 +10083,46 @@ ANSWER KEYS
 
       updateEdTechSummaryBadges();
       renderStudyStreakUI();
+
+      // Sync quick grade filter buttons & search clear button
+      const gradeKeys = ['ALL', '10', '11', '12'];
+      gradeKeys.forEach(g => {
+        const btn = document.getElementById('home-grade-btn-' + g);
+        if (!btn) return;
+        const isActive = homeSelectedGrade === g;
+        btn.className = isActive
+          ? 'home-grade-filter-btn btn-3d btn-3d-pink px-3.5 py-2 rounded-xl bg-pink-500 text-white border border-pink-500 text-xs font-extrabold cursor-pointer transition-all'
+          : 'home-grade-filter-btn px-3.5 py-2 rounded-xl bg-white hover:bg-pink-50 text-slate-700 border border-pink-200 text-xs font-extrabold cursor-pointer transition-all';
+        btn.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+      });
+
+      const searchEl = document.getElementById('home-exam-search');
+      const rawQuery = (searchEl?.value || '').trim().toLowerCase();
+      const normQuery = normalizeHomeSearchText(rawQuery);
+      const clearBtn = document.getElementById('home-exam-search-clear');
+      const hasSearchOrGrade = Boolean(rawQuery) || homeSelectedGrade !== 'ALL';
+      if (clearBtn) {
+        clearBtn.classList.toggle('hidden', !hasSearchOrGrade);
+        clearBtn.classList.toggle('flex', hasSearchOrGrade);
+      }
+
+      const filteredHome = examsList.filter(ex => {
+        if (!ex) return false;
+        if (homeSelectedGrade !== 'ALL' && String(ex.grade || '') !== homeSelectedGrade) {
+          return false;
+        }
+        if (rawQuery) {
+          const titleRaw = String(ex.title || '').toLowerCase();
+          const subjRaw = String(ex.subject || '').toLowerCase();
+          const titleNorm = normalizeHomeSearchText(ex.title);
+          const subjNorm = normalizeHomeSearchText(ex.subject);
+          if (!titleRaw.includes(rawQuery) && !subjRaw.includes(rawQuery) &&
+              !titleNorm.includes(normQuery) && !subjNorm.includes(normQuery)) {
+            return false;
+          }
+        }
+        return true;
+      });
 
       const homeGrid = document.getElementById('home-exams-grid');
       if (!homeGrid) return;
@@ -9750,10 +10142,41 @@ ANSWER KEYS
             </div>
           </div>
         `;
+      } else if (filteredHome.length === 0) {
+        homeGrid.innerHTML = `
+          <div class="col-span-full p-8 sm:p-10 rounded-3xl bg-white border-2 border-dashed border-pink-200 text-center space-y-3">
+            <div class="text-4xl">🔍</div>
+            <div class="text-base sm:text-lg font-extrabold text-slate-800">Không tìm thấy đề thi phù hợp</div>
+            <p class="text-xs sm:text-sm text-slate-500 max-w-md mx-auto">Không có đề thi nào khớp với từ khóa hoặc khối lớp bạn đang chọn (${homeSelectedGrade === 'ALL' ? 'Tất cả khối' : 'Khối ' + homeSelectedGrade}).</p>
+            <button id="btn-reset-home-filters" type="button" onclick="resetHomeExamFilters()" class="btn-3d btn-3d-pink px-4 py-2.5 rounded-2xl bg-pink-500 hover:bg-pink-600 text-white text-xs sm:text-sm font-extrabold cursor-pointer inline-flex items-center gap-1.5">
+              🔄 Xóa bộ lọc tìm kiếm
+            </button>
+          </div>
+        `;
       } else {
-        homeGrid.innerHTML = examsList.slice(0, 6).map(ex => buildExamCardHTML(ex, false)).join('');
+        homeGrid.innerHTML = filteredHome.slice(0, 6).map(ex => buildExamCardHTML(ex, false)).join('');
       }
       refreshIconsAndMath(homeGrid);
+    }
+
+    // ---------------------------------------------------------------------
+    // 14B. BACK TO TOP BUTTON HANDLER
+    // ---------------------------------------------------------------------
+    function updateBackToTopButton() {
+      const btn = document.getElementById('btn-back-to-top');
+      if (!btn) return;
+      const scrollTop = window.scrollY || window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
+      const show = scrollTop > 200;
+      btn.classList.toggle('hidden', !show);
+      btn.classList.toggle('inline-flex', show);
+    }
+
+    function scrollToTopSmooth() {
+      try {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } catch (e) {
+        window.scrollTo(0, 0);
+      }
     }
 
     // ---------------------------------------------------------------------
@@ -9775,6 +10198,8 @@ ANSWER KEYS
         closeSubmitConfirmModal();
       }
     });
+
+    window.addEventListener('scroll', updateBackToTopButton, { passive: true });
 
     window.addEventListener('beforeunload', () => {
       if (typeof flushActiveExamDraft === 'function') {
@@ -9801,6 +10226,7 @@ ANSWER KEYS
         } catch (e) {}
 
         try { renderHomeStatsAndExams(); } catch (e) {}
+        try { updateBackToTopButton(); } catch (e) {}
 
         try {
           const hasIncomingUrl = Boolean(new URLSearchParams(window.location.search).get('exam')) || (window.location.hash || '').startsWith('#de=');
@@ -9835,7 +10261,11 @@ ANSWER KEYS
       selectNavMenuItem,
       switchTab,
       scrollToQuickExams,
+      setHomeGradeFilter,
+      resetHomeExamFilters,
       renderHomeStatsAndExams,
+      updateBackToTopButton,
+      scrollToTopSmooth,
       bootstrapApp
     });
   </script>
