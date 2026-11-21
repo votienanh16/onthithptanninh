@@ -3,7 +3,7 @@
 // - Automatic purge of old CACHE_VERSION buckets during activate + clients.claim().
 // - Cache-First for external CDN libraries (KaTeX, Mammoth, SheetJS, PDF.js, Chart.js, DOMPurify, Tailwind, Lucide, Fonts).
 
-const CACHE_VERSION = 'v2026-11-21-3';
+const CACHE_VERSION = 'v2026-11-21-4';
 const APP_CACHE = `anninh-edutech-app-${CACHE_VERSION}`;
 const CDN_CACHE = `anninh-edutech-cdn-${CACHE_VERSION}`;
 const KEEP_CACHES = new Set([APP_CACHE, CDN_CACHE]);
@@ -13,10 +13,10 @@ const APP_SHELL_URLS = [
   '/index.html',
   '/manifest.json',
   '/logo.png',
-  '/icons/icon.svg',
-  '/icons/icon-192.png',
-  '/icons/icon-512.png',
-  '/icons/apple-touch-icon.png'
+  '/icon.svg',
+  '/icon-192.png',
+  '/icon-512.png',
+  '/apple-touch-icon.png'
 ];
 
 const CDN_PRECACHE_URLS = [
@@ -100,13 +100,25 @@ async function precacheCssFonts(cdnCache, baseUrl, cssText) {
   );
 }
 
+function isValidAppAssetResponse(pathname, res) {
+  if (!res || !res.ok) return false;
+  const ct = (res.headers.get('content-type') || '').toLowerCase();
+  if (/\.(?:png|jpe?g|svg|webp|ico)$/i.test(pathname) && ct.includes('text/html')) {
+    return false;
+  }
+  if (/manifest\.json$/i.test(pathname) && ct.includes('text/html')) {
+    return false;
+  }
+  return true;
+}
+
 self.addEventListener('install', (event) => {
   event.waitUntil((async () => {
     const appCache = await caches.open(APP_CACHE);
     await Promise.allSettled(
       APP_SHELL_URLS.map(async (assetUrl) => {
         const res = await fetch(assetUrl, { cache: 'no-cache' });
-        if (res && res.ok) {
+        if (isValidAppAssetResponse(assetUrl, res)) {
           await appCache.put(assetUrl, res);
         }
       })
@@ -180,7 +192,7 @@ async function networkFirstApp(request) {
       ? fetch(bypassUrl, { cache: 'no-cache' })
       : fetch(request);
     const networkRes = await fetchTarget;
-    if (networkRes && networkRes.ok) {
+    if (isValidAppAssetResponse(urlObj.pathname, networkRes)) {
       await appCache.put(request, networkRes.clone());
       if (request.mode === 'navigate' && (urlObj.pathname === '/' || urlObj.pathname === '/index.html')) {
         await appCache.put('/', networkRes.clone());
