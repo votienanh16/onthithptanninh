@@ -1,0 +1,27 @@
+{
+  "id": "/",
+  "name": "An Ninh EduTech - Ôn Thi THPT",
+  "short_name": "EduTech",
+  "description": "Hệ thống Ôn luyện & Khảo sát Trực tuyến chuẩn 3 phần Bộ GD&ĐT - THPT An Ninh (Tây Ninh). Hỗ trợ ôn thi Offline 100%.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "any",
+  "lang": "vi",
+  "background_color": "#FFFDF9",
+  "theme_color": "#FFF0F5",
+  "icons": [
+    {
+      "src": "/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

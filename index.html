@@ -5,22 +5,30 @@
   <meta http-equiv="Content-Language" content="vi" />
   <meta name="google" content="notranslate" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="referrer" content="no-referrer" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: blob:; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.tailwindcss.com https://cdn.jsdelivr.net https://unpkg.com https://cdnjs.cloudflare.com https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net; font-src 'self' data: https://fonts.gstatic.com https://cdn.jsdelivr.net; img-src 'self' data: blob: https:; worker-src 'self' blob: https://cdnjs.cloudflare.com; connect-src 'self' data: blob: https://cdn.tailwindcss.com https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://unpkg.com https://fonts.googleapis.com https://fonts.gstatic.com https://cloudflareinsights.com https://static.cloudflareinsights.com; manifest-src 'self'; object-src 'none'; base-uri 'self';" />
+  <meta name="theme-color" content="#FFF0F5" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="EduTech" />
+  <link rel="manifest" href="/manifest.json" />
   <title>AN NINH EDUTECH - Hệ thống Ôn luyện &amp; Khảo sát Trực tuyến THPT An Ninh</title>
   <meta name="description" content="AN NINH EDUTECH - Hệ thống Ôn luyện &amp; Khảo sát Trực tuyến THPT An Ninh (Tây Ninh). Chuẩn cấu trúc 3 phần Bộ GD&amp;ĐT, hỗ trợ công thức Toán Lý Hóa KaTeX và chấm điểm tự động 100%." />
   <link rel="canonical" href="https://onthithptanninh.pages.dev/" />
   <meta property="og:title" content="AN NINH EDUTECH - Hệ thống Ôn luyện &amp; Khảo sát Trực tuyến THPT An Ninh" />
   <meta property="og:description" content="AN NINH EDUTECH - Hệ thống Ôn luyện &amp; Khảo sát Trực tuyến THPT An Ninh (Tây Ninh). Chuẩn cấu trúc 3 phần (Trắc nghiệm 4 lựa chọn, Đúng/Sai, Trả lời ngắn) - Hỗ trợ KaTeX &amp; chấm điểm tự động 100%." />
-  <meta property="og:image" content="logo.png" />
+  <meta property="og:image" content="https://onthithptanninh.pages.dev/logo.png" />
   <meta property="og:image:alt" content="AN NINH EDUTECH - Hệ thống Ôn luyện &amp; Khảo sát Trực tuyến THPT An Ninh" />
   <meta property="og:url" content="https://onthithptanninh.pages.dev/" />
   <meta property="og:type" content="website" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="AN NINH EDUTECH - Hệ thống Ôn luyện &amp; Khảo sát Trực tuyến THPT An Ninh" />
   <meta name="twitter:description" content="AN NINH EDUTECH - Hệ thống Ôn luyện &amp; Khảo sát Trực tuyến THPT An Ninh (Tây Ninh)." />
-  <meta name="twitter:image" content="logo.png" />
+  <meta name="twitter:image" content="https://onthithptanninh.pages.dev/logo.png" />
   <link rel="icon" type="image/png" href="logo.png" />
   <link rel="shortcut icon" type="image/png" href="logo.png" />
-  <link rel="apple-touch-icon" href="logo.png" />
+  <link rel="apple-touch-icon" href="/icons/icon-192.png" />
 
   <!-- Google Fonts: Quicksand (Cute, rounded, friendly) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -145,6 +153,30 @@ body {
   .hidden.lg\:inline-flex { display: inline-flex !important; visibility: visible !important; pointer-events: auto !important; }
   .hidden.lg\:flex { display: flex !important; visibility: visible !important; pointer-events: auto !important; }
   .hidden.lg\:block { display: block !important; visibility: visible !important; pointer-events: auto !important; }
+}
+
+/* Multi-layer Anti-Cheat Watermark & Content Copy Guard */
+.exam-protected-content {
+  user-select: none;
+  -webkit-user-select: none;
+}
+.exam-protected-content input,
+.exam-protected-content textarea,
+.exam-protected-content [contenteditable="true"] {
+  user-select: text;
+  -webkit-user-select: text;
+}
+#exam-watermark-layer {
+  opacity: 0.16;
+  z-index: 30;
+  pointer-events: none;
+  background-image: repeating-linear-gradient(
+    -24deg,
+    transparent,
+    transparent 88px,
+    rgba(236, 72, 153, 0.08) 88px,
+    rgba(236, 72, 153, 0.08) 90px
+  );
 }
 
 #cute-toast {
@@ -1049,6 +1081,13 @@ details[open] > *:not(summary) {
                   </span>
                   <span class="flex-1 truncate">Đội ngũ sáng tạo</span>
                 </button>
+
+                <button type="button" role="menuitem" id="menu-item-legal" onclick="openLegalPrivacyModal('privacy'); closeNavMenuDropdown();" class="w-full text-left px-3 py-2.5 rounded-2xl text-xs sm:text-sm font-bold flex items-center gap-2.5 cursor-pointer transition-all text-slate-700 hover:bg-sky-50/80 hover:text-sky-800 border border-transparent">
+                  <span class="w-8 h-8 rounded-xl bg-sky-100 text-sky-600 flex items-center justify-center shrink-0">
+                    <i data-lucide="shield-check" class="w-4 h-4"></i>
+                  </span>
+                  <span class="flex-1 truncate">Bảo mật &amp; Bản quyền</span>
+                </button>
               </div>
 
               <div class="mt-2 pt-2 border-t border-pink-100 space-y-1.5">
@@ -1074,6 +1113,15 @@ details[open] > *:not(summary) {
                   >
                     <i data-lucide="upload" class="w-3.5 h-3.5 text-purple-600 shrink-0"></i>
                     <span class="truncate">Nhập dữ liệu (.json)</span>
+                  </button>
+                  <button
+                    id="btn-menu-pwa-install"
+                    type="button"
+                    onclick="triggerPwaInstall(); closeNavMenuDropdown();"
+                    class="hidden w-full text-left px-3 py-2 rounded-2xl text-xs font-extrabold items-center gap-2 cursor-pointer transition-all bg-sky-50 hover:bg-sky-100 text-sky-800 border border-sky-200"
+                  >
+                    <i data-lucide="smartphone" class="w-3.5 h-3.5 text-sky-600 shrink-0"></i>
+                    <span class="truncate">Cài đặt App (Offline)</span>
                   </button>
                 </div>
               </div>
@@ -1110,6 +1158,12 @@ details[open] > *:not(summary) {
             <i data-lucide="globe" class="w-3 h-3"></i> onthithptanninh.pages.dev • Không giới hạn
           </a>
 
+          <button type="button" id="btn-pwa-install" onclick="triggerPwaInstall()" aria-label="Cài đặt App ôn thi Offline" title="Cài đặt AN NINH EDUTECH làm App ôn thi Offline" class="hidden items-center gap-1 px-2 sm:px-2.5 py-1 text-[11px] font-extrabold rounded-full bg-gradient-to-r from-emerald-50 to-sky-50 hover:from-emerald-100 hover:to-sky-100 text-emerald-700 border border-emerald-200 shadow-sm transition-all cursor-pointer whitespace-nowrap shrink-0">
+            <i data-lucide="download" class="w-3.5 h-3.5 text-emerald-600 shrink-0"></i>
+            <span class="hidden sm:inline">Cài đặt App</span>
+            <span class="sm:hidden">Cài App</span>
+          </button>
+
           <button type="button" id="btn-header-sound-toggle" onclick="toggleSoundEnabled()" aria-label="Bật hoặc tắt âm thanh thông báo" aria-pressed="true" data-sound-enabled="true" data-sound-play-count="0" data-last-sound-type="none" title="Bật/Tắt âm thanh thông báo" class="inline-flex items-center gap-1 px-2 sm:px-2.5 py-1 text-[11px] font-extrabold rounded-full bg-pink-50 hover:bg-pink-100 text-pink-700 border border-pink-200 shadow-sm transition-all cursor-pointer whitespace-nowrap shrink-0">
             <span id="header-sound-icon-wrap" class="inline-flex items-center justify-center"><i data-lucide="volume-2" class="w-3.5 h-3.5"></i></span>
             <span id="header-sound-label" class="hidden sm:inline">Âm thanh</span>
@@ -1137,6 +1191,14 @@ details[open] > *:not(summary) {
       </div>
     </div>
   </header>
+
+  <!-- Slim iOS Safari PWA Install Hint (auto-shown only on iOS Safari outside standalone) -->
+  <div id="pwa-ios-hint-bar" role="region" aria-label="Hướng dẫn cài đặt App trên iOS Safari" class="hidden no-print bg-gradient-to-r from-pink-50 via-white to-sky-50 border-b border-pink-100/90 px-4 py-1.5 text-[11px] sm:text-xs font-bold text-slate-700">
+    <div class="max-w-7xl mx-auto flex items-center justify-between gap-2">
+      <p class="truncate">📲 Cài đặt App trên iOS Safari: bấm <strong>Chia sẻ (↑)</strong> → chọn <strong>&quot;Thêm vào MH chính&quot;</strong> để ôn thi Offline.</p>
+      <button type="button" onclick="dismissIosInstallHint()" aria-label="Đóng hướng dẫn cài đặt" class="cursor-pointer w-5 h-5 rounded-full bg-pink-100/80 hover:bg-rose-200 text-slate-600 flex items-center justify-center text-xs font-black shrink-0">×</button>
+    </div>
+  </div>
 
   <!-- Main Content Wrapper -->
   <main class="flex-1 min-w-0 max-w-7xl w-full mx-auto px-4 sm:px-6 py-6 sm:py-8">
@@ -1831,8 +1893,12 @@ ANSWER KEYS
               </div>
 
               <div>
-                <label class="block text-xs font-bold text-slate-700 mb-1">Mật khẩu đề thi (Tùy chọn)</label>
-                <input id="cfg-password" type="text" placeholder="Để trống nếu không khóa" class="w-full px-3 py-2.5 rounded-xl border-2 border-amber-100 focus:border-amber-400 focus:outline-none text-xs sm:text-sm font-semibold text-slate-700 bg-amber-50/20" />
+                <label class="block text-xs font-bold text-slate-700 mb-1">Mật khẩu đề thi (Mã hóa SHA-256)</label>
+                <input id="cfg-password" type="password" autocomplete="new-password" placeholder="Để trống nếu không khóa" class="w-full px-3 py-2.5 rounded-xl border-2 border-amber-100 focus:border-amber-400 focus:outline-none text-xs sm:text-sm font-semibold text-slate-700 bg-amber-50/20" />
+                <label id="cfg-password-clear-wrap" class="hidden mt-1.5 items-center gap-1.5 text-[11px] font-bold text-rose-600 cursor-pointer">
+                  <input id="cfg-password-clear" type="checkbox" class="accent-rose-500 w-3.5 h-3.5 rounded" />
+                  <span>Gỡ bỏ mật khẩu bảo vệ hiện tại</span>
+                </label>
               </div>
             </div>
 
@@ -1902,7 +1968,7 @@ ANSWER KEYS
                 </div>
                 <div>
                   <h3 class="text-base font-bold text-slate-800">4. Tải File Đề Thi Lên Hệ Thống</h3>
-                  <p class="text-xs text-slate-500 font-medium">Hỗ trợ chọn 1 hoặc nhiều file: .docx, .xlsx, .csv, .pdf (có text), .tex, .azt, .txt &amp; Ảnh (.png/.jpg)</p>
+                  <p class="text-xs text-slate-500 font-medium">Hỗ trợ chọn 1 hoặc nhiều file: .docx, .xlsx, .csv, .pdf (có text), .tex, .txt &amp; Ảnh (.png/.jpg)</p>
                 </div>
               </div>
               <span id="upload-status-badge" class="px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 text-xs font-bold">
@@ -1940,7 +2006,7 @@ ANSWER KEYS
                 <span class="px-2.5 py-0.5 rounded-full bg-white border border-pink-200 text-pink-700">.DOCX</span>
                 <span class="px-2.5 py-0.5 rounded-full bg-white border border-emerald-200 text-emerald-700">.XLSX / .CSV</span>
                 <span class="px-2.5 py-0.5 rounded-full bg-white border border-amber-200 text-amber-700">.PDF (Text)</span>
-                <span class="px-2.5 py-0.5 rounded-full bg-white border border-purple-200 text-purple-700">.AZT / .TXT</span>
+                <span class="px-2.5 py-0.5 rounded-full bg-white border border-purple-200 text-purple-700">.TXT / .MD</span>
                 <span class="px-2.5 py-0.5 rounded-full bg-white border border-sky-200 text-sky-700">.TEX (LaTeX)</span>
                 <span class="px-2.5 py-0.5 rounded-full bg-white border border-teal-200 text-teal-700">Ảnh minh họa (.PNG/.JPG)</span>
               </div>
@@ -2129,6 +2195,10 @@ ANSWER KEYS
             <select id="leaderboard-exam-select" onchange="renderLeaderboardTable()" class="px-3 py-2 rounded-xl border-2 border-amber-200 bg-amber-50/50 text-xs font-bold text-slate-800 focus:outline-none max-w-[200px] sm:max-w-[260px]">
               <option value="ALL">🌟 Tất cả đề thi</option>
             </select>
+            <button id="btn-leaderboard-privacy-mask" type="button" onclick="toggleLeaderboardPrivacyMask()" aria-pressed="false" title="Ẩn danh tên học sinh theo Luật 91/2025/QH15" class="cursor-pointer px-3 py-2 rounded-xl bg-sky-50 hover:bg-sky-100 text-sky-700 border border-sky-200 text-xs font-bold flex items-center gap-1.5 transition-colors">
+              <i data-lucide="eye-off" class="w-3.5 h-3.5"></i>
+              <span id="leaderboard-privacy-label">Ẩn tên HS</span>
+            </button>
             <button type="button" onclick="exportLeaderboardCSV()" class="btn-3d btn-3d-emerald cursor-pointer px-3.5 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-bold flex items-center gap-1.5">
               <i data-lucide="file-spreadsheet" class="w-4 h-4"></i>
               <span>Xuất Bảng Điểm (.CSV)</span>
@@ -2209,11 +2279,11 @@ ANSWER KEYS
         </div>
       </div>
 
-      <!-- 4 Core Student Team Cards (Lớp 11A1) -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6 items-stretch">
+      <!-- 02 KHKT Project Student Authors (Quy chế Thông tư 84/2026 & Kế hoạch 7489/KH-SGDĐT) -->
+      <div class="grid grid-cols-1 md:grid-cols-2 max-w-4xl mx-auto gap-6 items-stretch">
         
-        <!-- Member 1: Võ Tiến Anh -->
-        <div class="bg-white rounded-3xl border-2 border-pink-200 border-b-4 border-b-pink-400 p-6 shadow-cute hover:shadow-cute-hover hover:-translate-y-1.5 transition-all duration-300 h-full min-w-0 flex flex-col justify-between items-center text-center relative overflow-hidden">
+        <!-- Author 1: Võ Tiến Anh -->
+        <div class="bg-white rounded-3xl border-2 border-pink-200 border-b-4 border-b-pink-400 p-6 sm:p-7 shadow-cute hover:shadow-cute-hover hover:-translate-y-1.5 transition-all duration-300 h-full min-w-0 flex flex-col justify-between items-center text-center relative overflow-hidden">
           <div class="w-full h-2 bg-gradient-to-r from-pink-400 to-rose-400 absolute top-0 left-0"></div>
           <div class="flex flex-col items-center space-y-3.5 w-full min-w-0 pt-2">
             <div class="w-20 h-20 rounded-3xl bg-pink-100 border-2 border-pink-300 flex items-center justify-center text-3xl shadow-sm shrink-0">
@@ -2222,23 +2292,23 @@ ANSWER KEYS
             <div class="space-y-1.5 w-full min-w-0">
               <span class="inline-flex items-center justify-center gap-1.5 px-3 py-1 rounded-full bg-pink-100 text-pink-700 border border-pink-200 text-xs font-extrabold max-w-full text-center break-words">
                 <i data-lucide="crown" class="w-3.5 h-3.5 shrink-0"></i>
-                <span>Admin</span>
+                <span>Tác giả chính • Dự án KHKT</span>
               </span>
               <h3 class="text-xl font-bold text-slate-800 pt-1 break-words">Võ Tiến Anh</h3>
               <p class="text-xs font-bold text-slate-500">Lớp 11A1 • THPT An Ninh - Tây Ninh</p>
             </div>
             <p class="text-xs sm:text-sm text-slate-600 font-medium leading-relaxed break-words">
-              Quản lý chung, định hướng tính năng và vận hành hệ thống.
+              Kiến trúc hệ thống, thuật toán tách &amp; chấm điểm 3 phần, bảo mật Web Crypto SHA-256 và trải nghiệm người dùng.
             </p>
           </div>
           <div class="pt-3 mt-4 w-full border-t border-pink-100 flex items-center justify-center gap-2 text-xs font-bold text-pink-600">
             <i data-lucide="shield-check" class="w-4 h-4 shrink-0"></i>
-            <span>Quản trị & Điều phối hệ thống</span>
+            <span>Kiến trúc, Bảo mật &amp; Giao diện</span>
           </div>
         </div>
 
-        <!-- Member 2: Huỳnh Tấn Lộc -->
-        <div class="bg-white rounded-3xl border-2 border-emerald-200 border-b-4 border-b-emerald-400 p-6 shadow-cute hover:shadow-mint hover:-translate-y-1.5 transition-all duration-300 h-full min-w-0 flex flex-col justify-between items-center text-center relative overflow-hidden">
+        <!-- Author 2: Huỳnh Tấn Lộc -->
+        <div class="bg-white rounded-3xl border-2 border-emerald-200 border-b-4 border-b-emerald-400 p-6 sm:p-7 shadow-cute hover:shadow-mint hover:-translate-y-1.5 transition-all duration-300 h-full min-w-0 flex flex-col justify-between items-center text-center relative overflow-hidden">
           <div class="w-full h-2 bg-gradient-to-r from-emerald-400 to-teal-400 absolute top-0 left-0"></div>
           <div class="flex flex-col items-center space-y-3.5 w-full min-w-0 pt-2">
             <div class="w-20 h-20 rounded-3xl bg-emerald-100 border-2 border-emerald-300 flex items-center justify-center text-3xl shadow-sm shrink-0">
@@ -2247,68 +2317,18 @@ ANSWER KEYS
             <div class="space-y-1.5 w-full min-w-0">
               <span class="inline-flex items-center justify-center gap-1.5 px-3 py-1 rounded-full bg-emerald-100 text-emerald-700 border border-emerald-200 text-xs font-extrabold max-w-full text-center break-words leading-snug">
                 <i data-lucide="wrench" class="w-3.5 h-3.5 shrink-0"></i>
-                <span>Chuyên viên kỹ thuật (Technical Specialist)</span>
+                <span>Đồng tác giả • Dự án KHKT</span>
               </span>
               <h3 class="text-xl font-bold text-slate-800 pt-1 break-words">Huỳnh Tấn Lộc</h3>
               <p class="text-xs font-bold text-slate-500">Lớp 11A1 • THPT An Ninh - Tây Ninh</p>
             </div>
             <p class="text-xs sm:text-sm text-slate-600 font-medium leading-relaxed break-words">
-              Hỗ trợ xử lý kỹ thuật và tối ưu hoạt động nền tảng.
+              Kỹ thuật nền tảng, tối ưu hạ tầng tĩnh Cloudflare Pages, kiểm thử đa thiết bị và chuẩn hóa bộ dữ liệu mẫu.
             </p>
           </div>
           <div class="pt-3 mt-4 w-full border-t border-emerald-100 flex items-center justify-center gap-2 text-xs font-bold text-emerald-600">
             <i data-lucide="cpu" class="w-4 h-4 shrink-0"></i>
-            <span>Hạ tầng & Kỹ thuật nền tảng</span>
-          </div>
-        </div>
-
-        <!-- Member 3: Lại Nguyễn Như Ý -->
-        <div class="bg-white rounded-3xl border-2 border-purple-200 border-b-4 border-b-purple-400 p-6 shadow-cute hover:shadow-cute-hover hover:-translate-y-1.5 transition-all duration-300 h-full min-w-0 flex flex-col justify-between items-center text-center relative overflow-hidden">
-          <div class="w-full h-2 bg-gradient-to-r from-purple-400 to-fuchsia-400 absolute top-0 left-0"></div>
-          <div class="flex flex-col items-center space-y-3.5 w-full min-w-0 pt-2">
-            <div class="w-20 h-20 rounded-3xl bg-purple-100 border-2 border-purple-300 flex items-center justify-center text-3xl shadow-sm shrink-0">
-              🌸
-            </div>
-            <div class="space-y-1.5 w-full min-w-0">
-              <span class="inline-flex items-center justify-center gap-1.5 px-3 py-1 rounded-full bg-purple-100 text-purple-700 border border-purple-200 text-xs font-extrabold max-w-full text-center break-words leading-snug">
-                <i data-lucide="clipboard-check" class="w-3.5 h-3.5 shrink-0"></i>
-                <span>Chuyên viên Kiểm thử (QA / Tester)</span>
-              </span>
-              <h3 class="text-xl font-bold text-slate-800 pt-1 break-words">Lại Nguyễn Như Ý</h3>
-              <p class="text-xs font-bold text-slate-500">Lớp 11A1 • THPT An Ninh - Tây Ninh</p>
-            </div>
-            <p class="text-xs sm:text-sm text-slate-600 font-medium leading-relaxed break-words">
-              Kiểm thử tính năng, rà soát lỗi trên điện thoại và máy tính.
-            </p>
-          </div>
-          <div class="pt-3 mt-4 w-full border-t border-purple-100 flex items-center justify-center gap-2 text-xs font-bold text-purple-600">
-            <i data-lucide="bug" class="w-4 h-4 shrink-0"></i>
-            <span>Kiểm thử đa thiết bị & QA</span>
-          </div>
-        </div>
-
-        <!-- Member 4: Lê Thành Danh -->
-        <div class="bg-white rounded-3xl border-2 border-sky-200 border-b-4 border-b-sky-400 p-6 shadow-cute hover:shadow-cute-hover hover:-translate-y-1.5 transition-all duration-300 h-full min-w-0 flex flex-col justify-between items-center text-center relative overflow-hidden">
-          <div class="w-full h-2 bg-gradient-to-r from-sky-400 to-amber-400 absolute top-0 left-0"></div>
-          <div class="flex flex-col items-center space-y-3.5 w-full min-w-0 pt-2">
-            <div class="w-20 h-20 rounded-3xl bg-sky-100 border-2 border-sky-300 flex items-center justify-center text-3xl shadow-sm shrink-0">
-              📚
-            </div>
-            <div class="space-y-1.5 w-full min-w-0">
-              <span class="inline-flex items-center justify-center gap-1.5 px-3 py-1 rounded-full bg-sky-100 text-sky-700 border border-sky-200 text-xs font-extrabold max-w-full text-center break-words leading-snug">
-                <i data-lucide="database" class="w-3.5 h-3.5 shrink-0"></i>
-                <span>Biên tập Nội dung & Dữ liệu (Content / Data)</span>
-              </span>
-              <h3 class="text-xl font-bold text-slate-800 pt-1 break-words">Lê Thành Danh</h3>
-              <p class="text-xs font-bold text-slate-500">Lớp 11A1 • THPT An Ninh - Tây Ninh</p>
-            </div>
-            <p class="text-xs sm:text-sm text-slate-600 font-medium leading-relaxed break-words">
-              Tổng hợp, chuẩn hóa ngân hàng đề thi, flashcard và hình ảnh.
-            </p>
-          </div>
-          <div class="pt-3 mt-4 w-full border-t border-sky-100 flex items-center justify-center gap-2 text-xs font-bold text-sky-600">
-            <i data-lucide="book-open-check" class="w-4 h-4 shrink-0"></i>
-            <span>Ngân hàng đề & Flashcard</span>
+            <span>Kỹ thuật nền tảng, Kiểm thử &amp; Dữ liệu</span>
           </div>
         </div>
 
@@ -2360,7 +2380,11 @@ ANSWER KEYS
               </div>
             </div>
 
-            <!-- Quick Submit & Exit Buttons -->
+            <!-- Quick Fullscreen, Submit & Exit Buttons -->
+            <button id="btn-exam-fullscreen" type="button" onclick="toggleExamFullscreen()" title="Bật/Tắt Toàn màn hình" class="cursor-pointer whitespace-nowrap px-2.5 sm:px-3 py-2 sm:py-2.5 rounded-full bg-sky-50 hover:bg-sky-100 text-sky-700 border border-sky-200 font-bold text-xs flex items-center gap-1">
+              <i data-lucide="maximize-2" class="w-3.5 h-3.5"></i>
+              <span class="hidden md:inline">Toàn màn hình</span>
+            </button>
             <button type="button" onclick="openSubmitConfirmModal()" class="btn-3d btn-3d-pink cursor-pointer whitespace-nowrap px-3.5 sm:px-5 py-2 sm:py-2.5 rounded-full bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white font-bold text-xs sm:text-sm flex items-center gap-1.5 sm:gap-2">
               <i data-lucide="send" class="w-3.5 h-3.5 sm:w-4 sm:h-4"></i>
               <span>Nộp bài</span>
@@ -2396,9 +2420,12 @@ ANSWER KEYS
       <!-- Exam Room Main Layout: Left Questions (8 cols) | Right Question Palette (4 cols) -->
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start min-w-0 max-w-full">
         
-        <!-- Questions Column -->
-        <div id="exam-questions-container" class="order-2 lg:order-1 lg:col-span-8 min-w-0 max-w-full space-y-6">
-          <!-- Rendered dynamically by JS (Part 1, Part 2, Part 3) -->
+        <!-- Questions Column with Anti-Cheat Watermark Overlay -->
+        <div class="order-2 lg:order-1 lg:col-span-8 min-w-0 max-w-full relative rounded-3xl">
+          <div id="exam-watermark-layer" aria-hidden="true" style="display:none" class="hidden absolute inset-0 pointer-events-none overflow-hidden select-none z-30 rounded-3xl flex-wrap items-center justify-around gap-8 p-6"></div>
+          <div id="exam-questions-container" class="relative z-20 min-w-0 max-w-full space-y-6">
+            <!-- Rendered dynamically by JS (Part 1, Part 2, Part 3) -->
+          </div>
         </div>
 
         <!-- Question Palette Sidebar (Collapsible on Mobile, Sticky on Desktop) -->
@@ -2666,6 +2693,14 @@ ANSWER KEYS
           <div id="report-weak-topics" class="flex flex-wrap gap-2 text-xs font-bold">
             <!-- Populated by JS -->
           </div>
+        </div>
+
+        <div id="report-integrity-seal-row" class="bg-slate-50/90 rounded-2xl border border-slate-200 px-3.5 py-2.5 flex flex-wrap items-center justify-between gap-2 text-[11px] font-bold text-slate-600">
+          <span class="flex items-center gap-1.5">
+            <i data-lucide="shield-check" class="w-3.5 h-3.5 text-emerald-600 shrink-0"></i>
+            <span>Chứng thực toàn vẹn SHA-256 (Chống giả mạo điểm):</span>
+          </span>
+          <code id="report-integrity-seal" class="px-2.5 py-0.5 rounded-lg bg-white border border-slate-300 font-mono font-extrabold text-emerald-700 tracking-wider">----</code>
         </div>
 
         <div class="flex items-center justify-between text-[11px] font-bold text-slate-400 pt-1">
@@ -3258,6 +3293,10 @@ ANSWER KEYS
               </select>
             </div>
           </div>
+          <p class="text-[11px] font-semibold text-sky-700 bg-sky-50/80 border border-sky-200 rounded-xl px-3 py-2 flex items-start gap-1.5">
+            <i data-lucide="shield-check" class="w-3.5 h-3.5 shrink-0 mt-0.5 text-sky-600"></i>
+            <span>Tuân thủ Luật Bảo vệ dữ liệu cá nhân 91/2025/QH15: Họ tên &amp; bài làm chỉ lưu cục bộ trên trình duyệt của bạn, không thu thập hay gửi lên máy chủ ngoài.</span>
+          </p>
         </div>
 
         <!-- Password Field (Shown if exam has password) -->
@@ -3385,17 +3424,149 @@ ANSWER KEYS
     </div>
   </div>
 
+  <!-- Modal 4: Bảo Mật, Luật 91/2025/QH15 & Bản Quyền Mã Nguồn Mở -->
+  <div id="modal-legal-privacy" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="legal-modal-title" onclick="if(event.target===this) closeLegalPrivacyModal()" class="fixed inset-0 z-[70] hidden glass-modal-backdrop items-center justify-center p-3 sm:p-4 overflow-y-auto overscroll-contain">
+    <div class="glass-modal-card modal-spring-pop rounded-3xl border-2 border-sky-200 max-w-[calc(100vw-1.5rem)] sm:max-w-3xl w-full mx-auto my-auto max-h-[90dvh] overflow-y-auto p-5 sm:p-7 space-y-5">
+      <div class="flex items-center justify-between border-b border-sky-100 pb-3 gap-3">
+        <div class="flex items-center gap-3 min-w-0">
+          <div class="w-11 h-11 rounded-2xl bg-sky-100 text-sky-600 flex items-center justify-center shrink-0">
+            <i data-lucide="shield-check" class="w-6 h-6"></i>
+          </div>
+          <div class="min-w-0">
+            <span class="text-[11px] font-extrabold text-sky-600 uppercase">An Toàn Dữ Liệu • Luật 91/2025/QH15 • Bản Quyền</span>
+            <h3 id="legal-modal-title" class="text-base sm:text-xl font-extrabold text-slate-800 truncate">Trung Tâm Bảo Mật, Bản Quyền &amp; Minh Bạch</h3>
+          </div>
+        </div>
+        <button type="button" onclick="closeLegalPrivacyModal()" class="cursor-pointer w-9 h-9 rounded-full bg-slate-100 hover:bg-rose-100 text-slate-500 hover:text-rose-600 flex items-center justify-center shrink-0">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+
+      <!-- Modal Tabs -->
+      <div class="flex flex-wrap items-center gap-2 border-b border-slate-100 pb-3">
+        <button id="legal-tab-btn-privacy" type="button" onclick="switchLegalPrivacyTab('privacy')" class="cursor-pointer px-3.5 py-2 rounded-2xl text-xs font-extrabold bg-sky-500 text-white border border-sky-500 flex items-center gap-1.5 transition-all">
+          <i data-lucide="lock" class="w-3.5 h-3.5"></i>
+          <span>Dữ liệu cá nhân (91/2025/QH15)</span>
+        </button>
+        <button id="legal-tab-btn-licenses" type="button" onclick="switchLegalPrivacyTab('licenses')" class="cursor-pointer px-3.5 py-2 rounded-2xl text-xs font-extrabold bg-white hover:bg-pink-50 text-slate-700 border border-slate-200 flex items-center gap-1.5 transition-all">
+          <i data-lucide="scale" class="w-3.5 h-3.5"></i>
+          <span>Bản quyền &amp; Mã nguồn mở</span>
+        </button>
+      </div>
+
+      <!-- Tab Panel 1: Privacy & Luật 91/2025/QH15 + OWASP Hardening -->
+      <div id="legal-tab-panel-privacy" class="space-y-4 text-xs sm:text-sm text-slate-700">
+        <div class="p-4 rounded-2xl bg-sky-50/80 border border-sky-200 space-y-2">
+          <h4 class="font-extrabold text-sky-900 flex items-center gap-1.5">
+            <i data-lucide="database-zap" class="w-4 h-4 text-sky-600"></i>
+            <span>Kiến trúc Zero-Server / Local-First theo Luật Bảo vệ dữ liệu cá nhân 91/2025/QH15</span>
+          </h4>
+          <ul class="list-disc pl-5 space-y-1 text-xs font-medium text-slate-600 leading-relaxed">
+            <li><strong>Không lưu trữ tập trung ngoài thiết bị:</strong> Họ và tên, lớp học, lịch sử điểm, Study Streak và Kho câu hay sai chỉ lưu trong <code class="px-1 py-0.5 rounded bg-white border">localStorage</code> trên trình duyệt của người học; hệ thống không dùng cookie theo dõi hay máy chủ thu thập dữ liệu học sinh.</li>
+            <li><strong>Bảo vệ mật mã Web Crypto (SHA-256 + Salt):</strong> Mật khẩu đề thi được băm một chiều SHA-256 kèm muối ngẫu nhiên trước khi lưu hoặc nén vào link chia sẻ; mỗi phiếu kết quả có mã niêm phong toàn vẹn <strong>SHA-256</strong> chống sửa điểm.</li>
+            <li><strong>Phòng vệ trình duyệt đa lớp:</strong> Chính sách bảo mật nội dung <strong>CSP</strong>, <strong>Referrer-Policy</strong> <code class="px-1 py-0.5 rounded bg-white border">no-referrer</code>, bộ lọc XSS loại bỏ <code class="px-1 py-0.5 rounded bg-white border">svg+xml</code> &amp; watermark phòng thi.</li>
+          </ul>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div class="p-4 rounded-2xl bg-white border-2 border-sky-100 space-y-2.5 flex flex-col justify-between">
+            <div>
+              <div class="font-extrabold text-slate-800 text-xs sm:text-sm">🙈 Chế độ Ẩn danh BXH khi trình chiếu</div>
+              <p class="text-xs text-slate-500 mt-1">Che bớt ký tự họ tên học sinh trên Bảng Xếp Hạng (VD: <em>Võ T*** A**</em>) để bảo vệ danh tính khi trình bày trước Hội đồng.</p>
+            </div>
+            <button id="btn-modal-toggle-privacy-mask" type="button" onclick="toggleLeaderboardPrivacyMask()" class="cursor-pointer w-full py-2.5 px-3 rounded-xl bg-sky-50 hover:bg-sky-100 text-sky-800 border border-sky-200 font-extrabold text-xs">
+              Bật / Tắt Ẩn danh tên HS
+            </button>
+          </div>
+
+          <div class="p-4 rounded-2xl bg-rose-50/70 border-2 border-rose-200 space-y-2.5 flex flex-col justify-between">
+            <div>
+              <div class="font-extrabold text-rose-900 text-xs sm:text-sm">🗑️ Quyền xóa sạch dữ liệu cá nhân</div>
+              <p class="text-xs text-rose-700/90 mt-1">Xóa toàn bộ tên học sinh, lịch sử bài thi, Study Streak, Kho câu hay sai và bản nháp khỏi trình duyệt khi rời máy công cộng.</p>
+            </div>
+            <button id="btn-erase-all-personal-data" type="button" onclick="eraseAllPersonalLocalData()" class="cursor-pointer w-full py-2.5 px-3 rounded-xl bg-rose-500 hover:bg-rose-600 text-white font-extrabold text-xs shadow-sm">
+              Xóa toàn bộ dữ liệu cá nhân của tôi
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab Panel 2: Open Source Licenses, Copyright & AI Disclosure (Phụ lục VI) -->
+      <div id="legal-tab-panel-licenses" class="hidden space-y-4 text-xs sm:text-sm text-slate-700">
+        <div class="p-4 rounded-2xl bg-pink-50/75 border border-pink-200 space-y-1.5">
+          <h4 class="font-extrabold text-pink-900">© Quyền Tác Giả Phần Mềm &amp; Nguyên Tắc Bản Quyền Học Liệu</h4>
+          <p class="text-xs font-medium text-slate-700 leading-relaxed">
+            Mã nguồn ứng dụng <strong>AN NINH EDUTECH</strong> do <strong>Võ Tiến Anh</strong> &amp; <strong>Huỳnh Tấn Lộc</strong> (Lớp 11A1, Trường THPT An Ninh, Tây Ninh — GVHD: <strong>Cô Nguyễn Thị Phương Thảo</strong>) nghiên cứu thiết kế cho Cuộc thi KHKT 2026–2027. Hệ thống không lưu giữ hay phân phối đề thi thương mại có bản quyền; giáo viên chỉ tải lên học liệu do mình biên soạn hoặc nguồn công khai hợp pháp để phục vụ dạy học.
+          </p>
+        </div>
+
+        <div class="p-4 rounded-2xl bg-amber-50/75 border border-amber-200 space-y-1.5">
+          <h4 class="font-extrabold text-amber-900">🤖 Tuyên Bố Minh Bạch Sử Dụng Công Nghệ Số &amp; AI (Phụ lục VI • Thông tư 84/2026/TT-BGDĐT)</h4>
+          <p class="text-xs font-medium text-slate-700 leading-relaxed">
+            Trình phân tích &amp; chấm điểm đề thi trong phần mềm hoạt động hoàn toàn bằng thuật toán quy tắc tất định trên trình duyệt (không dùng AI tạo nội dung sai lệch). Các công cụ hỗ trợ kỹ thuật/kiểm thử được nhóm tác giả sử dụng có kiểm chứng và khai báo đầy đủ trong Phiếu Phụ lục VI.
+          </p>
+        </div>
+
+        <div class="space-y-2">
+          <h4 class="font-extrabold text-slate-800 text-xs sm:text-sm">📚 Danh Mục 12 Thư Viện &amp; Phông Chữ Mã Nguồn Mở Hợp Pháp (Open-Source Attribution)</h4>
+          <div class="overflow-x-auto rounded-2xl border border-slate-200">
+            <table class="w-full text-left border-collapse text-xs">
+              <thead>
+                <tr class="bg-slate-50 text-slate-700 font-extrabold border-b border-slate-200">
+                  <th class="py-2 px-3">Thư viện / Font</th>
+                  <th class="py-2 px-3">Mục đích sử dụng</th>
+                  <th class="py-2 px-3">Giấy phép (License)</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-100 font-medium text-slate-600">
+                <tr><td class="py-1.5 px-3 font-bold text-slate-800">Tailwind CSS Play CDN</td><td class="py-1.5 px-3">Giao diện phản hồi đa màn hình</td><td class="py-1.5 px-3"><span class="px-2 py-0.5 rounded bg-emerald-50 text-emerald-700 font-bold">MIT License</span></td></tr>
+                <tr><td class="py-1.5 px-3 font-bold text-slate-800">Lucide Icons (v0.469.0)</td><td class="py-1.5 px-3">Biểu tượng SVG chuẩn nét</td><td class="py-1.5 px-3"><span class="px-2 py-0.5 rounded bg-sky-50 text-sky-700 font-bold">ISC License</span></td></tr>
+                <tr><td class="py-1.5 px-3 font-bold text-slate-800">KaTeX (v0.16.9)</td><td class="py-1.5 px-3">Hiển thị công thức Toán/Lý/Hóa</td><td class="py-1.5 px-3"><span class="px-2 py-0.5 rounded bg-emerald-50 text-emerald-700 font-bold">MIT License</span></td></tr>
+                <tr><td class="py-1.5 px-3 font-bold text-slate-800">Mammoth.js (v1.6.0)</td><td class="py-1.5 px-3">Đọc file Word (.docx) &amp; ảnh công thức</td><td class="py-1.5 px-3"><span class="px-2 py-0.5 rounded bg-purple-50 text-purple-700 font-bold">BSD-2-Clause</span></td></tr>
+                <tr><td class="py-1.5 px-3 font-bold text-slate-800">SheetJS Community (v0.18.5)</td><td class="py-1.5 px-3">Đọc bảng tính Excel (.xlsx/.csv)</td><td class="py-1.5 px-3"><span class="px-2 py-0.5 rounded bg-amber-50 text-amber-800 font-bold">Apache-2.0</span></td></tr>
+                <tr><td class="py-1.5 px-3 font-bold text-slate-800">PDF.js (v3.11.174)</td><td class="py-1.5 px-3">Trích xuất văn bản file .pdf</td><td class="py-1.5 px-3"><span class="px-2 py-0.5 rounded bg-amber-50 text-amber-800 font-bold">Apache-2.0</span></td></tr>
+                <tr><td class="py-1.5 px-3 font-bold text-slate-800">LZ-String (v1.5.0)</td><td class="py-1.5 px-3">Nén đề thi qua link URL chia sẻ</td><td class="py-1.5 px-3"><span class="px-2 py-0.5 rounded bg-emerald-50 text-emerald-700 font-bold">MIT License</span></td></tr>
+                <tr><td class="py-1.5 px-3 font-bold text-slate-800">node-qrcode (v1.5.1)</td><td class="py-1.5 px-3">Sinh mã QR vào phòng thi</td><td class="py-1.5 px-3"><span class="px-2 py-0.5 rounded bg-emerald-50 text-emerald-700 font-bold">MIT License</span></td></tr>
+                <tr><td class="py-1.5 px-3 font-bold text-slate-800">Chart.js (v4.4.1)</td><td class="py-1.5 px-3">Biểu đồ Radar phân tích điểm yếu</td><td class="py-1.5 px-3"><span class="px-2 py-0.5 rounded bg-emerald-50 text-emerald-700 font-bold">MIT License</span></td></tr>
+                <tr><td class="py-1.5 px-3 font-bold text-slate-800">canvas-confetti (v1.9.2)</td><td class="py-1.5 px-3">Hiệu ứng chúc mừng hoàn thành</td><td class="py-1.5 px-3"><span class="px-2 py-0.5 rounded bg-sky-50 text-sky-700 font-bold">ISC License</span></td></tr>
+                <tr><td class="py-1.5 px-3 font-bold text-slate-800">html2canvas (v1.4.1)</td><td class="py-1.5 px-3">Xuất ảnh PNG Phiếu kết quả</td><td class="py-1.5 px-3"><span class="px-2 py-0.5 rounded bg-emerald-50 text-emerald-700 font-bold">MIT License</span></td></tr>
+                <tr><td class="py-1.5 px-3 font-bold text-slate-800">Google Fonts: Quicksand</td><td class="py-1.5 px-3">Kiểu chữ tiếng Việt thân thiện</td><td class="py-1.5 px-3"><span class="px-2 py-0.5 rounded bg-pink-50 text-pink-700 font-bold">SIL OFL 1.1</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex justify-end pt-2 border-t border-slate-100">
+        <button type="button" onclick="closeLegalPrivacyModal()" class="btn-3d btn-3d-slate cursor-pointer px-5 py-2 rounded-2xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs sm:text-sm">
+          Đóng lại
+        </button>
+      </div>
+    </div>
+  </div>
+
   <!-- Footer -->
   <footer class="mt-12 bg-white/80 border-t-2 border-pink-100 py-6 text-center text-xs sm:text-sm text-slate-500 font-semibold no-print">
-    <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-3">
-      <div class="flex items-center gap-2">
-        <img src="logo.png" alt="Logo" class="w-6 h-6 rounded-md object-contain" onerror="this.style.display='none'" />
-        <span>© 2026 <strong>HỆ THỐNG ÔN THI TRỰC TUYẾN - THPT AN NINH</strong> (Tây Ninh • Lớp 11A1)</span>
+    <div class="max-w-7xl mx-auto px-4 space-y-3">
+      <div class="flex flex-col sm:flex-row items-center justify-between gap-3">
+        <div class="flex items-center gap-2">
+          <img src="logo.png" alt="Logo" class="w-6 h-6 rounded-md object-contain" onerror="this.style.display='none'" />
+          <span>© 2026 <strong>HỆ THỐNG ÔN THI TRỰC TUYẾN - THPT AN NINH</strong> (Tây Ninh • Lớp 11A1)</span>
+        </div>
+        <div class="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-xs font-bold text-pink-600">
+          <span>GVHD: Cô Nguyễn Thị Phương Thảo</span>
+          <span>•</span>
+          <span>Tác giả dự án KHKT: Võ Tiến Anh &amp; Huỳnh Tấn Lộc</span>
+        </div>
       </div>
-      <div class="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-xs font-bold text-pink-600">
-        <span>GVHD: Cô Nguyễn Thị Phương Thảo</span>
-        <span>•</span>
-        <span>Võ Tiến Anh • Huỳnh Tấn Lộc • Lại Nguyễn Như Ý • Lê Thành Danh</span>
+
+      <div class="pt-2 border-t border-pink-100/80 flex flex-wrap items-center justify-center gap-2 text-[11px] font-bold">
+        <button id="btn-footer-privacy" type="button" onclick="openLegalPrivacyModal('privacy')" class="cursor-pointer px-3 py-1 rounded-full bg-sky-50 hover:bg-sky-100 text-sky-700 border border-sky-200 transition-colors">
+          🛡️ Bảo mật &amp; Luật 91/2025/QH15
+        </button>
+        <button id="btn-footer-licenses" type="button" onclick="openLegalPrivacyModal('licenses')" class="cursor-pointer px-3 py-1 rounded-full bg-pink-50 hover:bg-pink-100 text-pink-700 border border-pink-200 transition-colors">
+          ⚖️ Bản quyền &amp; Mã nguồn mở (12 thư viện)
+        </button>
       </div>
     </div>
   </footer>
@@ -3424,6 +3595,504 @@ ANSWER KEYS
     const STORAGE_FLASHCARD_KEY = 'thpt_anninh_flashcard_state_v1';
     const STORAGE_SPEEDRUN_KEY = 'thpt_anninh_speedrun_best_v1';
     const STORAGE_SOUND_KEY = 'thpt_anninh_sound_enabled_v1';
+    const STORAGE_PRIVACY_MASK_KEY = 'thpt_anninh_privacy_mask_v1';
+
+    let privacyMaskEnabled = false;
+
+    // Pure-JS FIPS 180-4 SHA-256 (deterministic fallback + sync integrity seal)
+    const SHA256_K = [
+      0x428a2f98, 0x71374491, 0xb5c0fbcf, 0xe9b5dba5, 0x3956c25b, 0x59f111f1, 0x923f82a4, 0xab1c5ed5,
+      0xd807aa98, 0x12835b01, 0x243185be, 0x550c7dc3, 0x72be5d74, 0x80deb1fe, 0x9bdc06a7, 0xc19bf174,
+      0xe49b69c1, 0xefbe4786, 0x0fc19dc6, 0x240ca1cc, 0x2de92c6f, 0x4a7484aa, 0x5cb0a9dc, 0x76f988da,
+      0x983e5152, 0xa831c66d, 0xb00327c8, 0xbf597fc7, 0xc6e00bf3, 0xd5a79147, 0x06ca6351, 0x14292967,
+      0x27b70a85, 0x2e1b2138, 0x4d2c6dfc, 0x53380d13, 0x650a7354, 0x766a0abb, 0x81c2c92e, 0x92722c85,
+      0xa2bfe8a1, 0xa81a664b, 0xc24b8b70, 0xc76c51a3, 0xd192e819, 0xd6990624, 0xf40e3585, 0x106aa070,
+      0x19a4c116, 0x1e376c08, 0x2748774c, 0x34b0bcb5, 0x391c0cb3, 0x4ed8aa4a, 0x5b9cca4f, 0x682e6ff3,
+      0x748f82ee, 0x78a5636f, 0x84c87814, 0x8cc70208, 0x90befffa, 0xa4506ceb, 0xbef9a3f7, 0xc67178f2
+    ];
+
+    function utf8ToBytes(str) {
+      const s = String(str ?? '');
+      if (typeof TextEncoder !== 'undefined') {
+        return new TextEncoder().encode(s);
+      }
+      const enc = unescape(encodeURIComponent(s));
+      const out = new Uint8Array(enc.length);
+      for (let i = 0; i < enc.length; i++) out[i] = enc.charCodeAt(i);
+      return out;
+    }
+
+    function sha256SyncHex(message) {
+      const bytes = utf8ToBytes(message);
+      const bitLen = bytes.length * 8;
+      const paddedLen = Math.ceil((bytes.length + 9) / 64) * 64;
+      const padded = new Uint8Array(paddedLen);
+      padded.set(bytes);
+      padded[bytes.length] = 0x80;
+      const view = new DataView(padded.buffer);
+      view.setUint32(paddedLen - 8, Math.floor(bitLen / 0x100000000), false);
+      view.setUint32(paddedLen - 4, bitLen >>> 0, false);
+
+      const H = new Uint32Array([
+        0x6a09e667, 0xbb67ae85, 0x3c6ef372, 0xa54ff53a,
+        0x510e527f, 0x9b05688c, 0x1f83d9ab, 0x5be0cd19
+      ]);
+      const W = new Uint32Array(64);
+      const rotr = (n, x) => (x >>> n) | (x << (32 - n));
+
+      for (let offset = 0; offset < paddedLen; offset += 64) {
+        for (let i = 0; i < 16; i++) {
+          W[i] = view.getUint32(offset + i * 4, false);
+        }
+        for (let i = 16; i < 64; i++) {
+          const s0 = rotr(7, W[i - 15]) ^ rotr(18, W[i - 15]) ^ (W[i - 15] >>> 3);
+          const s1 = rotr(17, W[i - 2]) ^ rotr(19, W[i - 2]) ^ (W[i - 2] >>> 10);
+          W[i] = (W[i - 16] + s0 + W[i - 7] + s1) >>> 0;
+        }
+        let [a, b, c, d, e, f, g, h] = H;
+        for (let i = 0; i < 64; i++) {
+          const S1 = rotr(6, e) ^ rotr(11, e) ^ rotr(25, e);
+          const ch = (e & f) ^ ((~e) & g);
+          const temp1 = (h + S1 + ch + SHA256_K[i] + W[i]) >>> 0;
+          const S0 = rotr(2, a) ^ rotr(13, a) ^ rotr(22, a);
+          const maj = (a & b) ^ (a & c) ^ (b & c);
+          const temp2 = (S0 + maj) >>> 0;
+          h = g; g = f; f = e; e = (d + temp1) >>> 0;
+          d = c; c = b; b = a; a = (temp1 + temp2) >>> 0;
+        }
+        H[0] = (H[0] + a) >>> 0; H[1] = (H[1] + b) >>> 0;
+        H[2] = (H[2] + c) >>> 0; H[3] = (H[3] + d) >>> 0;
+        H[4] = (H[4] + e) >>> 0; H[5] = (H[5] + f) >>> 0;
+        H[6] = (H[6] + g) >>> 0; H[7] = (H[7] + h) >>> 0;
+      }
+      return Array.from(H).map(x => x.toString(16).padStart(8, '0')).join('');
+    }
+
+    async function sha256AsyncHex(message) {
+      try {
+        if (window.crypto && window.crypto.subtle && typeof TextEncoder !== 'undefined') {
+          const bytes = new TextEncoder().encode(String(message ?? ''));
+          const digest = await window.crypto.subtle.digest('SHA-256', bytes);
+          return Array.from(new Uint8Array(digest)).map(b => b.toString(16).padStart(2, '0')).join('');
+        }
+      } catch (e) {}
+      return sha256SyncHex(message);
+    }
+
+    function constantTimeEqual(a, b) {
+      const sa = String(a ?? '');
+      const sb = String(b ?? '');
+      let diff = sa.length ^ sb.length;
+      const maxLen = Math.max(sa.length, sb.length);
+      for (let i = 0; i < maxLen; i++) {
+        diff |= (sa.charCodeAt(i) || 0) ^ (sb.charCodeAt(i) || 0);
+      }
+      return diff === 0;
+    }
+
+    function generateCryptoSaltHex(byteLen = 12) {
+      try {
+        if (window.crypto && typeof window.crypto.getRandomValues === 'function') {
+          const arr = new Uint8Array(byteLen);
+          window.crypto.getRandomValues(arr);
+          return Array.from(arr).map(b => b.toString(16).padStart(2, '0')).join('');
+        }
+      } catch (e) {}
+      return sha256SyncHex(`${Date.now()}_${Math.random()}_${byteLen}`).slice(0, byteLen * 2);
+    }
+
+    async function hashExamPassword(plainPassword, existingSalt = '') {
+      const raw = String(plainPassword ?? '').trim();
+      if (!raw) return { salt: '', hash: '' };
+      const salt = String(existingSalt || '').trim() || generateCryptoSaltHex(12);
+      const hash = await sha256AsyncHex(`anninh_pwd_v1:${salt}:${raw}`);
+      return { salt, hash };
+    }
+
+    async function verifyExamPassword(enteredPassword, exam) {
+      if (!exam) return false;
+      const entered = String(enteredPassword ?? '').trim();
+      if (exam.passwordHash) {
+        if (!entered) return false;
+        const candidateHash = await sha256AsyncHex(`anninh_pwd_v1:${exam.passwordSalt || ''}:${entered}`);
+        return constantTimeEqual(candidateHash, String(exam.passwordHash));
+      }
+      if (exam.password) {
+        const expectedHash = await sha256AsyncHex(String(exam.password));
+        const actualHash = await sha256AsyncHex(entered);
+        return constantTimeEqual(actualHash, expectedHash);
+      }
+      return true;
+    }
+
+    function computeResultIntegritySeal(res) {
+      if (!res || typeof res !== 'object') return '0000-0000-0000';
+      const canonical = [
+        'AN_NINH_SEAL_V1',
+        String(res.examId || ''),
+        String(res.studentName || ''),
+        String(res.studentClass || ''),
+        String(res.subCode || ''),
+        Number(res.score || 0).toFixed(2),
+        `${Number(res.correctUnits || 0)}/${Number(res.totalUnits || 0)}`,
+        String(Number(res.timeSpentSeconds || 0)),
+        String(Number(res.violations || 0)),
+        String(res.submittedTimestamp || res.submittedAt || '')
+      ].join('|');
+      const hex = sha256SyncHex(canonical).slice(0, 12).toUpperCase();
+      return `${hex.slice(0, 4)}-${hex.slice(4, 8)}-${hex.slice(8, 12)}`;
+    }
+
+    function maskStudentNamePrivacy(fullName) {
+      const raw = String(fullName ?? '').trim();
+      if (!raw) return 'Thí sinh ***';
+      const parts = raw.split(/\s+/).filter(Boolean);
+      if (parts.length === 1) {
+        const w = parts[0];
+        return w.slice(0, 1) + '*'.repeat(Math.max(2, w.length - 1));
+      }
+      return parts.map((w, idx) => {
+        if (idx === 0) return w;
+        return w.slice(0, 1) + '*'.repeat(Math.max(2, Math.min(4, w.length - 1)));
+      }).join(' ');
+    }
+
+    function formatStudentDisplayName(fullName) {
+      const raw = String(fullName ?? '');
+      return privacyMaskEnabled ? maskStudentNamePrivacy(raw) : raw;
+    }
+
+    function updatePrivacyMaskUI() {
+      const btn = document.getElementById('btn-leaderboard-privacy-mask');
+      const lbl = document.getElementById('leaderboard-privacy-label');
+      if (btn) {
+        btn.setAttribute('aria-pressed', privacyMaskEnabled ? 'true' : 'false');
+        btn.className = privacyMaskEnabled
+          ? 'cursor-pointer px-3 py-2 rounded-xl bg-sky-500 hover:bg-sky-600 text-white border border-sky-600 text-xs font-bold flex items-center gap-1.5 transition-colors shadow-sm'
+          : 'cursor-pointer px-3 py-2 rounded-xl bg-sky-50 hover:bg-sky-100 text-sky-700 border border-sky-200 text-xs font-bold flex items-center gap-1.5 transition-colors';
+      }
+      if (lbl) lbl.textContent = privacyMaskEnabled ? 'Đang ẩn tên HS' : 'Ẩn tên HS';
+      const modalBtn = document.getElementById('btn-modal-toggle-privacy-mask');
+      if (modalBtn) {
+        modalBtn.textContent = privacyMaskEnabled
+          ? '👁️ Đang BẬT Ẩn danh • Bấm để Hiện tên HS'
+          : '🙈 Bật / Tắt Ẩn danh tên HS';
+      }
+    }
+
+    function initPrivacyAndLegalUI() {
+      privacyMaskEnabled = safeGetLocalStorage(STORAGE_PRIVACY_MASK_KEY) === '1';
+      updatePrivacyMaskUI();
+    }
+
+    function toggleLeaderboardPrivacyMask(forceState) {
+      privacyMaskEnabled = typeof forceState === 'boolean' ? forceState : !privacyMaskEnabled;
+      safeSetLocalStorage(STORAGE_PRIVACY_MASK_KEY, privacyMaskEnabled ? '1' : '0');
+      updatePrivacyMaskUI();
+      if (typeof renderLeaderboardTable === 'function') renderLeaderboardTable();
+      if (typeof lastViewedResult === 'object' && lastViewedResult && typeof renderResultView === 'function') {
+        const resTab = document.getElementById('tab-result');
+        if (resTab && !resTab.classList.contains('hidden')) {
+          renderResultView(lastViewedResult);
+        }
+      }
+      showCuteToast(
+        privacyMaskEnabled
+          ? '🙈 Đã bật chế độ Ẩn danh tên học sinh trên BXH (Luật 91/2025/QH15).'
+          : '👁️ Đã tắt chế độ Ẩn danh tên học sinh.',
+        privacyMaskEnabled ? '🛡️' : '✨',
+        'info'
+      );
+    }
+
+    function switchLegalPrivacyTab(tabKey = 'privacy') {
+      const validTabs = ['privacy', 'licenses'];
+      const activeTab = validTabs.includes(tabKey) ? tabKey : 'privacy';
+      const activeClasses = {
+        privacy: 'bg-sky-500 text-white border-sky-500',
+        licenses: 'bg-pink-500 text-white border-pink-500'
+      };
+      const hoverClasses = {
+        privacy: 'hover:bg-sky-50',
+        licenses: 'hover:bg-pink-50'
+      };
+      validTabs.forEach(k => {
+        const panel = document.getElementById('legal-tab-panel-' + k);
+        const btn = document.getElementById('legal-tab-btn-' + k);
+        const isOn = k === activeTab;
+        if (panel) panel.classList.toggle('hidden', !isOn);
+        if (btn) {
+          btn.className = isOn
+            ? `cursor-pointer px-3.5 py-2 rounded-2xl text-xs font-extrabold ${activeClasses[k]} border flex items-center gap-1.5 transition-all`
+            : `cursor-pointer px-3.5 py-2 rounded-2xl text-xs font-extrabold bg-white ${hoverClasses[k]} text-slate-700 border border-slate-200 flex items-center gap-1.5 transition-all`;
+        }
+      });
+      refreshIconsAndMath(document.getElementById('modal-legal-privacy'));
+    }
+
+    function openLegalPrivacyModal(defaultTab = 'privacy') {
+      updatePrivacyMaskUI();
+      switchLegalPrivacyTab(defaultTab);
+      const modal = showModalElement('modal-legal-privacy');
+      if (modal) modal.scrollTop = 0;
+    }
+
+    function closeLegalPrivacyModal() {
+      hideModalElement('modal-legal-privacy');
+    }
+
+    function eraseAllPersonalLocalData() {
+      const confirmed = window.confirm(
+        'Bạn có chắc muốn XÓA SẠCH toàn bộ dữ liệu cá nhân khỏi trình duyệt này?\n' +
+        '(Bao gồm: họ tên học sinh đã lưu, lịch sử điểm, Study Streak, Kho câu hay sai, tiến độ Flashcard/Speedrun và bản nháp bài làm — theo Luật 91/2025/QH15).'
+      );
+      if (!confirmed) return;
+
+      const personalKeys = [
+        STORAGE_RESULTS_KEY,
+        STORAGE_ACTIVE_SESSION_KEY,
+        STORAGE_EXAM_DRAFTS_MAP_KEY,
+        STORAGE_VAULT_KEY,
+        STORAGE_STREAK_KEY,
+        STORAGE_FLASHCARD_KEY,
+        STORAGE_SPEEDRUN_KEY,
+        STORAGE_PRIVACY_MASK_KEY,
+        'thpt_anninh_last_student_name',
+        'thpt_anninh_last_student_class'
+      ];
+      personalKeys.forEach(k => {
+        try { localStorage.removeItem(k); } catch (e) {}
+      });
+
+      if (examTimerInterval) {
+        clearInterval(examTimerInterval);
+        examTimerInterval = null;
+      }
+      activeExamSession = null;
+      lastViewedResult = null;
+      resultsList = [];
+      wrongVaultList = [];
+      studyStreakState = { count: 0, lastDate: '', historyDates: [], userCheckedIn: false };
+      flashcardStatuses = {};
+      flashcardDeck = [];
+      flashcardCurrentIndex = 0;
+      flashcardIsFlipped = false;
+      privacyMaskEnabled = false;
+      speedrunState = {
+        ...speedrunState,
+        active: false,
+        paused: false,
+        score: 0,
+        combo: 0,
+        maxCombo: 0,
+        answered: 0,
+        correctCount: 0,
+        highScore: 0,
+        sessionStartHighScore: 0,
+        pool: [],
+        qIndex: 0,
+        locked: false
+      };
+
+      const nameInp = document.getElementById('input-student-name');
+      const classInp = document.getElementById('input-student-class');
+      if (nameInp) nameInp.value = '';
+      if (classInp) classInp.value = '';
+
+      updatePrivacyMaskUI();
+      if (typeof renderExamWatermark === 'function') renderExamWatermark(null);
+      if (typeof renderHomeStatsAndExams === 'function') renderHomeStatsAndExams();
+      if (typeof renderArchiveAndLeaderboard === 'function') renderArchiveAndLeaderboard();
+      if (typeof renderVaultTab === 'function') renderVaultTab();
+      if (typeof initFlashcardTab === 'function') initFlashcardTab();
+      if (typeof initSpeedrunTab === 'function') initSpeedrunTab();
+      if (typeof updateEdTechSummaryBadges === 'function') updateEdTechSummaryBadges();
+
+      const activeExamOrRes = ['tab-exam', 'tab-result'].some(id => {
+        const el = document.getElementById(id);
+        return el && !el.classList.contains('hidden');
+      });
+      if (activeExamOrRes && typeof switchTab === 'function') {
+        switchTab('home');
+      }
+
+      closeLegalPrivacyModal();
+      showCuteToast('🗑️ Đã xóa sạch toàn bộ dữ liệu cá nhân khỏi trình duyệt (Zero-Server)!', '🛡️', 'success');
+    }
+
+    // ---------------------------------------------------------------------
+    // 2B. PWA INSTALL CONTROLLER & ANTI-STALE SERVICE WORKER REGISTRATION
+    // ---------------------------------------------------------------------
+    let deferredPwaInstallPrompt = null;
+
+    function isPwaStandalone() {
+      try {
+        const mql = window.matchMedia ? window.matchMedia('(display-mode: standalone)').matches : false;
+        return Boolean(mql || window.navigator.standalone === true);
+      } catch (e) {
+        return false;
+      }
+    }
+
+    function isIosSafariBrowser() {
+      try {
+        const ua = navigator.userAgent || '';
+        const isIosDevice = /iP(?:hone|ad|od)/i.test(ua) || (navigator.platform === 'MacIntel' && (navigator.maxTouchPoints || 0) > 1);
+        const isSafariEngine = /Safari/i.test(ua) && !/CriOS|FxiOS|EdgiOS|OPiOS|YaBrowser/i.test(ua);
+        return Boolean(isIosDevice && isSafariEngine);
+      } catch (e) {
+        return false;
+      }
+    }
+
+    function updatePwaInstallUI() {
+      const standalone = isPwaStandalone();
+      document.documentElement.dataset.pwaMode = standalone ? 'standalone' : 'browser';
+
+      const headerBtn = document.getElementById('btn-pwa-install');
+      const menuBtn = document.getElementById('btn-menu-pwa-install');
+      const iosHint = document.getElementById('pwa-ios-hint-bar');
+
+      const canInstallNative = !standalone && Boolean(deferredPwaInstallPrompt);
+      const showIosGuide = !standalone && !canInstallNative && isIosSafariBrowser();
+      const showInstallBtns = canInstallNative || showIosGuide;
+
+      if (headerBtn) {
+        headerBtn.classList.toggle('hidden', !showInstallBtns);
+        headerBtn.classList.toggle('inline-flex', showInstallBtns);
+      }
+      if (menuBtn) {
+        menuBtn.classList.toggle('hidden', !showInstallBtns);
+        menuBtn.classList.toggle('flex', showInstallBtns);
+      }
+      if (iosHint) {
+        let dismissed = false;
+        try { dismissed = sessionStorage.getItem('thpt_anninh_ios_hint_dismissed') === '1'; } catch (e) {}
+        iosHint.classList.toggle('hidden', !(showIosGuide && !dismissed));
+      }
+    }
+
+    async function triggerPwaInstall() {
+      if (isPwaStandalone()) {
+        updatePwaInstallUI();
+        return;
+      }
+      if (deferredPwaInstallPrompt) {
+        const promptEvt = deferredPwaInstallPrompt;
+        deferredPwaInstallPrompt = null;
+        try {
+          await promptEvt.prompt();
+          const choice = await promptEvt.userChoice;
+          if (choice && choice.outcome === 'accepted') {
+            showCuteToast('📲 Đã cài đặt AN NINH EDUTECH làm App trên thiết bị!', '🎉', 'success');
+          }
+        } catch (e) {}
+        updatePwaInstallUI();
+        return;
+      }
+      if (isIosSafariBrowser()) {
+        try { sessionStorage.removeItem('thpt_anninh_ios_hint_dismissed'); } catch (e) {}
+        updatePwaInstallUI();
+        showCuteToast('📲 Trên iOS Safari: bấm Chia sẻ (↑) ở thanh dưới → chọn "Thêm vào MH chính"!', '📱', 'info');
+      }
+    }
+
+    function dismissIosInstallHint() {
+      try { sessionStorage.setItem('thpt_anninh_ios_hint_dismissed', '1'); } catch (e) {}
+      const iosHint = document.getElementById('pwa-ios-hint-bar');
+      if (iosHint) iosHint.classList.add('hidden');
+    }
+
+    function syncSwStateAttribute(registration) {
+      if (!registration) return;
+      if (registration.active && registration.active.state) {
+        document.documentElement.dataset.swStatus = registration.active.state;
+      } else if (registration.waiting) {
+        document.documentElement.dataset.swStatus = 'waiting';
+      } else if (registration.installing) {
+        document.documentElement.dataset.swStatus = 'installing';
+      }
+    }
+
+    function registerPwaServiceWorker() {
+      if (!('serviceWorker' in navigator)) {
+        document.documentElement.dataset.swStatus = 'unsupported';
+        return;
+      }
+      const host = window.location.hostname || '';
+      const isLocal = host === 'localhost' || host === '127.0.0.1';
+      if (!window.isSecureContext && !isLocal) {
+        document.documentElement.dataset.swStatus = 'insecure';
+        return;
+      }
+
+      const bindWorkerTracking = () => {
+        navigator.serviceWorker.register('/sw.js', { scope: '/' })
+          .then(reg => {
+            syncSwStateAttribute(reg);
+            const trackWorker = (sw) => {
+              if (!sw) return;
+              document.documentElement.dataset.swStatus = sw.state || 'installing';
+              sw.addEventListener('statechange', () => {
+                document.documentElement.dataset.swStatus = sw.state;
+                syncSwStateAttribute(reg);
+              });
+            };
+            if (reg.installing) trackWorker(reg.installing);
+            reg.addEventListener('updatefound', () => {
+              if (reg.installing) trackWorker(reg.installing);
+            });
+            return navigator.serviceWorker.ready;
+          })
+          .then(readyReg => {
+            syncSwStateAttribute(readyReg);
+          })
+          .catch(() => {
+            document.documentElement.dataset.swStatus = 'error';
+          });
+      };
+
+      if (document.readyState === 'complete') {
+        bindWorkerTracking();
+      } else {
+        window.addEventListener('load', bindWorkerTracking, { once: true });
+      }
+    }
+
+    function initPwaSupport() {
+      updatePwaInstallUI();
+      if (window.matchMedia) {
+        try {
+          const standaloneMql = window.matchMedia('(display-mode: standalone)');
+          if (typeof standaloneMql.addEventListener === 'function') {
+            standaloneMql.addEventListener('change', updatePwaInstallUI);
+          }
+        } catch (e) {}
+      }
+      registerPwaServiceWorker();
+    }
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPwaInstallPrompt = e;
+      updatePwaInstallUI();
+    });
+
+    window.addEventListener('appinstalled', () => {
+      deferredPwaInstallPrompt = null;
+      document.documentElement.dataset.pwaMode = 'standalone';
+      updatePwaInstallUI();
+      showCuteToast('✅ Đã cài đặt thành công ứng dụng AN NINH EDUTECH!', '🎉', 'success');
+    });
+
+    window.addEventListener('online', () => {
+      if (typeof updateOnlineSyncBadge === 'function') updateOnlineSyncBadge();
+    });
+
+    window.addEventListener('offline', () => {
+      if (typeof updateOnlineSyncBadge === 'function') updateOnlineSyncBadge();
+      showCuteToast('📶 Đang ở chế độ Offline — toàn bộ bộ đề và kết quả vẫn hoạt động bình thường!', '💾', 'info');
+    });
 
     let examsList = [];
     let resultsList = [];
@@ -4222,7 +4891,8 @@ ANSWER KEYS
     function sanitizeImageUrl(url) {
       if (!url || typeof url !== 'string') return '';
       const trimmed = url.trim();
-      if (/^data:image\/(?:png|jpeg|jpg|gif|webp|bmp|svg\+xml)(?:;charset=[^;]+)?;base64,[a-zA-Z0-9+/=\s]+$/i.test(trimmed)) {
+      // Block svg+xml payloads to eliminate embedded <script>/XSS vectors inside data URIs
+      if (/^data:image\/(?:png|jpeg|jpg|gif|webp|bmp)(?:;charset=[^;]+)?;base64,[a-zA-Z0-9+/=\s]+$/i.test(trimmed)) {
         return escapeHTML(trimmed.replace(/\s+/g, ''));
       }
       if (/^https?:\/\/[^\s"'<>]+$/i.test(trimmed)) {
@@ -4487,7 +5157,7 @@ ANSWER KEYS
       // Password visibility
       const pwdGroup = document.getElementById('modal-password-group');
       if (pwdGroup) {
-        if (exam.password) pwdGroup.classList.remove('hidden');
+        if (exam.passwordHash || exam.password) pwdGroup.classList.remove('hidden');
         else pwdGroup.classList.add('hidden');
       }
 
@@ -4551,91 +5221,104 @@ ANSWER KEYS
       confirmEnterExamRoom();
     }
 
-    function confirmEnterExamRoom() {
-      if (!pendingStartExam && window.lastCreatedExamId) {
-        pendingStartExam = findExamById(window.lastCreatedExamId);
-      }
-      if (!pendingStartExam) {
-        const lostMsg = '⚠️ Chưa xác định được đề thi cần mở! Vui lòng bấm lại nút "Vào thi ngay" trên đề thi.';
-        showCuteToast(lostMsg, '⚠️', 'warning');
-        closeStartExamModal();
-        return;
-      }
+    let isEnteringExamRoom = false;
 
-      const examToLaunch = pendingStartExam;
-      const isPreviewLaunch = Boolean(pendingStartIsPreview);
-      if (!Array.isArray(examToLaunch.questions) || examToLaunch.questions.length === 0) {
-        const emptyQMsg = '⚠️ Đề thi này chưa có câu hỏi hợp lệ nào để bắt đầu làm bài!';
-        showStartModalError(emptyQMsg);
-        showCuteToast(emptyQMsg, '⚠️', 'warning');
-        return;
-      }
+    async function confirmEnterExamRoom() {
+      if (isEnteringExamRoom) return;
+      isEnteringExamRoom = true;
+      const enterBtn = document.getElementById('btn-confirm-enter-exam');
+      if (enterBtn) enterBtn.disabled = true;
 
-      hideStartModalError();
-
-      const nameInp = document.getElementById('input-student-name');
-      const classInp = document.getElementById('input-student-class');
-      const studentName = nameInp ? nameInp.value.trim() : '';
-      const studentClass = classInp ? classInp.value.trim() : '';
-
-      if (!isPreviewLaunch && examToLaunch.requireInfo && (!studentName || !studentClass)) {
-        const infoErrMsg = '⚠️ Vui lòng nhập đầy đủ Họ và Tên cùng Lớp học của bạn trước khi vào thi nhé!';
-        showStartModalError(infoErrMsg);
-        showCuteToast(infoErrMsg, '⚠️', 'warning');
-        if (!studentName && nameInp) nameInp.focus();
-        else if (!studentClass && classInp) classInp.focus();
-        return;
-      }
-
-      // Check password if locked
-      if (examToLaunch.password) {
-        const pwdInp = document.getElementById('input-exam-password');
-        const enteredPwd = pwdInp ? pwdInp.value.trim() : '';
-        if (enteredPwd !== examToLaunch.password && !(isPreviewLaunch && !enteredPwd)) {
-          const pwdErrMsg = '🔒 Mật khẩu đề thi chưa chính xác! Vui lòng kiểm tra lại.';
-          showStartModalError(pwdErrMsg);
-          showCuteToast(pwdErrMsg, '🔒', 'warning');
-          if (pwdInp) pwdInp.focus();
+      try {
+        if (!pendingStartExam && window.lastCreatedExamId) {
+          pendingStartExam = findExamById(window.lastCreatedExamId);
+        }
+        if (!pendingStartExam) {
+          const lostMsg = '⚠️ Chưa xác định được đề thi cần mở! Vui lòng bấm lại nút "Vào thi ngay" trên đề thi.';
+          showCuteToast(lostMsg, '⚠️', 'warning');
+          closeStartExamModal();
           return;
         }
+
+        const examToLaunch = pendingStartExam;
+        const isPreviewLaunch = Boolean(pendingStartIsPreview);
+        if (!Array.isArray(examToLaunch.questions) || examToLaunch.questions.length === 0) {
+          const emptyQMsg = '⚠️ Đề thi này chưa có câu hỏi hợp lệ nào để bắt đầu làm bài!';
+          showStartModalError(emptyQMsg);
+          showCuteToast(emptyQMsg, '⚠️', 'warning');
+          return;
+        }
+
+        hideStartModalError();
+
+        const nameInp = document.getElementById('input-student-name');
+        const classInp = document.getElementById('input-student-class');
+        const studentName = nameInp ? nameInp.value.trim() : '';
+        const studentClass = classInp ? classInp.value.trim() : '';
+
+        if (!isPreviewLaunch && examToLaunch.requireInfo && (!studentName || !studentClass)) {
+          const infoErrMsg = '⚠️ Vui lòng nhập đầy đủ Họ và Tên cùng Lớp học của bạn trước khi vào thi nhé!';
+          showStartModalError(infoErrMsg);
+          showCuteToast(infoErrMsg, '⚠️', 'warning');
+          if (!studentName && nameInp) nameInp.focus();
+          else if (!studentClass && classInp) classInp.focus();
+          return;
+        }
+
+        // Check SHA-256 salted password hash (with backward compatibility for legacy stored exams)
+        if (examToLaunch.passwordHash || examToLaunch.password) {
+          const pwdInp = document.getElementById('input-exam-password');
+          const enteredPwd = pwdInp ? pwdInp.value.trim() : '';
+          const isPwdValid = enteredPwd ? await verifyExamPassword(enteredPwd, examToLaunch) : false;
+          if (!isPwdValid && !(isPreviewLaunch && !enteredPwd)) {
+            const pwdErrMsg = '🔒 Mật khẩu đề thi chưa chính xác! Vui lòng kiểm tra lại.';
+            showStartModalError(pwdErrMsg);
+            showCuteToast(pwdErrMsg, '🔒', 'warning');
+            if (pwdInp) pwdInp.focus();
+            return;
+          }
+        }
+
+        const finalName = studentName || (isPreviewLaunch ? 'Giáo viên (Thi thử)' : 'Thí sinh tự do');
+        const finalClass = studentClass || '11A1';
+
+        // Check attempt limit for student (excluding demo seeds, vault practice, and creator previews)
+        const normalizedName = finalName.toLowerCase();
+        const existingAttempts = resultsList.filter(
+          r => r &&
+               !r.isPreview &&
+               !r.isVaultPractice &&
+               !String(r.id).startsWith('res_seed_') &&
+               r.examId === examToLaunch.id &&
+               String(r.studentName || '').toLowerCase() === normalizedName
+        ).length;
+
+        const maxAllowed = examToLaunch.mode === 'exam' ? 1 : (parseInt(examToLaunch.maxAttempts, 10) || 0);
+        if (!isPreviewLaunch && maxAllowed > 0 && existingAttempts >= maxAllowed) {
+          const isLocalCreator = (typeof myCreatedExamIds !== 'undefined') && myCreatedExamIds.has(String(examToLaunch.id));
+          const limitMsg = `⛔ Học sinh "${finalName}" đã hoàn thành ${existingAttempts}/${maxAllowed} lượt cho phép ở đề thi này! (Bạn có thể nhập tên khác${isLocalCreator ? ' hoặc bấm nút Thi thử bên dưới' : ''}).`;
+          showStartModalError(limitMsg, isLocalCreator);
+          showCuteToast(limitMsg, '⛔', 'warning');
+          return;
+        }
+
+        const subSelectEl = document.getElementById('input-student-subcode');
+        let chosenSubCode = subSelectEl ? subSelectEl.value : 'RANDOM';
+        if (chosenSubCode === 'RANDOM') {
+          const totalCodes = Math.max(1, parseInt(examToLaunch.subExamCount, 10) || 4);
+          chosenSubCode = String(101 + Math.floor(Math.random() * totalCodes));
+        }
+
+        if (studentName) safeSetLocalStorage('thpt_anninh_last_student_name', studentName);
+        if (studentClass) safeSetLocalStorage('thpt_anninh_last_student_class', studentClass);
+
+        unlockAudioContext();
+        closeStartExamModal();
+        launchActiveExam(examToLaunch, finalName, finalClass, chosenSubCode, isPreviewLaunch);
+      } finally {
+        isEnteringExamRoom = false;
+        if (enterBtn) enterBtn.disabled = false;
       }
-
-      const finalName = studentName || (isPreviewLaunch ? 'Giáo viên (Thi thử)' : 'Thí sinh tự do');
-      const finalClass = studentClass || '11A1';
-
-      // Check attempt limit for student (excluding demo seeds, vault practice, and creator previews)
-      const normalizedName = finalName.toLowerCase();
-      const existingAttempts = resultsList.filter(
-        r => r &&
-             !r.isPreview &&
-             !r.isVaultPractice &&
-             !String(r.id).startsWith('res_seed_') &&
-             r.examId === examToLaunch.id &&
-             String(r.studentName || '').toLowerCase() === normalizedName
-      ).length;
-
-      const maxAllowed = examToLaunch.mode === 'exam' ? 1 : (parseInt(examToLaunch.maxAttempts, 10) || 0);
-      if (!isPreviewLaunch && maxAllowed > 0 && existingAttempts >= maxAllowed) {
-        const isLocalCreator = (typeof myCreatedExamIds !== 'undefined') && myCreatedExamIds.has(String(examToLaunch.id));
-        const limitMsg = `⛔ Học sinh "${finalName}" đã hoàn thành ${existingAttempts}/${maxAllowed} lượt cho phép ở đề thi này! (Bạn có thể nhập tên khác${isLocalCreator ? ' hoặc bấm nút Thi thử bên dưới' : ''}).`;
-        showStartModalError(limitMsg, isLocalCreator);
-        showCuteToast(limitMsg, '⛔', 'warning');
-        return;
-      }
-
-      const subSelectEl = document.getElementById('input-student-subcode');
-      let chosenSubCode = subSelectEl ? subSelectEl.value : 'RANDOM';
-      if (chosenSubCode === 'RANDOM') {
-        const totalCodes = Math.max(1, parseInt(examToLaunch.subExamCount, 10) || 4);
-        chosenSubCode = String(101 + Math.floor(Math.random() * totalCodes));
-      }
-
-      if (studentName) safeSetLocalStorage('thpt_anninh_last_student_name', studentName);
-      if (studentClass) safeSetLocalStorage('thpt_anninh_last_student_class', studentClass);
-
-      unlockAudioContext();
-      closeStartExamModal();
-      launchActiveExam(examToLaunch, finalName, finalClass, chosenSubCode, isPreviewLaunch);
     }
 
     function getExamDraftsMap() {
@@ -4734,6 +5417,59 @@ ANSWER KEYS
       }
     }
 
+    function renderExamWatermark(session) {
+      const layer = document.getElementById('exam-watermark-layer');
+      const qContainer = document.getElementById('exam-questions-container');
+      const isProtected = Boolean(session && session.exam && session.exam.antiCheat);
+      if (qContainer) {
+        qContainer.classList.toggle('exam-protected-content', isProtected);
+      }
+      if (!layer) return;
+      if (!isProtected) {
+        layer.style.display = 'none';
+        layer.classList.add('hidden');
+        layer.classList.remove('flex');
+        layer.innerHTML = '';
+        return;
+      }
+      const studentLbl = formatStudentDisplayName(session.studentName || 'Thí sinh');
+      const classLbl = session.studentClass || '11A1';
+      const subLbl = session.subCode || '101';
+      const tileText = `${studentLbl} • ${classLbl} • Mã ${subLbl}`;
+      const tiles = [];
+      for (let i = 0; i < 18; i++) {
+        tiles.push(`<span class="text-xs sm:text-sm font-black tracking-widest uppercase text-pink-700 -rotate-12 whitespace-nowrap px-5 py-7">${escapeHTML(tileText)}</span>`);
+      }
+      layer.innerHTML = tiles.join('');
+      layer.classList.remove('hidden');
+      layer.classList.add('flex');
+      layer.style.display = 'flex';
+    }
+
+    async function toggleExamFullscreen() {
+      const btn = document.getElementById('btn-exam-fullscreen');
+      try {
+        if (!document.fullscreenElement) {
+          const target = document.getElementById('tab-exam') || document.documentElement;
+          if (target && typeof target.requestFullscreen === 'function') {
+            await target.requestFullscreen();
+          } else if (document.documentElement && typeof document.documentElement.requestFullscreen === 'function') {
+            await document.documentElement.requestFullscreen();
+          } else {
+            showCuteToast('ℹ️ Trình duyệt này không hỗ trợ chế độ toàn màn hình.', '🖥️', 'info');
+            return;
+          }
+          showCuteToast('🖥️ Đã bật chế độ Toàn màn hình tập trung làm bài!', '🛡️', 'info');
+        } else if (typeof document.exitFullscreen === 'function') {
+          await document.exitFullscreen();
+        }
+      } catch (e) {
+        showCuteToast('ℹ️ Trình duyệt chưa cấp quyền Toàn màn hình lúc này.', '🖥️', 'info');
+      } finally {
+        if (btn) btn.setAttribute('aria-pressed', document.fullscreenElement ? 'true' : 'false');
+      }
+    }
+
     function updateExamRoomTopbarUI(session) {
       if (!session) return;
       const exam = session.exam || {};
@@ -4752,6 +5488,7 @@ ANSWER KEYS
           warnBanner.classList.add('hidden');
         }
       }
+      renderExamWatermark(session);
     }
 
     function startExamCountdownTimer() {
@@ -4792,6 +5529,7 @@ ANSWER KEYS
         flagged: draft.flagged || {},
         revealedPractice: draft.revealedPractice || {},
         violations: draft.violations || 0,
+        violationLog: Array.isArray(draft.violationLog) ? draft.violationLog : [],
         remainingSeconds: rem,
         endAtMs: nowMs + rem * 1000,
         startedAtMs: draft.startedAtMs || (nowMs - Math.max(0, ((draft.totalSeconds || rem) - rem)) * 1000)
@@ -4932,6 +5670,7 @@ ANSWER KEYS
         flagged: {}, // q.id -> boolean
         revealedPractice: {}, // q.id -> boolean
         violations: 0,
+        violationLog: [],
         totalSeconds: durationMins * 60,
         remainingSeconds: durationMins * 60,
         startedAtMs: nowMs,
@@ -5338,23 +6077,45 @@ ANSWER KEYS
       if (examTimerInterval) clearInterval(examTimerInterval);
       clearActiveExamDraft(activeExamSession?.exam?.id);
       activeExamSession = null;
+      renderExamWatermark(null);
+      if (document.fullscreenElement && typeof document.exitFullscreen === 'function') {
+        document.exitFullscreen().catch(() => {});
+      }
       switchTab('home');
       showCuteToast('Đã rời khỏi phòng thi.', '🌸');
     }
 
     // ---------------------------------------------------------------------
-    // 11. ANTI-CHEAT MONITOR (visibilitychange)
+    // 11. ANTI-CHEAT MONITOR (visibilitychange, blur, copy/context guard)
     // ---------------------------------------------------------------------
-    function recordTabViolation(sourceLabel) {
+    function isAntiCheatExamActive() {
       const tabExam = document.getElementById('tab-exam');
       const examTabVisible = tabExam && !tabExam.classList.contains('hidden');
-      if (!activeExamSession || !examTabVisible || !activeExamSession.exam.antiCheat) return;
+      return Boolean(activeExamSession && examTabVisible && activeExamSession.exam?.antiCheat);
+    }
+
+    function isEditableExamField(target) {
+      if (!target || typeof target.closest !== 'function') return false;
+      return Boolean(target.closest('input, textarea, select, [contenteditable="true"]'));
+    }
+
+    function recordTabViolation(sourceLabel) {
+      if (!isAntiCheatExamActive()) return;
 
       const now = Date.now();
       if (now - lastViolationTimestamp < 1500) return; // debounce duplicate events
       lastViolationTimestamp = now;
 
       activeExamSession.violations++;
+      if (!Array.isArray(activeExamSession.violationLog)) activeExamSession.violationLog = [];
+      activeExamSession.violationLog.push({
+        time: new Date().toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit', second: '2-digit' }),
+        reason: String(sourceLabel || 'Rời màn hình bài thi')
+      });
+      if (activeExamSession.violationLog.length > 50) {
+        activeExamSession.violationLog = activeExamSession.violationLog.slice(-50);
+      }
+
       const countEl = document.getElementById('exam-violation-count');
       if (countEl) countEl.textContent = activeExamSession.violations;
 
@@ -5372,6 +6133,42 @@ ANSWER KEYS
     document.addEventListener('visibilitychange', () => {
       if (document.hidden) {
         recordTabViolation('Ẩn Tab / Chuyển Tab');
+      }
+    });
+
+    window.addEventListener('blur', () => {
+      if (isAntiCheatExamActive()) {
+        recordTabViolation('Rời cửa sổ trình duyệt / Mở ứng dụng khác');
+      }
+    });
+
+    document.addEventListener('contextmenu', (e) => {
+      if (!isAntiCheatExamActive()) return;
+      const qArea = document.getElementById('exam-questions-container');
+      if (qArea && qArea.contains(e.target) && !isEditableExamField(e.target)) {
+        e.preventDefault();
+        showCuteToast('🛡️ Chế độ Giám sát Anti-Cheat đã khóa chuột phải trên nội dung đề thi.', '🔒', 'warning');
+      }
+    });
+
+    ['copy', 'cut'].forEach(evtName => {
+      document.addEventListener(evtName, (e) => {
+        if (!isAntiCheatExamActive()) return;
+        const qArea = document.getElementById('exam-questions-container');
+        if (qArea && qArea.contains(e.target) && !isEditableExamField(e.target)) {
+          e.preventDefault();
+          showCuteToast('🛡️ Không được sao chép nội dung câu hỏi khi đang bật Giám sát!', '🔒', 'warning');
+        }
+      });
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (!isAntiCheatExamActive()) return;
+      if (isEditableExamField(e.target)) return;
+      const key = String(e.key || '').toLowerCase();
+      if ((e.ctrlKey || e.metaKey) && ['c', 'u', 's', 'p'].includes(key)) {
+        e.preventDefault();
+        showCuteToast('🛡️ Phím tắt sao chép/in đề đang tạm khóa trong chế độ Giám sát!', '🔒', 'warning');
       }
     });
 
@@ -5659,11 +6456,13 @@ ANSWER KEYS
         totalUnits,
         timeSpentSeconds,
         violations: session.violations,
+        violationLog: Array.isArray(session.violationLog) ? [...session.violationLog] : [],
         submittedAt: nowStr,
         submittedTimestamp: Date.now(),
         partBreakdown,
         reviewItems
       };
+      resultRecord.integritySeal = computeResultIntegritySeal(resultRecord);
 
       if (!isVaultPractice) {
         resultsList.unshift(resultRecord);
@@ -5673,6 +6472,10 @@ ANSWER KEYS
 
       lastViewedResult = resultRecord;
       activeExamSession = null;
+      renderExamWatermark(null);
+      if (document.fullscreenElement && typeof document.exitFullscreen === 'function') {
+        document.exitFullscreen().catch(() => {});
+      }
 
       renderHomeStatsAndExams();
       renderArchiveAndLeaderboard();
@@ -5692,7 +6495,9 @@ ANSWER KEYS
     function renderResultView(res) {
       const setTxt = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
       setTxt('res-exam-title', res.examTitle || 'Kết Quả Bài Thi');
-      setTxt('res-student-meta', `👤 Thí sinh: ${res.studentName} • Lớp: ${res.studentClass} • Mã đề: ${res.subCode} • Nộp lúc: ${res.submittedAt}`);
+      const maskedResName = formatStudentDisplayName(res.studentName || 'Thí sinh');
+      const sealCode = res.integritySeal || computeResultIntegritySeal(res);
+      setTxt('res-student-meta', `👤 Thí sinh: ${maskedResName} • Lớp: ${res.studentClass} • Mã đề: ${res.subCode} • Nộp lúc: ${res.submittedAt} • Mã SHA-256: ${sealCode}`);
       setTxt('res-score-big', Number(res.score || 0).toFixed(2));
       setTxt('res-correct-count', `${res.correctUnits} / ${res.totalUnits}`);
       setTxt('res-wrong-count', `${Math.max(0, res.totalUnits - res.correctUnits)}`);
@@ -5826,7 +6631,8 @@ ANSWER KEYS
     function exportCurrentResultCSV() {
       if (!lastViewedResult) return;
       const r = lastViewedResult;
-      let csv = '\uFEFFHọ và Tên,Lớp,Đề Thi,Mã Đề,Điểm Số,Số Câu/Ý Đúng,Tổng Câu/Ý,Thời Gian (Giây),Số Lần Vi Phạm Tab,Thời Điểm Nộp\n';
+      const sealCode = r.integritySeal || computeResultIntegritySeal(r);
+      let csv = '\uFEFFHọ và Tên,Lớp,Đề Thi,Mã Đề,Điểm Số,Số Câu/Ý Đúng,Tổng Câu/Ý,Thời Gian (Giây),Số Lần Vi Phạm Tab,Thời Điểm Nộp,Mã Niêm Phong SHA-256\n';
       const row = [
         r.studentName,
         r.studentClass,
@@ -5837,7 +6643,8 @@ ANSWER KEYS
         r.totalUnits,
         r.timeSpentSeconds,
         r.violations,
-        r.submittedAt
+        r.submittedAt,
+        sealCode
       ].map(toCsvCell).join(',');
       csv += row + '\n';
       downloadTextFile(`KetQua_${r.studentName}_${r.studentClass}.csv`, csv, 'text/csv;charset=utf-8;');
@@ -5865,7 +6672,14 @@ ANSWER KEYS
       txt += `Số câu/ý đúng: ${r.correctUnits} / ${r.totalUnits}\n`;
       txt += `Thời gian hoàn thành: ${formatSecondsToMMSS(r.timeSpentSeconds || 0)}\n`;
       txt += `Số lần cảnh báo chuyển Tab: ${r.violations || 0} lần\n`;
+      if (Array.isArray(r.violationLog) && r.violationLog.length > 0) {
+        txt += `Nhật ký giám sát (${r.violationLog.length} sự kiện):\n`;
+        r.violationLog.forEach((ev, idx) => {
+          txt += `  ${idx + 1}. [${ev.time || '--:--'}] ${ev.reason || 'Chuyển tab'}\n`;
+        });
+      }
       txt += `Nộp bài lúc: ${r.submittedAt}\n`;
+      txt += `Mã niêm phong toàn vẹn (SHA-256): ${r.integritySeal || computeResultIntegritySeal(r)}\n`;
       downloadTextFile(`BienBan_${r.studentName}.txt`, txt);
       showCuteToast('📝 Đã tải xuống biên bản kết quả (.TXT)!', '🌸', 'info');
     }
@@ -5894,6 +6708,9 @@ ANSWER KEYS
       flushActiveExamDraft,
       clearActiveExamDraft,
       updateExamRoomTopbarUI,
+      renderExamWatermark,
+      toggleExamFullscreen,
+      isAntiCheatExamActive,
       startExamCountdownTimer,
       activateRestoredExamDraft,
       restoreActiveExamDraftIfAny,
@@ -6437,8 +7254,14 @@ ANSWER KEYS
     function updateOnlineSyncBadge() {
       const badge = document.getElementById('online-sync-badge');
       if (!badge) return;
-      badge.className = 'hidden lg:inline-flex items-center gap-1 px-2.5 py-1 text-[11px] font-bold rounded-full bg-sky-100 text-sky-800 border border-sky-200 hover:bg-sky-200 transition-colors whitespace-nowrap shrink-0';
-      badge.innerHTML = '<i data-lucide="globe" class="w-3 h-3"></i> onthithptanninh.pages.dev • Không giới hạn';
+      const isOffline = typeof navigator !== 'undefined' && navigator.onLine === false;
+      if (isOffline) {
+        badge.className = 'hidden lg:inline-flex items-center gap-1 px-2.5 py-1 text-[11px] font-bold rounded-full bg-amber-100 text-amber-800 border border-amber-300 transition-colors whitespace-nowrap shrink-0';
+        badge.innerHTML = '<i data-lucide="wifi-off" class="w-3 h-3"></i> Đang Offline • Ôn thi trên máy';
+      } else {
+        badge.className = 'hidden lg:inline-flex items-center gap-1 px-2.5 py-1 text-[11px] font-bold rounded-full bg-sky-100 text-sky-800 border border-sky-200 hover:bg-sky-200 transition-colors whitespace-nowrap shrink-0';
+        badge.innerHTML = '<i data-lucide="globe" class="w-3 h-3"></i> onthithptanninh.pages.dev • Không giới hạn';
+      }
       if (badge.tagName === 'A') {
         badge.href = OFFICIAL_SITE_URL;
       }
@@ -6531,7 +7354,9 @@ ANSWER KEYS
         duration: exam.duration,
         mode: exam.mode,
         maxAttempts: exam.maxAttempts,
-        password: exam.password || '',
+        password: '',
+        passwordHash: exam.passwordHash || '',
+        passwordSalt: exam.passwordSalt || '',
         scoringMode: exam.scoringMode || 'moet',
         antiCheat: !!exam.antiCheat,
         requireInfo: !!exam.requireInfo,
@@ -6596,7 +7421,7 @@ ANSWER KEYS
         ? `<span class="px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-200 text-xs font-bold">🌱 Luyện tập${maxAtt > 0 ? ` (${maxAtt} lần)` : ''}</span>`
         : `<span class="px-3 py-1 rounded-full bg-pink-100 text-pink-700 border border-pink-200 text-xs font-bold">🎯 Kiểm tra (1 lần)</span>`;
 
-      const lockBadge = ex.password
+      const lockBadge = (ex.passwordHash || ex.password)
         ? `<span class="px-2.5 py-0.5 rounded-full bg-rose-100 text-rose-700 text-[11px] font-bold">🔒 Có mật khẩu</span>`
         : `<span class="px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-800 text-[11px] font-bold">🔓 Mở tự do</span>`;
 
@@ -7396,106 +8221,136 @@ ANSWER KEYS
     // ---------------------------------------------------------------------
     // 9. SAVE CREATED EXAM TO LOCALSTORAGE
     // ---------------------------------------------------------------------
-    function saveCreatedExam(startImmediately) {
-      const errBanner = document.getElementById('create-exam-error');
-      if (errBanner) errBanner.classList.add('hidden');
+    let isSavingCreatedExam = false;
 
-      const title = document.getElementById('cfg-title').value.trim() || 'Đề Ôn Thi Mới - THPT An Ninh';
-      const grade = document.getElementById('cfg-grade').value;
-      const subject = document.getElementById('cfg-subject').value;
-      const duration = Math.max(1, parseInt(document.getElementById('cfg-duration').value, 10) || 45);
-      const scoringMode = document.getElementById('cfg-scoring-mode')?.value || 'moet';
-      const maxAttempts = Math.max(0, parseInt(document.getElementById('cfg-max-attempts').value, 10) || 0);
-      const password = document.getElementById('cfg-password').value.trim();
-      const antiCheat = document.getElementById('cfg-anticheat').checked;
-      const requireInfo = document.getElementById('cfg-require-info').checked;
-      const shuffle = document.getElementById('cfg-shuffle').checked;
-      const useSubExam = document.getElementById('cfg-subexam').checked;
-      const subExamCount = useSubExam ? (parseInt(document.getElementById('cfg-subexam-count').value, 10) || 4) : 1;
-      const subExamLimit = useSubExam ? (parseInt(document.getElementById('cfg-subexam-limit').value, 10) || 0) : 0;
+    async function saveCreatedExam(startImmediately) {
+      if (isSavingCreatedExam) return;
+      isSavingCreatedExam = true;
+      try {
+        const errBanner = document.getElementById('create-exam-error');
+        if (errBanner) errBanner.classList.add('hidden');
 
-      const rawAzota = normalizeMobileExamText(document.getElementById('azota-textarea').value).trim();
-      if (!rawAzota) {
-        const emptyMsg = '⚠️ Bạn chưa nhập hoặc tải nội dung đề thi! Hãy dán câu hỏi vào khung soạn thảo hoặc bấm "Nạp đề mẫu 3 phần".';
-        showCreateExamError(emptyMsg);
-        return;
-      }
+        const title = document.getElementById('cfg-title').value.trim() || 'Đề Ôn Thi Mới - THPT An Ninh';
+        const grade = document.getElementById('cfg-grade').value;
+        const subject = document.getElementById('cfg-subject').value;
+        const duration = Math.max(1, parseInt(document.getElementById('cfg-duration').value, 10) || 45);
+        const scoringMode = document.getElementById('cfg-scoring-mode')?.value || 'moet';
+        const maxAttempts = Math.max(0, parseInt(document.getElementById('cfg-max-attempts').value, 10) || 0);
+        const rawPassword = document.getElementById('cfg-password').value.trim();
+        const clearPwdChecked = Boolean(document.getElementById('cfg-password-clear')?.checked);
+        const antiCheat = document.getElementById('cfg-anticheat').checked;
+        const requireInfo = document.getElementById('cfg-require-info').checked;
+        const shuffle = document.getElementById('cfg-shuffle').checked;
+        const useSubExam = document.getElementById('cfg-subexam').checked;
+        const subExamCount = useSubExam ? (parseInt(document.getElementById('cfg-subexam-count').value, 10) || 4) : 1;
+        const subExamLimit = useSubExam ? (parseInt(document.getElementById('cfg-subexam-limit').value, 10) || 0) : 0;
 
-      const parsed = parseAzotaText(rawAzota);
+        const rawAzota = normalizeMobileExamText(document.getElementById('azota-textarea').value).trim();
+        if (!rawAzota) {
+          const emptyMsg = '⚠️ Bạn chưa nhập hoặc tải nội dung đề thi! Hãy dán câu hỏi vào khung soạn thảo hoặc bấm "Nạp đề mẫu 3 phần".';
+          showCreateExamError(emptyMsg);
+          return;
+        }
 
-      if (!Array.isArray(parsed) || parsed.length === 0) {
-        const parseErrMsg = '⚠️ Đề thi chưa nhận diện được câu hỏi hợp lệ nào (0 câu hỏi)! Hãy kiểm tra lại định dạng (VD: "Câu 1. ...", "*A. ...", "B. ...") hoặc bấm nút "Nạp đề mẫu 3 phần".';
-        showCreateExamError(parseErrMsg);
-        return;
-      }
+        const parsed = parseAzotaText(rawAzota);
 
-      const existingExam = editingExamId ? findExamById(editingExamId) : null;
-      const nowStr = existingExam?.createdAt || new Date().toLocaleDateString('vi-VN');
-      const targetExamId = existingExam ? String(existingExam.id) : ('exam_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6));
-      const newExam = {
-        id: targetExamId,
-        title,
-        grade,
-        subject,
-        duration,
-        mode: currentEditingMode,
-        maxAttempts: currentEditingMode === 'exam' ? 1 : maxAttempts,
-        password,
-        scoringMode,
-        antiCheat,
-        requireInfo,
-        shuffle,
-        subExamCount,
-        subExamLimit,
-        createdAt: nowStr,
-        createdTimestamp: existingExam?.createdTimestamp || Date.now(),
-        updatedTimestamp: Date.now(),
-        rawAzota,
-        questions: parsed
-      };
+        if (!Array.isArray(parsed) || parsed.length === 0) {
+          const parseErrMsg = '⚠️ Đề thi chưa nhận diện được câu hỏi hợp lệ nào (0 câu hỏi)! Hãy kiểm tra lại định dạng (VD: "Câu 1. ...", "*A. ...", "B. ...") hoặc bấm nút "Nạp đề mẫu 3 phần".';
+          showCreateExamError(parseErrMsg);
+          return;
+        }
 
-      const wasEditing = Boolean(existingExam);
-      cancelEditExamMode(true);
+        const existingExam = editingExamId ? findExamById(editingExamId) : null;
+        let passwordSalt = '';
+        let passwordHash = '';
+        if (!clearPwdChecked) {
+          if (rawPassword) {
+            const pwdObj = await hashExamPassword(rawPassword);
+            passwordSalt = pwdObj.salt;
+            passwordHash = pwdObj.hash;
+          } else if (existingExam) {
+            if (existingExam.passwordHash) {
+              passwordSalt = existingExam.passwordSalt || '';
+              passwordHash = existingExam.passwordHash;
+            } else if (existingExam.password) {
+              const pwdObj = await hashExamPassword(existingExam.password);
+              passwordSalt = pwdObj.salt;
+              passwordHash = pwdObj.hash;
+            }
+          }
+        }
 
-      // Guarantee global in-memory persistence before localStorage & UI transitions
-      registerExamInMemory(newExam, !wasEditing);
-      markExamAsCreatedLocally(newExam.id);
-      const savedOk = persistExamsToLocal();
+        const nowStr = existingExam?.createdAt || new Date().toLocaleDateString('vi-VN');
+        const targetExamId = existingExam ? String(existingExam.id) : ('exam_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6));
+        const newExam = {
+          id: targetExamId,
+          title,
+          grade,
+          subject,
+          duration,
+          mode: currentEditingMode,
+          maxAttempts: currentEditingMode === 'exam' ? 1 : maxAttempts,
+          password: '',
+          passwordSalt,
+          passwordHash,
+          scoringMode,
+          antiCheat,
+          requireInfo,
+          shuffle,
+          subExamCount,
+          subExamLimit,
+          createdAt: nowStr,
+          createdTimestamp: existingExam?.createdTimestamp || Date.now(),
+          updatedTimestamp: Date.now(),
+          rawAzota,
+          questions: parsed
+        };
 
-      // Clear archive and home filters so the newly saved exam is always immediately visible
-      const fSearch = document.getElementById('filter-search');
-      const fGrade = document.getElementById('filter-grade');
-      const fSubject = document.getElementById('filter-subject');
-      const fMode = document.getElementById('filter-mode');
-      if (fSearch) fSearch.value = '';
-      if (fGrade) fGrade.value = 'ALL';
-      if (fSubject) fSubject.value = 'ALL';
-      if (fMode) fMode.value = 'ALL';
-      homeSelectedGrade = 'ALL';
-      const hSearch = document.getElementById('home-exam-search');
-      if (hSearch) hSearch.value = '';
+        const wasEditing = Boolean(existingExam);
+        cancelEditExamMode(true);
 
-      renderHomeStatsAndExams();
-      renderArchiveAndLeaderboard();
+        // Guarantee global in-memory persistence before localStorage & UI transitions
+        registerExamInMemory(newExam, !wasEditing);
+        markExamAsCreatedLocally(newExam.id);
+        const savedOk = persistExamsToLocal();
 
-      if (savedOk) {
-        showCuteToast(
-          wasEditing
-            ? `✏️ Đã cập nhật đề "${title}" (${parsed.length} câu)!`
-            : `🎉 Đã lưu đề "${title}" (${parsed.length} câu) thành công!`,
-          '💖'
-        );
-      } else {
-        showCuteToast(`⚠️ Đề đã nạp vào phiên hiện tại (${parsed.length} câu), bộ nhớ trình duyệt gần đầy — hãy bấm Chia sẻ Link hoặc Xuất JSON để giữ đề nhé!`, '📦');
-      }
+        // Clear archive and home filters so the newly saved exam is always immediately visible
+        const fSearch = document.getElementById('filter-search');
+        const fGrade = document.getElementById('filter-grade');
+        const fSubject = document.getElementById('filter-subject');
+        const fMode = document.getElementById('filter-mode');
+        if (fSearch) fSearch.value = '';
+        if (fGrade) fGrade.value = 'ALL';
+        if (fSubject) fSubject.value = 'ALL';
+        if (fMode) fMode.value = 'ALL';
+        homeSelectedGrade = 'ALL';
+        const hSearch = document.getElementById('home-exam-search');
+        if (hSearch) hSearch.value = '';
 
-      if (startImmediately) {
-        hideModalElement('modal-share-exam');
-        hideModalElement('modal-submit-confirm');
-        openStartExamModal(newExam.id, true);
-      } else {
-        switchTab('archive');
-        openShareExamModal(newExam.id, true);
+        renderHomeStatsAndExams();
+        renderArchiveAndLeaderboard();
+
+        if (savedOk) {
+          showCuteToast(
+            wasEditing
+              ? `✏️ Đã cập nhật đề "${title}" (${parsed.length} câu)!`
+              : `🎉 Đã lưu đề "${title}" (${parsed.length} câu) thành công!`,
+            '💖'
+          );
+        } else {
+          showCuteToast(`⚠️ Đề đã nạp vào phiên hiện tại (${parsed.length} câu), bộ nhớ trình duyệt gần đầy — hãy bấm Chia sẻ Link hoặc Xuất JSON để giữ đề nhé!`, '📦');
+        }
+
+        if (startImmediately) {
+          hideModalElement('modal-share-exam');
+          hideModalElement('modal-submit-confirm');
+          openStartExamModal(newExam.id, true);
+        } else {
+          switchTab('archive');
+          openShareExamModal(newExam.id, true);
+        }
+      } finally {
+        isSavingCreatedExam = false;
       }
     }
 
@@ -7527,8 +8382,21 @@ ANSWER KEYS
       selectExamMode(exam.mode === 'practice' ? 'practice' : 'exam');
       const attEl = document.getElementById('cfg-max-attempts');
       if (attEl) attEl.value = String(exam.mode === 'exam' ? 1 : (parseInt(exam.maxAttempts, 10) || 0));
+      const hasExistingPwd = Boolean(exam.passwordHash || exam.password);
       const pwdEl = document.getElementById('cfg-password');
-      if (pwdEl) pwdEl.value = exam.password || '';
+      const pwdClearWrap = document.getElementById('cfg-password-clear-wrap');
+      const pwdClearCb = document.getElementById('cfg-password-clear');
+      if (pwdEl) {
+        pwdEl.value = '';
+        pwdEl.placeholder = hasExistingPwd
+          ? '🔒 Đã mã hóa SHA-256 (để trống nếu giữ nguyên)'
+          : 'Để trống nếu không khóa';
+      }
+      if (pwdClearCb) pwdClearCb.checked = false;
+      if (pwdClearWrap) {
+        pwdClearWrap.classList.toggle('hidden', !hasExistingPwd);
+        pwdClearWrap.classList.toggle('flex', hasExistingPwd);
+      }
       const acEl = document.getElementById('cfg-anticheat');
       if (acEl) acEl.checked = Boolean(exam.antiCheat);
       const reqEl = document.getElementById('cfg-require-info');
@@ -7570,6 +8438,18 @@ ANSWER KEYS
       editingExamId = null;
       const banner = document.getElementById('edit-mode-banner');
       if (banner) banner.classList.add('hidden');
+      const pwdEl = document.getElementById('cfg-password');
+      const pwdClearWrap = document.getElementById('cfg-password-clear-wrap');
+      const pwdClearCb = document.getElementById('cfg-password-clear');
+      if (pwdEl) {
+        pwdEl.value = '';
+        pwdEl.placeholder = 'Để trống nếu không khóa';
+      }
+      if (pwdClearCb) pwdClearCb.checked = false;
+      if (pwdClearWrap) {
+        pwdClearWrap.classList.add('hidden');
+        pwdClearWrap.classList.remove('flex');
+      }
       document.querySelectorAll('.btn-save-exam-label').forEach(sp => {
         sp.textContent = 'Lưu vào kho đề';
       });
@@ -7782,7 +8662,7 @@ ANSWER KEYS
             <div class="rounded-3xl bg-gradient-to-br ${m.bg} border-2 p-5 shadow-sm flex items-center justify-between gap-4">
               <div class="space-y-1 min-w-0">
                 <span class="px-3 py-0.5 rounded-full ${m.badge} text-xs font-bold">${m.icon}</span>
-                <h4 class="text-lg font-bold text-slate-800 pt-1 truncate">${escapeHTML(item.studentName)}</h4>
+                <h4 class="text-lg font-bold text-slate-800 pt-1 truncate">${escapeHTML(formatStudentDisplayName(item.studentName))}</h4>
                 <p class="text-xs font-bold text-slate-600">Lớp: ${escapeHTML(item.studentClass)} • ⏱️ ${formatSecondsToMMSS(item.timeSpentSeconds)}</p>
                 <p class="text-[11px] text-slate-500 line-clamp-1">${escapeHTML(item.examTitle)}</p>
               </div>
@@ -7802,7 +8682,7 @@ ANSWER KEYS
         return `
           <tr class="hover:bg-pink-50/50 transition-colors">
             <td class="py-3.5 px-4 font-extrabold text-pink-600">${rankBadge}</td>
-            <td class="py-3.5 px-4 font-bold text-slate-800">${escapeHTML(r.studentName)}</td>
+            <td class="py-3.5 px-4 font-bold text-slate-800">${escapeHTML(formatStudentDisplayName(r.studentName))}</td>
             <td class="py-3.5 px-4"><span class="px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-xs font-bold">${escapeHTML(r.studentClass)}</span></td>
             <td class="py-3.5 px-4 max-w-xs truncate" title="${escapeHTML(r.examTitle)}">${escapeHTML(r.examTitle)}</td>
             <td class="py-3.5 px-4 text-center"><span class="px-3 py-1 rounded-full bg-pink-100 text-pink-700 font-extrabold">${Number(r.score).toFixed(2)}</span></td>
@@ -7844,11 +8724,12 @@ ANSWER KEYS
         showCuteToast('⚠️ Chưa có dữ liệu điểm phù hợp để xuất CSV!', '📊');
         return;
       }
-      let csv = '\uFEFFHạng,Họ và Tên,Lớp,Đề Thi,Mã Đề,Điểm Số,Số Câu/Ý Đúng,Tổng Câu/Ý,Thời Gian (MM:SS),Vi Phạm Tab,Thời Điểm Nộp\n';
+      let csv = '\uFEFFHạng,Họ và Tên,Lớp,Đề Thi,Mã Đề,Điểm Số,Số Câu/Ý Đúng,Tổng Câu/Ý,Thời Gian (MM:SS),Vi Phạm Tab,Thời Điểm Nộp,Mã Niêm Phong SHA-256\n';
       list.forEach((r, idx) => {
+        const sealCode = r.integritySeal || computeResultIntegritySeal(r);
         const row = [
           idx + 1,
-          r.studentName,
+          formatStudentDisplayName(r.studentName),
           r.studentClass,
           r.examTitle,
           r.subCode || '101',
@@ -7857,7 +8738,8 @@ ANSWER KEYS
           r.totalUnits,
           formatSecondsToMMSS(r.timeSpentSeconds),
           r.violations || 0,
-          r.submittedAt || ''
+          r.submittedAt || '',
+          sealCode
         ].map(toCsvCell).join(',');
         csv += row + '\n';
       });
@@ -8083,7 +8965,7 @@ ANSWER KEYS
       const pkg = {
         exportedAt: new Date().toISOString(),
         siteUrl: OFFICIAL_SITE_URL,
-        exams: [currentShareExam]
+        exams: [{ ...currentShareExam, password: '' }]
       };
       const safeTitle = (currentShareExam.title || 'DeThi').replace(/[^\w\d\-]+/g, '_');
       downloadTextFile(`DeThi_${safeTitle}.json`, JSON.stringify(pkg, null, 2), 'application/json');
@@ -8250,7 +9132,7 @@ ANSWER KEYS
         exportedAt: new Date().toISOString(),
         siteUrl: OFFICIAL_SITE_URL,
         school: 'THPT An Ninh - Tây Ninh (Lớp 11A1)',
-        exams: examsList,
+        exams: examsList.map(ex => ({ ...ex, password: '' })),
         results: resultsList,
         wrongVault: wrongVaultList,
         studyStreak: studyStreakState,
@@ -9313,8 +10195,9 @@ ANSWER KEYS
       setTxt('report-exam-subject', res.subject || 'Tổ hợp THPT');
       setTxt('report-submitted-at', res.submittedAt || '');
       setTxt('report-total-score', Number(res.score || 0).toFixed(2));
-      setTxt('report-student-name', res.studentName || 'Thí sinh');
+      setTxt('report-student-name', formatStudentDisplayName(res.studentName || 'Thí sinh'));
       setTxt('report-student-class', res.studentClass || '12A1');
+      setTxt('report-integrity-seal', res.integritySeal || computeResultIntegritySeal(res));
 
       const bd = computeResultPartBreakdown(res);
       setTxt('report-part1-score', `${Number(bd.part1.score || 0).toFixed(2)} đ`);
@@ -10371,6 +11254,7 @@ ANSWER KEYS
         closeStartExamModal();
         closeShareExamModal();
         closeSubmitConfirmModal();
+        closeLegalPrivacyModal();
       }
     });
 
@@ -10389,11 +11273,14 @@ ANSWER KEYS
       try {
         try { initAppStorage(); } catch (e) {}
         try { initSoundSettingsStorage(); } catch (e) {}
+        try { initPrivacyAndLegalUI(); } catch (e) {}
+        try { initPwaSupport(); } catch (e) {}
         try { updateOnlineSyncBadge(); } catch (e) {}
         try {
           hideModalElement('modal-start-exam');
           hideModalElement('modal-share-exam');
           hideModalElement('modal-submit-confirm');
+          hideModalElement('modal-legal-privacy');
         } catch (e) {}
 
         try {
@@ -10447,6 +11334,28 @@ ANSWER KEYS
       playSoundNotification,
       toggleSoundEnabled,
       updateSoundToggleUI,
+      sha256SyncHex,
+      sha256AsyncHex,
+      constantTimeEqual,
+      hashExamPassword,
+      verifyExamPassword,
+      computeResultIntegritySeal,
+      maskStudentNamePrivacy,
+      formatStudentDisplayName,
+      initPrivacyAndLegalUI,
+      updatePrivacyMaskUI,
+      toggleLeaderboardPrivacyMask,
+      openLegalPrivacyModal,
+      closeLegalPrivacyModal,
+      switchLegalPrivacyTab,
+      eraseAllPersonalLocalData,
+      isPwaStandalone,
+      isIosSafariBrowser,
+      updatePwaInstallUI,
+      triggerPwaInstall,
+      dismissIosInstallHint,
+      registerPwaServiceWorker,
+      initPwaSupport,
       bootstrapApp
     });
   </script>
