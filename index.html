@@ -925,10 +925,38 @@ details[open] > *:not(summary) {
   margin: 0 2px;
   object-fit: contain;
 }
+/* Full-size illustration / diagram / chart images inside exam questions */
+.exam-illustration {
+  display: block;
+  max-width: 100%;
+  width: auto;
+  max-height: 420px;
+  height: auto;
+  margin: 0.75rem auto;
+  border-radius: 1rem;
+  border: 2px solid #FBCFE8;
+  background-color: #FFFFFF;
+  padding: 0.25rem;
+  object-fit: contain;
+  box-shadow: 0 4px 14px -4px rgba(236, 72, 153, 0.12);
+  cursor: zoom-in;
+}
+button .exam-illustration {
+  max-height: 220px;
+  margin: 0.4rem auto;
+  cursor: pointer;
+}
 @media (max-width: 640px) {
   .inline-formula {
     max-height: 2.1em;
     max-width: calc(100% - 8px);
+  }
+  .exam-illustration {
+    max-height: 320px;
+    margin: 0.5rem auto;
+  }
+  button .exam-illustration {
+    max-height: 180px;
   }
 }
 
@@ -3427,6 +3455,16 @@ ANSWER KEYS
     </div>
   </div>
 
+  <!-- Modal: Image Zoom Lightbox for Question Illustrations -->
+  <div id="modal-image-zoom" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Phóng to hình minh họa câu hỏi" onclick="if(event.target===this) closeExamImageZoom()" class="fixed inset-0 z-[80] hidden glass-modal-backdrop items-center justify-center p-3 sm:p-6">
+    <div class="relative max-w-[94vw] max-h-[90dvh] flex flex-col items-center">
+      <button type="button" onclick="closeExamImageZoom()" aria-label="Đóng ảnh phóng to" class="cursor-pointer absolute -top-3 -right-3 w-9 h-9 rounded-full bg-white hover:bg-rose-100 text-slate-700 hover:text-rose-600 border-2 border-pink-200 shadow-lg flex items-center justify-center text-base font-black z-10">
+        ×
+      </button>
+      <img id="zoom-modal-img" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==" class="max-w-[92vw] max-h-[84dvh] rounded-2xl bg-white p-2 border-2 border-pink-200 shadow-2xl object-contain" alt="Phóng to hình minh họa" />
+    </div>
+  </div>
+
   <!-- Modal 4: Bảo Mật, Luật 91/2025/QH15 & Bản Quyền Mã Nguồn Mở -->
   <div id="modal-legal-privacy" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="legal-modal-title" onclick="if(event.target===this) closeLegalPrivacyModal()" class="fixed inset-0 z-[70] hidden glass-modal-backdrop items-center justify-center p-3 sm:p-4 overflow-y-auto overscroll-contain">
     <div class="glass-modal-card modal-spring-pop rounded-3xl border-2 border-sky-200 max-w-[calc(100vw-1.5rem)] sm:max-w-3xl w-full mx-auto my-auto max-h-[90dvh] overflow-y-auto p-5 sm:p-7 space-y-5">
@@ -4569,6 +4607,15 @@ ANSWER KEYS
         }
       }
       renderMathInElementSafe(target);
+      try {
+        if (target && typeof target.querySelectorAll === 'function' && typeof autoSizeExamImage === 'function') {
+          target.querySelectorAll('img.inline-formula').forEach(img => {
+            if (img.complete && img.naturalWidth > 0) {
+              autoSizeExamImage(img);
+            }
+          });
+        }
+      } catch (e) {}
     }
 
     function formatSecondsToMMSS(sec) {
@@ -4904,6 +4951,35 @@ ANSWER KEYS
       return '';
     }
 
+    function autoSizeExamImage(imgEl) {
+      if (!imgEl || !imgEl.classList) return;
+      const nw = Number(imgEl.naturalWidth || 0);
+      const nh = Number(imgEl.naturalHeight || 0);
+      if (nh > 90 || nw > 280) {
+        imgEl.classList.remove('inline-formula');
+        imgEl.classList.add('exam-illustration');
+        imgEl.alt = 'Hình minh họa';
+      }
+    }
+
+    function openExamImageZoom(imgEl) {
+      if (!imgEl || (typeof imgEl.closest === 'function' && imgEl.closest('button'))) return;
+      const safeSrc = sanitizeImageUrl(imgEl.getAttribute('src') || imgEl.src || '');
+      if (!safeSrc) return;
+      const zoomImg = document.getElementById('zoom-modal-img');
+      if (!zoomImg) return;
+      zoomImg.setAttribute('src', safeSrc);
+      showModalElement('modal-image-zoom');
+    }
+
+    function closeExamImageZoom() {
+      hideModalElement('modal-image-zoom');
+      const zoomImg = document.getElementById('zoom-modal-img');
+      if (zoomImg) {
+        zoomImg.setAttribute('src', 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==');
+      }
+    }
+
     function formatSafeExamHTML(rawStr) {
       if (rawStr === null || rawStr === undefined) return '';
       let str = String(rawStr);
@@ -4917,18 +4993,21 @@ ANSWER KEYS
         return `\uE000SE_${nonce}_${idx}\uE001`;
       };
 
-      // 1. Preserve valid <img ... src="data:image/..." ...> inline formula images safely
+      // 1. Preserve valid <img ... src="data:image/..." ...> with automatic illustration sizing
       str = str.replace(/<img\b[^>]*\bsrc\s*=\s*(?:"([^"]*)"|'([^']*)')[^>]*>/gi, (full, dqSrc, sqSrc) => {
         const safeSrc = sanitizeImageUrl(dqSrc || sqSrc || '');
         if (!safeSrc) return '';
-        return pushToken(`<img src="${safeSrc}" class="inline-formula" alt="Công thức" />`);
+        const isIllus = /\bexam-illustration\b/i.test(full);
+        const cls = isIllus ? 'exam-illustration' : 'inline-formula';
+        const alt = isIllus ? 'Hình minh họa' : 'Công thức';
+        return pushToken(`<img src="${safeSrc}" class="${cls}" alt="${alt}" onload="autoSizeExamImage(this)" onclick="openExamImageZoom(this)" />`);
       });
 
-      // 2. Also convert any inline [IMG:data:image/...] markers into inline-formula images
+      // 2. Convert [IMG:...] markers into full-size question illustrations
       str = str.replace(/\[IMG:\s*([^\]]+?)\s*\]/gi, (full, rawUrl) => {
         const safeSrc = sanitizeImageUrl(rawUrl || '');
         if (!safeSrc) return '';
-        return pushToken(`<img src="${safeSrc}" class="inline-formula" alt="Công thức" />`);
+        return pushToken(`<img src="${safeSrc}" class="exam-illustration" alt="Hình minh họa" onclick="openExamImageZoom(this)" />`);
       });
 
       // 3. Preserve safe <sup> / <sub> tags (stripping any attributes, balancing dangling tags)
@@ -5716,7 +5795,7 @@ ANSWER KEYS
       const isFlagged = !!activeExamSession.flagged[q.id];
       const safeImgUrl = sanitizeImageUrl(q.image);
       const imgHTML = safeImgUrl
-        ? `<div class="my-3"><img src="${safeImgUrl}" class="max-h-56 rounded-2xl border-2 border-pink-100 object-contain mx-auto" alt="Hình minh họa" /></div>`
+        ? `<div class="my-3"><img src="${safeImgUrl}" class="max-h-[420px] w-auto max-w-full rounded-2xl border-2 border-pink-100 bg-white p-1 object-contain mx-auto cursor-zoom-in" alt="Hình minh họa" onclick="openExamImageZoom(this)" /></div>`
         : '';
 
       let interactionHTML = '';
@@ -6542,7 +6621,7 @@ ANSWER KEYS
 
         const safeImgUrl = sanitizeImageUrl(item.image);
         const imgHTML = safeImgUrl
-          ? `<div class="my-2"><img src="${safeImgUrl}" class="max-h-44 rounded-2xl border border-pink-200 object-contain" alt="Minh họa" /></div>`
+          ? `<div class="my-2"><img src="${safeImgUrl}" class="max-h-80 w-auto max-w-full rounded-2xl border border-pink-200 bg-white p-1 object-contain cursor-zoom-in" alt="Minh họa" onclick="openExamImageZoom(this)" /></div>`
           : '';
 
         let detailHTML = '';
@@ -6689,6 +6768,9 @@ ANSWER KEYS
 
     Object.assign(window, {
       sanitizeImageUrl,
+      autoSizeExamImage,
+      openExamImageZoom,
+      closeExamImageZoom,
       formatSafeExamHTML,
       stripInlineImagesFromString,
       stripInlineImageMarkup,
@@ -6859,13 +6941,14 @@ ANSWER KEYS
         return [];
       }
 
-      // 0. Protect inline <img> tags (formula PNG/JPG/SVG) from accidental A./a) base64 regex hits
+      // 0. Protect inline <img> tags (formula PNG/JPG or illustrations) from accidental A./a) base64 regex hits
       const inlineImgTokens = [];
-      const tokenizeInlineImg = (url) => {
+      const tokenizeInlineImg = (url, isIllustration = false) => {
         const safeUrl = sanitizeImageUrl(url);
         if (!safeUrl) return '';
         const idx = inlineImgTokens.length;
-        inlineImgTokens.push(`<img src="${safeUrl}" class="inline-formula">`);
+        const imgCls = isIllustration ? 'exam-illustration' : 'inline-formula';
+        inlineImgTokens.push(`<img src="${safeUrl}" class="${imgCls}">`);
         return `@@AZOTA_IMG_${idx}@@`;
       };
       const restoreInlineImgs = (str) => {
@@ -6877,7 +6960,7 @@ ANSWER KEYS
       };
 
       let preprocessed = normalized.replace(/<img\b[^>]*\bsrc\s*=\s*(?:"([^"]*)"|'([^']*)')[^>]*>/gi, (full, dqSrc, sqSrc) => {
-        return tokenizeInlineImg(dqSrc || sqSrc || '');
+        return tokenizeInlineImg(dqSrc || sqSrc || '', /\bexam-illustration\b/i.test(full));
       });
       // Also convert HTML line/block/table/formatting tags (e.g. <strong>*A.</strong>, <p>, <br>) while keeping <sup>, <sub>
       preprocessed = preprocessed
@@ -7595,7 +7678,22 @@ ANSWER KEYS
       reader.onload = async function(e) {
         const compressedUrl = await compressImageDataUrl(e.target.result);
         const ta = document.getElementById('azota-textarea');
-        ta.value = (ta.value.trim() ? ta.value.trim() + '\n' : '') + `[IMG:${compressedUrl}]\n`;
+        const marker = `[IMG:${compressedUrl}]`;
+        if (ta) {
+          const val = ta.value || '';
+          const start = typeof ta.selectionStart === 'number' ? ta.selectionStart : val.length;
+          const end = typeof ta.selectionEnd === 'number' ? ta.selectionEnd : val.length;
+          const hasCursorSelection = start < val.length || end < val.length;
+          if (hasCursorSelection) {
+            const before = val.slice(0, start);
+            const after = val.slice(end);
+            const prefix = before && !before.endsWith('\n') ? '\n' : '';
+            const suffix = after && !after.startsWith('\n') ? '\n' : (after ? '' : '\n');
+            ta.value = `${before}${prefix}${marker}${suffix}${after}`;
+          } else {
+            ta.value = (val.trim() ? val.trim() + '\n' : '') + `${marker}\n`;
+          }
+        }
         parseAndPreviewAzota();
         showCuteToast('🖼️ Đã nén & chèn ảnh minh họa vào đề thi!', '🎨');
       };
@@ -7703,7 +7801,7 @@ ANSWER KEYS
 
         const safeImgUrl = sanitizeImageUrl(q.image);
         const imgHTML = safeImgUrl
-          ? `<div class="mt-2"><img src="${safeImgUrl}" class="max-h-36 rounded-xl border border-pink-200 object-contain" alt="Minh họa câu hỏi" /></div>`
+          ? `<div class="mt-2"><img src="${safeImgUrl}" class="max-h-72 w-auto max-w-full rounded-xl border border-pink-200 bg-white p-1 object-contain cursor-zoom-in" alt="Minh họa câu hỏi" onclick="openExamImageZoom(this)" /></div>`
           : '';
 
         return `
@@ -7798,6 +7896,23 @@ ANSWER KEYS
       return pageTexts.join('\n').trim();
     }
 
+    function getImageDataUrlDimensions(dataUrl) {
+      return new Promise(resolve => {
+        if (!dataUrl || typeof dataUrl !== 'string') {
+          resolve({ width: 0, height: 0 });
+          return;
+        }
+        try {
+          const probe = new Image();
+          probe.onload = () => resolve({ width: Number(probe.naturalWidth || probe.width || 0), height: Number(probe.naturalHeight || probe.height || 0) });
+          probe.onerror = () => resolve({ width: 0, height: 0 });
+          probe.src = dataUrl;
+        } catch (e) {
+          resolve({ width: 0, height: 0 });
+        }
+      });
+    }
+
     function serializeDocxNodeToAzotaMarkup(node, insideTableCell = false) {
       if (!node) return '';
       if (node.nodeType === Node.TEXT_NODE) {
@@ -7809,7 +7924,8 @@ ANSWER KEYS
       if (tag === 'IMG') {
         const src = (node.getAttribute('src') || '').trim();
         if (!src) return '';
-        return `<img src="${src}" class="inline-formula">`;
+        const imgClass = node.getAttribute('class') === 'exam-illustration' ? 'exam-illustration' : 'inline-formula';
+        return `<img src="${src}" class="${imgClass}">`;
       }
       if (tag === 'BR') return '\n';
 
@@ -7850,14 +7966,16 @@ ANSWER KEYS
         const rawHtml = (htmlRes && htmlRes.value) || '';
         if (rawHtml.trim()) {
           const doc = new DOMParser().parseFromString(rawHtml, 'text/html');
-          // Convert embedded Word formula/diagram images into inline <img src="data:image/..." class="inline-formula">
+          // Convert embedded Word images: keep tiny formulas inline, upgrade large diagrams/charts to full-size illustrations
           const imgs = Array.from(doc.querySelectorAll('img'));
           for (const imgEl of imgs) {
             const src = imgEl.getAttribute('src') || '';
             if (src.startsWith('data:image/')) {
               const compressed = await compressImageDataUrl(src, 800, 0.82, true);
+              const dims = await getImageDataUrlDimensions(compressed);
+              const isIllustration = dims.height > 90 || dims.width > 280;
               imgEl.setAttribute('src', compressed);
-              imgEl.setAttribute('class', 'inline-formula');
+              imgEl.setAttribute('class', isIllustration ? 'exam-illustration' : 'inline-formula');
             } else {
               imgEl.remove();
             }
@@ -9179,6 +9297,7 @@ ANSWER KEYS
       handleFileSelect,
       showCreateExamError,
       extractPdfTextWithPdfJs,
+      getImageDataUrlDimensions,
       serializeDocxNodeToAzotaMarkup,
       extractDocxAzotaText,
       readLatexBracedArgs,
@@ -9548,7 +9667,7 @@ ANSWER KEYS
         const nextDateStr = new Date(item.nextReviewAt || now).toLocaleDateString('vi-VN');
         const safeImgUrl = sanitizeImageUrl(item.questionObj?.image);
         const qImgHTML = safeImgUrl
-          ? `<div class="my-2"><img src="${safeImgUrl}" class="max-h-48 rounded-2xl border border-rose-200 object-contain" alt="Hình minh họa" /></div>`
+          ? `<div class="my-2"><img src="${safeImgUrl}" class="max-h-72 w-auto max-w-full rounded-2xl border border-rose-200 bg-white p-1 object-contain cursor-zoom-in" alt="Hình minh họa" onclick="openExamImageZoom(this)" /></div>`
           : '';
 
         return `
@@ -10040,7 +10159,7 @@ ANSWER KEYS
       if (frontImgBox) {
         const safeImgUrl = sanitizeImageUrl(q.image);
         if (safeImgUrl) {
-          frontImgBox.innerHTML = `<img src="${safeImgUrl}" class="max-h-44 rounded-2xl border border-sky-200 object-contain mx-auto" alt="Hình minh họa" />`;
+          frontImgBox.innerHTML = `<img src="${safeImgUrl}" class="max-h-72 w-auto max-w-full rounded-2xl border border-sky-200 bg-white p-1 object-contain mx-auto cursor-zoom-in" alt="Hình minh họa" onclick="openExamImageZoom(this)" />`;
           frontImgBox.classList.remove('hidden');
         } else {
           frontImgBox.innerHTML = '';
@@ -10507,7 +10626,7 @@ ANSWER KEYS
       if (imgBox) {
         const safeImgUrl = sanitizeImageUrl(q.image);
         if (safeImgUrl) {
-          imgBox.innerHTML = `<img src="${safeImgUrl}" class="max-h-48 rounded-2xl border border-orange-200 object-contain mx-auto" alt="Hình minh họa" />`;
+          imgBox.innerHTML = `<img src="${safeImgUrl}" class="max-h-72 w-auto max-w-full rounded-2xl border border-orange-200 bg-white p-1 object-contain mx-auto cursor-zoom-in" alt="Hình minh họa" onclick="openExamImageZoom(this)" />`;
           imgBox.classList.remove('hidden');
         } else {
           imgBox.innerHTML = '';
@@ -11258,6 +11377,7 @@ ANSWER KEYS
         closeShareExamModal();
         closeSubmitConfirmModal();
         closeLegalPrivacyModal();
+        closeExamImageZoom();
       }
     });
 
@@ -11284,6 +11404,7 @@ ANSWER KEYS
           hideModalElement('modal-share-exam');
           hideModalElement('modal-submit-confirm');
           hideModalElement('modal-legal-privacy');
+          hideModalElement('modal-image-zoom');
         } catch (e) {}
 
         try {
