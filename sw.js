@@ -3,7 +3,7 @@
 // - Automatic purge of old CACHE_VERSION buckets during activate + clients.claim().
 // - Cache-First for external CDN libraries (KaTeX, Mammoth, SheetJS, PDF.js, Chart.js, DOMPurify, Tailwind, Lucide, Fonts).
 
-const CACHE_VERSION = 'v2026-11-21-5';
+const CACHE_VERSION = 'v2026-11-24-9';
 const APP_CACHE = `anninh-edutech-app-${CACHE_VERSION}`;
 const CDN_CACHE = `anninh-edutech-cdn-${CACHE_VERSION}`;
 const KEEP_CACHES = new Set([APP_CACHE, CDN_CACHE]);
