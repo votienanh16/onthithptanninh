@@ -3,7 +3,7 @@
 // - Automatic purge of old CACHE_VERSION buckets during activate + clients.claim().
 // - Cache-First for external CDN libraries (KaTeX, Mammoth, SheetJS, PDF.js, Chart.js, DOMPurify, Tailwind, Lucide, Fonts).
 
-const CACHE_VERSION = 'v2026-11-25-11';
+const CACHE_VERSION = 'v2026-11-25-12';
 const APP_CACHE = `anninh-edutech-app-${CACHE_VERSION}`;
 const CDN_CACHE = `anninh-edutech-cdn-${CACHE_VERSION}`;
 const KEEP_CACHES = new Set([APP_CACHE, CDN_CACHE]);
@@ -72,7 +72,7 @@ async function fetchAndStoreCdn(cache, url) {
       await cache.put(url, corsRes.clone());
       return corsRes;
     }
-  } catch (e) {}
+  } catch (e) { }
 
   try {
     const opaqueRes = await fetch(url, { mode: 'no-cors' });
@@ -80,7 +80,7 @@ async function fetchAndStoreCdn(cache, url) {
       await cache.put(url, opaqueRes.clone());
       return opaqueRes;
     }
-  } catch (e) {}
+  } catch (e) { }
   return null;
 }
 
@@ -96,7 +96,7 @@ async function precacheCssFonts(cdnCache, baseUrl, cssText) {
       if (/\.woff2?(?:[?#].*)?$/i.test(resolved) || resolved.includes('fonts.gstatic.com')) {
         fontUrls.add(resolved);
       }
-    } catch (e) {}
+    } catch (e) { }
   }
   await Promise.allSettled(
     Array.from(fontUrls).map(fontUrl => fetchAndStoreCdn(cdnCache, fontUrl))
@@ -141,7 +141,7 @@ self.addEventListener('install', (event) => {
             try {
               const cssText = await res.clone().text();
               await precacheCssFonts(cdnCache, cdnUrl, cssText);
-            } catch (e) {}
+            } catch (e) { }
           }
         }
       })
