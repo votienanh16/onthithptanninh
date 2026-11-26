@@ -11575,22 +11575,13 @@ ANSWER KEYS
       if (kicker) kicker.textContent = justSaved ? '🎉 Đã lưu đề thi thành công!' : 'Phát hành bài thi trực tuyến';
       if (titleEl) titleEl.textContent = exam.title || 'Chia sẻ đề thi';
 
-      const qCount = (exam.questions || []).length;
-      const imgCount = countExamImages(exam);
       const modalEl = showModalElement('modal-share-exam');
 
-      const fallbackUrl = imgCount === 0 ? buildExamShareUrl(exam, false) : '';
-      if (imgCount === 0 && fallbackUrl && fallbackUrl.length <= 2400) {
-        if (statusEl) {
-          statusEl.innerHTML = `🔗 <strong>Link nén chữ (${qCount} câu, 0 ảnh):</strong> Đề chỉ có chữ ngắn nên đã tạo link trực tiếp bên dưới, hoặc bấm <strong>"Tạo Link &amp; Mã QR chia sẻ"</strong> ở trên để dùng link ngắn <code>?id=</code>!`;
-        }
-        updateShareModalUrlDisplay(fallbackUrl, 0);
-      } else {
-        if (statusEl) {
-          statusEl.innerHTML = `📌 <strong>Đề gồm ${qCount} câu hỏi &amp; ${imgCount} ảnh/công thức:</strong> Hãy bấm nút <strong>"Tạo Link &amp; Mã QR chia sẻ"</strong> ở trên để tạo link ngắn <code>?id=</code> giữ nguyên 100% ảnh &amp; công thức.`;
-        }
-        updateShareModalUrlDisplay('', imgCount);
+      if (statusEl) {
+        statusEl.className = 'p-3.5 rounded-2xl bg-sky-50 border border-sky-200 text-xs font-semibold text-sky-900 leading-relaxed';
+        statusEl.innerHTML = '⏳ <strong>Đang tự động tối ưu hình ảnh &amp; tạo link ngắn chia sẻ đề thi...</strong>';
       }
+      updateShareModalUrlDisplay('', 0);
 
       refreshIconsAndMath(modalEl || document.getElementById('modal-share-exam'));
     }
@@ -11605,14 +11596,14 @@ ANSWER KEYS
       const imgCount = typeof imageCountOrHasImg === 'number' ? imageCountOrHasImg : (imageCountOrHasImg ? 1 : 0);
 
       if (linkInp) {
-        linkInp.value = shareUrl || '';
-        linkInp.placeholder = shareUrl ? '' : 'Bấm "Tạo Link & Mã QR chia sẻ" ở trên để tạo link ngắn...';
+        linkInp.value = shareUrl || 'Đang tự động tạo link ngắn & mã QR...';
+        linkInp.placeholder = shareUrl ? '' : 'Đang tự động tạo link ngắn & mã QR...';
       }
 
       if (warnWrap && warnTxt) {
         if (shareUrl && shareUrl.length > 2400) {
           warnWrap.classList.remove('hidden');
-          warnTxt.textContent = `⚠️ Link nén khá dài (${shareUrl.length} ký tự). Hãy dùng nút "Tạo Link & Mã QR chia sẻ" để tạo link ngắn giữ 100% ${imgCount} ảnh/công thức.`;
+          warnTxt.textContent = `⚠️ Link nén khá dài (${shareUrl.length} ký tự).`;
         } else {
           warnWrap.classList.add('hidden');
         }
@@ -11622,7 +11613,7 @@ ANSWER KEYS
         if (!shareUrl) {
           canvas.classList.add('hidden');
           dlBtn.classList.add('hidden');
-          qrFallback.textContent = 'Hãy bấm nút "Tạo Link & Mã QR chia sẻ" ở trên để nhận link ngắn và mã QR.';
+          qrFallback.textContent = 'Đang tạo mã QR sắc nét...';
           qrFallback.classList.remove('hidden');
           return;
         }
@@ -11640,7 +11631,7 @@ ANSWER KEYS
               if (err) {
                 canvas.classList.add('hidden');
                 dlBtn.classList.add('hidden');
-                qrFallback.textContent = `Mã QR không hiển thị được do link quá dài (${shareUrl.length} ký tự) — hãy dùng nút "Tạo Link & Mã QR chia sẻ"!`;
+                qrFallback.textContent = `Mã QR không hiển thị được do link quá dài (${shareUrl.length} ký tự).`;
                 qrFallback.classList.remove('hidden');
               }
             }
@@ -11648,9 +11639,7 @@ ANSWER KEYS
         } else {
           canvas.classList.add('hidden');
           dlBtn.classList.add('hidden');
-          qrFallback.textContent = shareUrl.length > 2400
-            ? `Đề thi dài (${shareUrl.length} ký tự) vượt dung lượng tối đa của mã QR — hãy dùng nút "Tạo Link & Mã QR chia sẻ"!`
-            : 'Hãy dùng nút "Sao chép link" hoặc "Xuất file đề (.JSON)" bên dưới.';
+          qrFallback.textContent = 'Hãy dùng nút "Sao chép link" hoặc "Xuất file đề (.JSON)" bên dưới.';
           qrFallback.classList.remove('hidden');
         }
       }
