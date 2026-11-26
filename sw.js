@@ -3,7 +3,7 @@
 // - Automatic purge of old CACHE_VERSION buckets during activate + clients.claim().
 // - Cache-First for external CDN libraries (KaTeX, Mammoth, SheetJS, PDF.js, Chart.js, DOMPurify, Tailwind, Lucide, Fonts).
 
-const CACHE_VERSION = 'v2026-11-26-03';
+const CACHE_VERSION = 'v2026-11-26-04';
 const APP_CACHE = `anninh-edutech-app-${CACHE_VERSION}`;
 const CDN_CACHE = `anninh-edutech-cdn-${CACHE_VERSION}`;
 const KEEP_CACHES = new Set([APP_CACHE, CDN_CACHE]);
@@ -36,6 +36,7 @@ const CDN_PRECACHE_URLS = [
   'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js',
   'https://cdn.jsdelivr.net/npm/lz-string@1.5.0/libs/lz-string.min.js',
   'https://cdn.jsdelivr.net/npm/qrcode@1.5.1/build/qrcode.min.js',
+  'https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js',
   'https://cdn.jsdelivr.net/npm/dompurify@3.1.6/dist/purify.min.js',
   'https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js',
   'https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js',
@@ -222,14 +223,9 @@ async function networkFirstApp(request) {
 }
 
 self.addEventListener('fetch', (event) => {
+  if (event.request.method !== 'GET' || new URL(event.request.url).pathname.startsWith('/api/')) return;
   const { request } = event;
   if (!request) return;
-  try {
-    if (new URL(event.request.url).pathname.startsWith('/api/')) return;
-  } catch (e) {
-    return;
-  }
-  if (request.method !== 'GET') return;
 
   let urlObj;
   try {
