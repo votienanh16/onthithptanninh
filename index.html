@@ -122,6 +122,8 @@
   </script>
   <script src="https://cdn.jsdelivr.net/npm/lz-string@1.5.0/libs/lz-string.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.1/build/qrcode.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/dompurify@3.1.6/dist/purify.min.js"
+    onerror="var s=document.createElement('script');s.src='https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.1.6/purify.min.js';document.head.appendChild(s);"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -969,24 +971,27 @@
       }
 
       .glass-modal-backdrop {
-        background: rgba(15, 23, 42, 0.55);
+        background: rgba(15, 23, 42, 0.72);
       }
 
       .glass-modal-backdrop:not(.hidden) {
-        background: rgba(15, 23, 42, 0.55);
+        background: rgba(15, 23, 42, 0.72);
         backdrop-filter: blur(4px);
         -webkit-backdrop-filter: blur(4px);
       }
 
       .glass-modal-card,
       .glass-modal-backdrop .glass-modal-card,
+      .solid-opaque-modal-card,
       #zoom-modal-img {
-        background: #ffffff;
-        background-color: #ffffff;
-        backdrop-filter: none;
-        -webkit-backdrop-filter: none;
+        background: #ffffff !important;
+        background-color: #ffffff !important;
+        background-image: none !important;
+        opacity: 1 !important;
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
         border: 1px solid rgba(15, 23, 42, 0.08);
-        box-shadow: 0 20px 45px rgba(15, 23, 42, 0.2);
+        box-shadow: 0 20px 45px rgba(15, 23, 42, 0.24);
       }
 
       .glass-result-hero {
@@ -1310,6 +1315,41 @@
         }
       }
 
+      /* Safe responsive tables inside exam stems/options */
+      .exam-table-safe {
+        display: block;
+        width: 100%;
+        max-width: 100%;
+        overflow-x: auto;
+        border-collapse: collapse;
+        margin: 0.5rem 0;
+        font-size: 0.875rem;
+      }
+
+      .exam-table-safe th,
+      .exam-table-safe td {
+        border: 1px solid #cbd5e1;
+        padding: 0.35rem 0.6rem;
+        text-align: left;
+        vertical-align: middle;
+        white-space: normal;
+      }
+
+      .exam-table-safe th {
+        background-color: #fdf2f8;
+        font-weight: 700;
+      }
+
+      html[data-theme="dark"] .exam-table-safe th {
+        background-color: #334155;
+        color: #f8fafc;
+      }
+
+      html[data-theme="dark"] .exam-table-safe th,
+      html[data-theme="dark"] .exam-table-safe td {
+        border-color: #475569;
+      }
+
       /* ===================================================================== */
       /* 4. UIVERSE DAY/NIGHT THEME SWITCH & FULL DARK MODE ([data-theme="dark"]) */
       /* ===================================================================== */
@@ -1579,12 +1619,13 @@
         }
 
         html[data-theme="dark"] .glass-modal-backdrop:not(.hidden) {
-          background: rgba(2, 6, 23, 0.76);
+          background: rgba(2, 6, 23, 0.84);
         }
 
         /* 100% Opaque Solid Surfaces for Modals, Popups, Motivation Alert, Sticky Bar & Report Card */
         html[data-theme="dark"] .glass-modal-card,
         html[data-theme="dark"] .glass-modal-backdrop .glass-modal-card,
+        html[data-theme="dark"] .solid-opaque-modal-card,
         html[data-theme="dark"] .glass-floating:not(#pomodoro-collapsed-pill),
         html[data-theme="dark"] #nav-menu-dropdown,
         html[data-theme="dark"] #pomodoro-expanded-panel,
@@ -3021,6 +3062,11 @@ ANSWER KEYS
             <i data-lucide="save" class="w-4 h-4"></i>
             <span class="btn-save-exam-label">Lưu vào kho đề</span>
           </button>
+          <button type="button" onclick="saveAndCreateStudentLink()"
+            class="btn-3d btn-3d-sky cursor-pointer px-5 py-2.5 rounded-2xl bg-sky-500 hover:bg-sky-600 text-white font-bold text-xs sm:text-sm flex items-center gap-1.5">
+            <i data-lucide="link-2" class="w-4 h-4"></i>
+            <span>Tạo link gửi học sinh</span>
+          </button>
           <button type="button" onclick="saveCreatedExam(true)"
             class="btn-3d btn-3d-pink cursor-pointer px-5 py-2.5 rounded-2xl bg-pink-500 hover:bg-pink-600 text-white font-bold text-xs sm:text-sm flex items-center gap-1.5">
             <i data-lucide="play-circle" class="w-4 h-4"></i>
@@ -3254,6 +3300,39 @@ ANSWER KEYS
             </div>
           </div>
 
+          <!-- 4.3b. Kết Nối Excel / Google Sheets Của Giáo Viên -->
+          <div class="bg-white rounded-3xl border-2 border-sky-200 p-6 shadow-sm space-y-3.5">
+            <div class="flex items-center justify-between gap-2 flex-wrap">
+              <div class="flex items-center gap-2.5">
+                <div class="w-9 h-9 rounded-xl bg-sky-100 text-sky-600 flex items-center justify-center shrink-0">
+                  <i data-lucide="file-spreadsheet" class="w-5 h-5"></i>
+                </div>
+                <div>
+                  <h3 class="text-base font-bold text-slate-800">4. Excel / Google Sheets Giáo Viên</h3>
+                  <p class="text-xs text-slate-500 font-medium">Tạo link siêu ngắn đủ ảnh &amp; nhận điểm về Sheet riêng</p>
+                </div>
+              </div>
+              <button type="button" onclick="openTeacherSheetGuideModal()"
+                class="cursor-pointer px-3 py-1.5 rounded-xl bg-sky-50 hover:bg-sky-100 text-sky-700 border border-sky-200 text-xs font-extrabold flex items-center gap-1.5 transition-colors">
+                <i data-lucide="help-circle" class="w-3.5 h-3.5"></i>
+                <span>Hướng dẫn kết nối Excel giáo viên</span>
+              </button>
+            </div>
+
+            <div class="space-y-1.5">
+              <label for="cfg-teacher-script-url" class="block text-xs font-bold text-slate-700">
+                Link Google Apps Script nhận điểm của Giáo viên (đuôi /exec)
+              </label>
+              <input id="cfg-teacher-script-url" type="url"
+                placeholder="https://script.google.com/macros/s/.../exec"
+                oninput="handleTeacherScriptUrlInput(this.value, 'create')"
+                class="w-full px-3.5 py-2.5 rounded-xl border-2 border-sky-200 focus:border-sky-400 focus:outline-none font-mono text-xs font-semibold text-slate-800 bg-sky-50/30" />
+              <div id="cfg-teacher-script-status" class="text-[11px] font-bold text-slate-500">
+                Tự lưu trên trình duyệt giáo viên • Không lưu dữ liệu học sinh trên máy chủ web.
+              </div>
+            </div>
+          </div>
+
         </div>
 
         <!-- RIGHT COLUMN (7 cols): File Drag-Drop + Azota Textarea + Live Parser Preview -->
@@ -3383,6 +3462,11 @@ ANSWER KEYS
                 class="btn-3d btn-3d-emerald cursor-pointer px-5 py-3 rounded-2xl bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-xs sm:text-sm flex items-center gap-2">
                 <i data-lucide="save" class="w-4 h-4"></i>
                 <span class="btn-save-exam-label">Lưu vào kho đề</span>
+              </button>
+              <button type="button" onclick="saveAndCreateStudentLink()"
+                class="btn-3d btn-3d-sky cursor-pointer px-5 py-3 rounded-2xl bg-sky-500 hover:bg-sky-600 text-white font-bold text-xs sm:text-sm flex items-center gap-2">
+                <i data-lucide="link-2" class="w-4 h-4"></i>
+                <span>Tạo link gửi học sinh</span>
               </button>
               <button type="button" onclick="saveCreatedExam(true)"
                 class="btn-3d btn-3d-pink cursor-pointer px-6 py-3 rounded-2xl bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white font-bold text-xs sm:text-sm flex items-center gap-2">
@@ -3906,6 +3990,25 @@ ANSWER KEYS
               </p>
             </div>
           </div>
+        </div>
+
+        <!-- Teacher Google Sheets Sync Status Box (Shown when student submits a teacher-assigned exam) -->
+        <div id="res-teacher-sync-box"
+          class="hidden solid-opaque-modal-card rounded-2xl border-2 border-emerald-300 px-4 py-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div class="flex items-start sm:items-center gap-2.5 min-w-0">
+            <span id="res-teacher-sync-icon" class="text-xl shrink-0">📊</span>
+            <div class="min-w-0">
+              <div id="res-teacher-sync-badge" class="text-xs sm:text-sm font-extrabold text-emerald-800">
+                Đã gửi điểm về bảng tính Excel của giáo viên
+              </div>
+              <p id="res-teacher-sync-detail" class="text-[11px] font-semibold text-slate-600 mt-0.5 break-words"></p>
+            </div>
+          </div>
+          <button id="btn-retry-teacher-score" type="button" onclick="retrySendScoreToTeacher()"
+            class="hidden btn-3d btn-3d-amber cursor-pointer px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-extrabold text-xs shrink-0 flex items-center justify-center gap-1.5">
+            <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
+            <span>Thử gửi lại điểm cho giáo viên</span>
+          </button>
         </div>
 
         <!-- 4 Result Stat Mini Cards -->
@@ -4773,7 +4876,7 @@ ANSWER KEYS
             <div>
               <label class="block text-xs font-bold text-slate-700 mb-1">Lớp <span id="modal-req-star-class"
                   class="text-rose-500">*</span></label>
-              <input id="input-student-class" type="text" placeholder="VD: 11A1" value="11A1"
+              <input id="input-student-class" type="text" placeholder="VD: 11A1"
                 onkeydown="if(event.key==='Enter') confirmEnterExamRoom()"
                 class="w-full px-4 py-2.5 rounded-xl border-2 border-emerald-200 focus:border-emerald-400 focus:outline-none text-sm font-bold text-slate-800 bg-emerald-50/30" />
             </div>
@@ -4785,11 +4888,10 @@ ANSWER KEYS
               </select>
             </div>
           </div>
-          <p
+          <p id="modal-student-privacy-note"
             class="text-[11px] font-semibold text-sky-700 bg-sky-50/80 border border-sky-200 rounded-xl px-3 py-2 flex items-start gap-1.5">
             <i data-lucide="shield-check" class="w-3.5 h-3.5 shrink-0 mt-0.5 text-sky-600"></i>
-            <span>Tuân thủ Luật Bảo vệ dữ liệu cá nhân 91/2025/QH15: Họ tên &amp; bài làm chỉ lưu cục bộ trên trình
-              duyệt của bạn, không thu thập hay gửi lên máy chủ ngoài.</span>
+            <span id="modal-student-privacy-note-text">Họ tên, lớp và điểm số của bạn sẽ được gửi trực tiếp về bảng tính quản lý của giáo viên giao đề (không lưu trên máy chủ web).</span>
           </p>
         </div>
 
@@ -4819,7 +4921,7 @@ ANSWER KEYS
         <button id="btn-confirm-enter-exam" type="button" onclick="confirmEnterExamRoom()"
           class="btn-3d btn-3d-pink cursor-pointer flex-1 sm:flex-none justify-center px-6 py-2.5 rounded-xl bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white font-bold text-xs sm:text-sm flex items-center gap-1.5">
           <i data-lucide="sparkles" class="w-4 h-4"></i>
-          <span>Bắt đầu làm bài ngay</span>
+          <span>Bắt đầu làm bài</span>
         </button>
       </div>
     </div>
@@ -4855,6 +4957,35 @@ ANSWER KEYS
         <!-- Dynamic status -->
       </div>
 
+      <!-- Teacher Google Apps Script Quick Setup in Share Modal -->
+      <div class="p-3.5 rounded-2xl bg-sky-50 border border-sky-200 space-y-2.5">
+        <div class="flex items-center justify-between gap-2 flex-wrap">
+          <label for="share-teacher-script-url" class="text-xs font-extrabold text-sky-900">
+            📊 Link Google Apps Script nhận điểm của Giáo viên (đuôi /exec)
+          </label>
+          <button type="button" onclick="openTeacherSheetGuideModal()"
+            class="cursor-pointer px-2.5 py-1 rounded-lg bg-white hover:bg-sky-100 text-sky-700 border border-sky-300 text-[11px] font-extrabold flex items-center gap-1">
+            <i data-lucide="book-open" class="w-3 h-3"></i>
+            <span>Hướng dẫn kết nối Excel giáo viên</span>
+          </button>
+        </div>
+        <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
+          <input id="share-teacher-script-url" type="url"
+            placeholder="https://script.google.com/macros/s/.../exec"
+            oninput="handleTeacherScriptUrlInput(this.value, 'share')"
+            class="flex-1 min-w-0 px-3 py-2 rounded-xl border-2 border-sky-200 focus:border-sky-400 focus:outline-none bg-white text-xs font-mono text-slate-700" />
+          <button id="btn-generate-short-link" type="button" onclick="publishExamShortLinkFromModal()"
+            class="btn-3d btn-3d-sky cursor-pointer px-4 py-2 rounded-xl bg-sky-500 hover:bg-sky-600 text-white font-extrabold text-xs shrink-0 flex items-center justify-center gap-1.5">
+            <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>
+            <span>Tạo link gửi học sinh</span>
+          </button>
+        </div>
+        <div id="share-no-script-reminder"
+          class="hidden text-[11px] font-bold text-amber-900 bg-amber-50 border border-amber-300 rounded-xl p-2.5 leading-relaxed">
+          ⚠️ Bạn chưa gắn link Apps Script (<code>/exec</code>). Hãy dán link Apps Script của giáo viên để tạo <strong>link siêu ngắn</strong> chứa trọn 100% ảnh minh họa &amp; công thức, đồng thời tự động nhận điểm học sinh về Excel!
+        </div>
+      </div>
+
       <div class="space-y-2">
         <label class="block text-xs font-bold text-slate-700">🔗 Link vào làm bài trực tuyến (Gửi qua Zalo /
           Messenger):</label>
@@ -4864,16 +4995,12 @@ ANSWER KEYS
           <button type="button" onclick="copyShareExamLink()"
             class="cursor-pointer px-4 py-2.5 rounded-xl bg-pink-500 hover:bg-pink-600 text-white font-bold text-xs shrink-0 shadow-sm flex items-center gap-1.5">
             <i data-lucide="copy" class="w-4 h-4"></i>
-            <span>Copy Link</span>
+            <span>Sao chép link</span>
           </button>
         </div>
         <div id="share-link-warning"
           class="hidden text-[11px] font-bold text-amber-800 bg-amber-50 border border-amber-200 rounded-xl p-2.5 space-y-1.5">
           <p id="share-link-warning-text"></p>
-          <button id="btn-copy-no-img-link" type="button" onclick="copyShareExamLinkWithoutImages()"
-            class="cursor-pointer hidden px-3 py-1 rounded-lg bg-amber-200 hover:bg-amber-300 text-amber-950 font-bold text-[11px]">
-            Copy Link rút gọn (Bỏ ảnh minh họa)
-          </button>
         </div>
       </div>
 
@@ -4903,6 +5030,94 @@ ANSWER KEYS
             <span>Vào làm bài ngay</span>
           </button>
         </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 3b: Hướng Dẫn Kết Nối Excel / Google Sheets Giáo Viên (Nền đặc 100%) -->
+  <div id="modal-teacher-sheet-guide" role="dialog" aria-modal="true" aria-hidden="true"
+    aria-labelledby="teacher-guide-title"
+    onclick="if(event.target===this) closeTeacherSheetGuideModal()"
+    class="fixed inset-0 z-[72] hidden glass-modal-backdrop items-center justify-center p-3 sm:p-4 overflow-y-auto overscroll-contain">
+    <div
+      class="glass-modal-card solid-opaque-modal-card modal-spring-pop rounded-3xl bg-white max-w-[calc(100vw-1.5rem)] sm:max-w-2xl w-full mx-auto my-auto max-h-[90dvh] overflow-y-auto p-5 sm:p-7 space-y-4">
+      <div class="flex items-center justify-between border-b border-sky-100 pb-3">
+        <div class="flex items-center gap-3 min-w-0">
+          <div class="w-11 h-11 rounded-2xl bg-sky-100 text-sky-600 flex items-center justify-center text-xl shrink-0">
+            📊
+          </div>
+          <div class="min-w-0">
+            <span class="text-xs font-bold text-sky-600 uppercase">Zero-Server • Toàn quyền dữ liệu giáo viên</span>
+            <h3 id="teacher-guide-title" class="text-base sm:text-lg font-extrabold text-slate-800">
+              Hướng Dẫn Kết Nối Excel / Google Sheets Giáo Viên
+            </h3>
+          </div>
+        </div>
+        <button type="button" onclick="closeTeacherSheetGuideModal()"
+          class="cursor-pointer w-9 h-9 rounded-full bg-slate-100 hover:bg-rose-100 text-slate-500 hover:text-rose-600 flex items-center justify-center shrink-0">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+
+      <div class="p-3.5 rounded-2xl bg-emerald-50 border border-emerald-200 text-xs font-semibold text-emerald-900 leading-relaxed">
+        🔒 <strong>Nguyên tắc Zero-Server:</strong> Đề thi + ảnh công thức được lưu vào chính <strong>Google Drive</strong> của giáo viên (qua <code>DriveApp</code>, không bị giới hạn ký tự ô tính), và Họ tên, Lớp, Điểm số học sinh được ghi thẳng vào <strong>Google Sheets</strong> riêng của giáo viên — tuyệt đối không qua máy chủ trung gian.
+      </div>
+
+      <ol class="space-y-2 text-xs sm:text-sm font-semibold text-slate-700 list-decimal list-inside bg-slate-50 rounded-2xl p-4 border border-slate-200">
+        <li>Mở <strong>Google Sheets</strong> (tạo 1 bảng tính mới cho lớp/môn của thầy cô).</li>
+        <li>Vào menu <strong>Tiện ích mở rộng &gt; Apps Script</strong>, xóa code mẫu rồi bấm nút <strong>Copy đoạn mã Apps Script</strong> bên dưới để dán vào và nhấn Lưu.</li>
+        <li>Bấm <strong>Triển khai &gt; Triển khai mới &gt; Loại: Ứng dụng web</strong>: chọn <em>Thực thi dưới dạng: Tôi</em> và <em>Ai có quyền truy cập: Bất kỳ ai</em>, sau đó cấp quyền Drive &amp; Sheets.</li>
+        <li>Copy đường dẫn Web App (đuôi <code>/exec</code>) dán vào ô <strong>Link Google Apps Script nhận điểm của Giáo viên</strong> rồi bấm <strong>Tạo link gửi học sinh</strong>!</li>
+      </ol>
+
+      <div class="space-y-2">
+        <div class="flex items-center justify-between gap-2 flex-wrap">
+          <span class="text-xs font-extrabold text-slate-700">Mã Google Apps Script (Hỗ trợ DriveApp lưu trọn đề + ảnh):</span>
+          <button id="btn-copy-apps-script" type="button" onclick="copyTeacherAppsScriptCode()"
+            class="btn-3d btn-3d-emerald cursor-pointer px-4 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white font-extrabold text-xs flex items-center gap-1.5">
+            <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+            <span>Copy đoạn mã Apps Script</span>
+          </button>
+        </div>
+        <pre id="teacher-apps-script-preview"
+          class="max-h-56 overflow-auto p-3.5 rounded-2xl bg-slate-900 text-emerald-300 font-mono text-[11px] leading-relaxed border border-slate-700 whitespace-pre-wrap break-words"></pre>
+      </div>
+
+      <div class="flex justify-end pt-1">
+        <button type="button" onclick="closeTeacherSheetGuideModal()"
+          class="cursor-pointer px-5 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs sm:text-sm">
+          Đóng hướng dẫn
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 3c: Hộp Trạng Thái Đang Tải Đề Thi Từ Link Ngắn (Nền đặc 100%) -->
+  <div id="modal-loading-remote-exam" role="dialog" aria-modal="true" aria-hidden="true"
+    aria-labelledby="loading-remote-exam-title"
+    class="fixed inset-0 z-[75] hidden glass-modal-backdrop items-center justify-center p-3 sm:p-4 overflow-y-auto overscroll-contain">
+    <div
+      class="glass-modal-card solid-opaque-modal-card modal-spring-pop rounded-3xl bg-white max-w-[calc(100vw-1.5rem)] sm:max-w-md w-full mx-auto my-auto p-6 sm:p-8 text-center space-y-4">
+      <div id="loading-remote-exam-spinner"
+        class="w-14 h-14 rounded-full border-4 border-pink-200 border-t-pink-500 animate-spin mx-auto"></div>
+      <div class="space-y-1.5">
+        <h3 id="loading-remote-exam-title" class="text-lg font-extrabold text-slate-800">
+          Đang tải đề thi và hình ảnh...
+        </h3>
+        <p id="loading-remote-exam-desc" class="text-xs sm:text-sm font-semibold text-slate-600 leading-relaxed">
+          Hệ thống đang nạp toàn bộ câu hỏi, ảnh minh họa và công thức Toán/Lý/Hóa trực tiếp từ link giáo viên giao.
+        </p>
+      </div>
+      <div id="loading-remote-exam-error-actions" class="hidden flex-wrap items-center justify-center gap-2.5 pt-2">
+        <button type="button" onclick="retryLoadIncomingExamFromUrl()"
+          class="btn-3d btn-3d-pink cursor-pointer px-4 py-2.5 rounded-xl bg-pink-500 hover:bg-pink-600 text-white font-extrabold text-xs flex items-center gap-1.5">
+          <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
+          <span>Thử tải lại đề thi</span>
+        </button>
+        <button type="button" onclick="dismissRemoteExamLoaderToHome()"
+          class="cursor-pointer px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs">
+          Về trang chủ
+        </button>
       </div>
     </div>
   </div>
@@ -5254,7 +5469,7 @@ ANSWER KEYS
       </div>
 
       <p id="footer-telemetry-note" class="text-[11px] font-medium text-slate-500">
-        Dữ liệu cá nhân lưu cục bộ trên thiết bị; hệ thống chỉ ghi nhận điểm số ẩn danh phục vụ nghiên cứu khoa học.
+        Không lưu dữ liệu học sinh trên máy chủ web; bài làm từ link giáo viên gửi điểm trực tiếp về Google Sheets riêng của giáo viên.
       </p>
 
       <div
@@ -5284,8 +5499,10 @@ ANSWER KEYS
       pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
     }
 
-    // Đường dẫn Google Apps Script Web App (/exec) nhận điểm thực nghiệm ẩn danh một chiều (để trống nếu chưa cấu hình)
-    const TELEMETRY_ENDPOINT = "https://script.google.com/macros/s/AKfycbxKjE4C7j3WijgKliarIQ3AOFkazheZDKpkeIuhTpTh9mRqmRJs5QEbbsS_tJB_msOU/exec";
+    // Không lưu dữ liệu học sinh trên máy chủ web (tắt hoàn toàn telemetry tập trung)
+    const TELEMETRY_ENDPOINT = "";
+    // Hằng số Script mặc định của trường (để trống nếu giáo viên dùng Script cá nhân riêng; nếu điền /exec thì link rút gọn thành ?id=XXXXXX)
+    const DEFAULT_SHEET_SCRIPT_URL = "";
     const OFFICIAL_SITE_URL = 'https://onthithptanninh.pages.dev/';
     const STORAGE_EXAMS_KEY = 'thpt_anninh_exams_v1';
     const STORAGE_RESULTS_KEY = 'thpt_anninh_results_v1';
@@ -5301,6 +5518,9 @@ ANSWER KEYS
     const STORAGE_MOTIVATION_KEY = 'thpt_anninh_motivation_enabled_v1';
     const STORAGE_ANON_SEED_KEY = 'thpt_anninh_anon_seed_v1';
     const STORAGE_ANON_SHOWCASE_KEY = 'thpt_anninh_anon_showcase_v1';
+    const STORAGE_TEACHER_SCRIPT_URL_KEY = 'thpt_anninh_teacher_script_url_v1';
+    const STORAGE_PENDING_SCORES_KEY = 'thpt_anninh_pending_teacher_scores_v1';
+    const STORAGE_PUBLISHED_LINKS_KEY = 'thpt_anninh_published_short_links_v1';
     const STORAGE_THEME_KEY = 'theme_mode';
 
     let privacyMaskEnabled = false;
@@ -5515,29 +5735,420 @@ ANSWER KEYS
     }
 
     async function sendAnonymousTelemetry(resultRecord) {
+      // Đã vô hiệu hóa telemetry tập trung: dữ liệu học sinh không lưu trên máy chủ web.
+      return false;
+    }
+
+    const TEACHER_APPS_SCRIPT_TEMPLATE = `/**
+ * GOOGLE APPS SCRIPT CHO GIÁO VIÊN - AN NINH EDUTECH (ZERO-SERVER)
+ * Hỗ trợ DriveApp lưu trọn đề thi + 100% ảnh công thức & nhận điểm học sinh về Sheets.
+ */
+const DRIVE_FOLDER_NAME = 'THPT_AnNinh_ExamData';
+const SHEET_EXAMS = 'DanhSachDe';
+const SHEET_SCORES = 'KetQua';
+
+function jsonOut(obj) {
+  return ContentService.createTextOutput(JSON.stringify(obj))
+    .setMimeType(ContentService.MimeType.JSON);
+}
+
+function getOrCreateExamFolder() {
+  const it = DriveApp.getFoldersByName(DRIVE_FOLDER_NAME);
+  return it.hasNext() ? it.next() : DriveApp.createFolder(DRIVE_FOLDER_NAME);
+}
+
+function safeSheetCell(val) {
+  const s = String(val === null || val === undefined ? '' : val);
+  return /^[=+\\-@\\t\\r]/.test(s) ? "'" + s : s;
+}
+
+function genShortExamId() {
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  const props = PropertiesService.getScriptProperties();
+  for (let t = 0; t < 20; t++) {
+    let id = '';
+    for (let i = 0; i < 6; i++) id += chars.charAt(Math.floor(Math.random() * chars.length));
+    if (!props.getProperty('EXAM_FILE_' + id)) return id;
+  }
+  return ('EX' + Date.now().toString(36).toUpperCase()).slice(0, 6);
+}
+
+function doGet(e) {
+  try {
+    const id = String((e && e.parameter && e.parameter.id) || '').trim().toUpperCase();
+    if (!id) return jsonOut({ ok: false, error: 'Thiếu mã đề id' });
+    const props = PropertiesService.getScriptProperties();
+    const fileId = props.getProperty('EXAM_FILE_' + id);
+    if (!fileId) return jsonOut({ ok: false, error: 'Không tìm thấy đề thi mã ' + id });
+    const raw = DriveApp.getFileById(fileId).getBlob().getDataAsString('UTF-8');
+    return jsonOut({ ok: true, examId: id, examPayload: JSON.parse(raw) });
+  } catch (err) {
+    return jsonOut({ ok: false, error: String(err) });
+  }
+}
+
+function doPost(e) {
+  const lock = LockService.getScriptLock();
+  lock.waitLock(20000);
+  try {
+    const body = JSON.parse((e && e.postData && e.postData.contents) || '{}');
+    const ss = SpreadsheetApp.getActiveSpreadsheet();
+
+    if (body.action === 'saveExam') {
+      const examId = genShortExamId();
+      const folder = getOrCreateExamFolder();
+      const jsonStr = JSON.stringify(body.examPayload || {});
+      const file = folder.createFile('Exam_' + examId + '.json', jsonStr, MimeType.PLAIN_TEXT);
+      PropertiesService.getScriptProperties().setProperty('EXAM_FILE_' + examId, file.getId());
+
+      let exSheet = ss.getSheetByName(SHEET_EXAMS);
+      if (!exSheet) {
+        exSheet = ss.insertSheet(SHEET_EXAMS);
+        exSheet.appendRow(['MaDe', 'TenDeThi', 'DriveFileId', 'DungLuongBytes', 'NgayTao']);
+      }
+      exSheet.appendRow([examId, safeSheetCell(body.examTitle || ''), file.getId(), jsonStr.length, new Date()]);
+      return jsonOut({ ok: true, examId: examId });
+    }
+
+    if (body.action === 'submitScore') {
+      let scSheet = ss.getSheetByName(SHEET_SCORES);
+      if (!scSheet) {
+        scSheet = ss.insertSheet(SHEET_SCORES);
+        scSheet.appendRow(['ThoiGianNop', 'MaDe', 'TenDeThi', 'HoTen', 'Lop', 'DiemSo', 'ThoiGianLamGiay', 'MaSHA256']);
+      }
+      scSheet.appendRow([
+        new Date(),
+        safeSheetCell(body.examId || ''),
+        safeSheetCell(body.examTitle || ''),
+        safeSheetCell(body.studentName || ''),
+        safeSheetCell(body.className || ''),
+        Number(body.score || 0),
+        Number(body.durationSec || 0),
+        safeSheetCell(body.integrityHash || '')
+      ]);
+      return jsonOut({ ok: true });
+    }
+
+    return jsonOut({ ok: false, error: 'Unsupported action' });
+  } catch (err) {
+    return jsonOut({ ok: false, error: String(err) });
+  } finally {
+    lock.releaseLock();
+  }
+}`;
+
+    function isLocalDevHost() {
+      const h = (typeof window !== 'undefined' && window.location && window.location.hostname) || '';
+      return h === 'localhost' || h === '127.0.0.1';
+    }
+
+    function normalizeTeacherScriptUrl(rawUrl) {
+      const trimmed = String(rawUrl || '').trim();
+      if (!trimmed) return '';
       try {
-        const endpoint = String(TELEMETRY_ENDPOINT || '').trim();
-        if (!endpoint || !resultRecord || typeof resultRecord !== 'object') return false;
+        const u = new URL(trimmed);
+        if (u.protocol === 'https:' && u.hostname === 'script.google.com' && /^\/macros\/(?:u\/\d+\/)?s\/[A-Za-z0-9_-]{6,180}\/exec$/i.test(u.pathname)) {
+          return `${u.origin}${u.pathname}`;
+        }
+        if (isLocalDevHost() && u.origin === window.location.origin && /^\/macros\/s\/[A-Za-z0-9_-]{6,180}\/exec$/i.test(u.pathname)) {
+          return `${u.origin}${u.pathname}`;
+        }
+      } catch (e) { }
+      return '';
+    }
 
-        const anonId = await getOrCreateAnonTelemetryId();
-        const payload = {
-          anonId,
-          className: String(resultRecord.studentClass || '').trim() || 'Chưa rõ',
-          examTitle: String(resultRecord.examTitle || '').trim() || 'Đề ôn luyện',
-          score: Number(Number(resultRecord.score || 0).toFixed(2)),
-          durationSec: Math.max(1, Math.round(Number(resultRecord.timeSpentSeconds || 1))),
-          integrityHash: String(resultRecord.integritySeal || computeResultIntegritySeal(resultRecord))
-        };
+    function extractScriptDeployId(scriptUrl) {
+      const norm = normalizeTeacherScriptUrl(scriptUrl);
+      if (!norm) return '';
+      const m = norm.match(/\/macros\/(?:u\/\d+\/)?s\/([A-Za-z0-9_-]{6,180})\/exec$/i);
+      return m ? m[1] : '';
+    }
 
-        await fetch(endpoint, {
-          method: 'POST',
-          mode: 'no-cors',
-          keepalive: true,
-          body: JSON.stringify(payload)
-        });
-        return true;
+    function getSavedTeacherScriptUrl() {
+      return normalizeTeacherScriptUrl(safeGetLocalStorage(STORAGE_TEACHER_SCRIPT_URL_KEY) || '');
+    }
+
+    function getActiveTeacherScriptUrl() {
+      return getSavedTeacherScriptUrl() || normalizeTeacherScriptUrl(DEFAULT_SHEET_SCRIPT_URL);
+    }
+
+    function resolveScriptUrlFromQuery(params) {
+      if (!params) return getActiveTeacherScriptUrl();
+      const sParam = String(params.get('s') || '').trim();
+      if (sParam && /^[A-Za-z0-9_-]{6,180}$/.test(sParam)) {
+        if (isLocalDevHost() && sParam.startsWith('LOCALTEST_')) {
+          return `${window.location.origin}/macros/s/${sParam}/exec`;
+        }
+        return `https://script.google.com/macros/s/${sParam}/exec`;
+      }
+      return normalizeTeacherScriptUrl(DEFAULT_SHEET_SCRIPT_URL) || getActiveTeacherScriptUrl();
+    }
+
+    function updateTeacherScriptStatusUI(rawValue) {
+      const statusEl = document.getElementById('cfg-teacher-script-status');
+      if (!statusEl) return;
+      const trimmed = String(rawValue || '').trim();
+      const norm = normalizeTeacherScriptUrl(trimmed);
+      if (!trimmed) {
+        const defUrl = normalizeTeacherScriptUrl(DEFAULT_SHEET_SCRIPT_URL);
+        statusEl.className = 'text-[11px] font-bold text-slate-500';
+        statusEl.textContent = defUrl
+          ? 'Đang dùng Script mặc định của trường • Link học sinh sẽ siêu ngắn (?id=...).'
+          : 'Tự lưu trên trình duyệt giáo viên • Không lưu dữ liệu học sinh trên máy chủ web.';
+      } else if (norm) {
+        statusEl.className = 'text-[11px] font-bold text-emerald-700';
+        statusEl.textContent = '✅ Link Apps Script hợp lệ! Sẵn sàng tạo link ngắn đủ 100% ảnh & nhận điểm về Excel.';
+      } else {
+        statusEl.className = 'text-[11px] font-bold text-rose-600';
+        statusEl.textContent = '⚠️ URL chưa đúng định dạng Apps Script (/macros/s/.../exec). Vui lòng kiểm tra lại.';
+      }
+    }
+
+    function handleTeacherScriptUrlInput(rawVal, source = 'create') {
+      const val = String(rawVal || '').trim();
+      const norm = normalizeTeacherScriptUrl(val);
+      if (!val) {
+        try { localStorage.removeItem(STORAGE_TEACHER_SCRIPT_URL_KEY); } catch (e) { }
+      } else if (norm) {
+        safeSetLocalStorage(STORAGE_TEACHER_SCRIPT_URL_KEY, norm);
+      }
+
+      const cfgInp = document.getElementById('cfg-teacher-script-url');
+      const shareInp = document.getElementById('share-teacher-script-url');
+      if (source !== 'create' && cfgInp && cfgInp.value !== val) cfgInp.value = val;
+      if (source !== 'share' && shareInp && shareInp.value !== val) shareInp.value = val;
+      updateTeacherScriptStatusUI(val);
+    }
+
+    function initTeacherScriptConfigUI() {
+      const saved = getSavedTeacherScriptUrl();
+      const cfgInp = document.getElementById('cfg-teacher-script-url');
+      const shareInp = document.getElementById('share-teacher-script-url');
+      if (cfgInp) cfgInp.value = saved;
+      if (shareInp) shareInp.value = saved;
+      updateTeacherScriptStatusUI(saved);
+      const previewPre = document.getElementById('teacher-apps-script-preview');
+      if (previewPre) previewPre.textContent = TEACHER_APPS_SCRIPT_TEMPLATE;
+    }
+
+    function openTeacherSheetGuideModal() {
+      const previewPre = document.getElementById('teacher-apps-script-preview');
+      if (previewPre && !previewPre.textContent.trim()) {
+        previewPre.textContent = TEACHER_APPS_SCRIPT_TEMPLATE;
+      }
+      const el = showModalElement('modal-teacher-sheet-guide');
+      refreshIconsAndMath(el);
+    }
+
+    function closeTeacherSheetGuideModal() {
+      hideModalElement('modal-teacher-sheet-guide');
+    }
+
+    async function copyTeacherAppsScriptCode() {
+      const ok = await copyTextSafe(TEACHER_APPS_SCRIPT_TEMPLATE);
+      showCuteToast(
+        ok ? '📋 Đã copy đoạn mã Apps Script (hỗ trợ DriveApp) vào bộ nhớ tạm!' : '⚠️ Hãy bôi đen khung mã bên dưới để copy thủ công.',
+        ok ? '📊' : '💡',
+        ok ? 'success' : 'warning'
+      );
+    }
+
+    function getPendingTeacherScores() {
+      const raw = safeGetLocalStorage(STORAGE_PENDING_SCORES_KEY);
+      if (!raw) return [];
+      try {
+        const arr = JSON.parse(raw);
+        return Array.isArray(arr) ? arr : [];
       } catch (e) {
+        return [];
+      }
+    }
+
+    function savePendingTeacherScores(list) {
+      const clean = Array.isArray(list) ? list.slice(-30) : [];
+      if (clean.length === 0) {
+        try { localStorage.removeItem(STORAGE_PENDING_SCORES_KEY); } catch (e) { }
+      } else {
+        safeSetLocalStorage(STORAGE_PENDING_SCORES_KEY, JSON.stringify(clean));
+      }
+    }
+
+    function enqueuePendingTeacherScore(entry) {
+      if (!entry || !entry.resultId || !entry.scriptUrl) return;
+      const list = getPendingTeacherScores().filter(item => item && item.resultId !== entry.resultId);
+      list.push(entry);
+      savePendingTeacherScores(list);
+    }
+
+    function removePendingTeacherScore(resultId) {
+      if (!resultId) return;
+      const next = getPendingTeacherScores().filter(item => item && item.resultId !== resultId);
+      savePendingTeacherScores(next);
+    }
+
+    async function postScorePayloadToTeacherScript(scriptUrl, payload) {
+      const resp = await fetch(scriptUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        keepalive: true,
+        body: JSON.stringify(payload)
+      });
+      if (!resp.ok) {
+        throw new Error(`HTTP ${resp.status}`);
+      }
+      const text = await resp.text();
+      if (text) {
+        try {
+          const parsed = JSON.parse(text);
+          if (parsed && parsed.ok === false) {
+            throw new Error(parsed.error || 'Apps Script rejected score');
+          }
+        } catch (parseErr) {
+          if (parseErr instanceof SyntaxError) {
+            // Accept plain 200 text responses from custom deployments
+          } else {
+            throw parseErr;
+          }
+        }
+      }
+      return true;
+    }
+
+    function updateTeacherSyncResultUI(res) {
+      const box = document.getElementById('res-teacher-sync-box');
+      const iconEl = document.getElementById('res-teacher-sync-icon');
+      const badgeEl = document.getElementById('res-teacher-sync-badge');
+      const detailEl = document.getElementById('res-teacher-sync-detail');
+      const retryBtn = document.getElementById('btn-retry-teacher-score');
+      if (!box || !res) return;
+
+      const hasTeacherTarget = Boolean(res.teacherScriptUrl) && !res.isPreview && !res.isVaultPractice;
+      if (!hasTeacherTarget) {
+        box.classList.add('hidden');
+        return;
+      }
+
+      box.classList.remove('hidden');
+      const status = res.teacherSyncStatus || 'pending';
+      if (status === 'sent') {
+        box.className = 'solid-opaque-modal-card rounded-2xl border-2 border-emerald-300 px-4 py-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3';
+        if (iconEl) iconEl.textContent = '✅';
+        if (badgeEl) {
+          badgeEl.className = 'text-xs sm:text-sm font-extrabold text-emerald-800';
+          badgeEl.textContent = 'Đã gửi điểm về bảng tính Excel của giáo viên';
+        }
+        if (detailEl) {
+          detailEl.textContent = `Học sinh ${res.studentName} (${res.studentClass}) • ${Number(res.score || 0).toFixed(2)} điểm • Mã SHA-256: ${res.integritySeal || ''}`;
+        }
+        if (retryBtn) retryBtn.classList.add('hidden');
+      } else if (status === 'sending') {
+        box.className = 'solid-opaque-modal-card rounded-2xl border-2 border-sky-300 px-4 py-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3';
+        if (iconEl) iconEl.textContent = '⏳';
+        if (badgeEl) {
+          badgeEl.className = 'text-xs sm:text-sm font-extrabold text-sky-800';
+          badgeEl.textContent = 'Đang gửi điểm trực tiếp về bảng tính Excel của giáo viên...';
+        }
+        if (detailEl) detailEl.textContent = 'Vui lòng giữ tab mở trong giây lát.';
+        if (retryBtn) retryBtn.classList.add('hidden');
+      } else {
+        box.className = 'solid-opaque-modal-card rounded-2xl border-2 border-amber-300 px-4 py-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3';
+        if (iconEl) iconEl.textContent = '📶';
+        if (badgeEl) {
+          badgeEl.className = 'text-xs sm:text-sm font-extrabold text-amber-900';
+          badgeEl.textContent = 'Chưa gửi được điểm do mất mạng / gián đoạn kết nối';
+        }
+        if (detailEl) {
+          detailEl.textContent = 'Điểm của bạn đã được lưu an toàn trên thiết bị. Hãy kết nối mạng rồi bấm nút gửi lại bên cạnh.';
+        }
+        if (retryBtn) retryBtn.classList.remove('hidden');
+      }
+      refreshIconsAndMath(box);
+    }
+
+    async function submitScoreToTeacherSheet(resultRecord, session) {
+      const scriptUrl = normalizeTeacherScriptUrl(session?.exam?.teacherScriptUrl || resultRecord?.teacherScriptUrl || '');
+      if (!scriptUrl || !resultRecord) return false;
+
+      const payload = {
+        action: 'submitScore',
+        studentName: String(resultRecord.studentName || '').trim(),
+        className: String(resultRecord.studentClass || '').trim(),
+        examId: String(session?.exam?.shortExamId || resultRecord.shortExamId || resultRecord.examId || ''),
+        examTitle: String(resultRecord.examTitle || '').trim(),
+        score: Number(Number(resultRecord.score || 0).toFixed(2)),
+        durationSec: Math.max(1, Math.round(Number(resultRecord.timeSpentSeconds || 1))),
+        integrityHash: String(resultRecord.integritySeal || computeResultIntegritySeal(resultRecord))
+      };
+
+      resultRecord.teacherScriptUrl = scriptUrl;
+      resultRecord.teacherSyncStatus = 'sending';
+      resultRecord.teacherScorePayload = payload;
+      persistResultsToLocal();
+      if (lastViewedResult && lastViewedResult.id === resultRecord.id) {
+        updateTeacherSyncResultUI(resultRecord);
+      }
+
+      try {
+        await postScorePayloadToTeacherScript(scriptUrl, payload);
+        resultRecord.teacherSyncStatus = 'sent';
+        resultRecord.teacherSyncedAt = Date.now();
+        removePendingTeacherScore(resultRecord.id);
+        persistResultsToLocal();
+        if (lastViewedResult && lastViewedResult.id === resultRecord.id) {
+          updateTeacherSyncResultUI(resultRecord);
+        }
+        return true;
+      } catch (err) {
+        resultRecord.teacherSyncStatus = 'failed';
+        enqueuePendingTeacherScore({
+          resultId: resultRecord.id,
+          scriptUrl,
+          payload,
+          savedAt: Date.now()
+        });
+        persistResultsToLocal();
+        if (lastViewedResult && lastViewedResult.id === resultRecord.id) {
+          updateTeacherSyncResultUI(resultRecord);
+        }
         return false;
+      }
+    }
+
+    async function retrySendScoreToTeacher() {
+      const res = lastViewedResult;
+      if (!res || !res.teacherScriptUrl) return;
+      const btn = document.getElementById('btn-retry-teacher-score');
+      if (btn) btn.disabled = true;
+      try {
+        const ok = await submitScoreToTeacherSheet(res, { exam: { shortExamId: res.shortExamId || res.examId, teacherScriptUrl: res.teacherScriptUrl } });
+        if (ok) {
+          showCuteToast('✅ Đã gửi điểm về bảng tính Excel của giáo viên thành công!', '📊', 'success');
+        } else {
+          showCuteToast('⚠️ Vẫn chưa kết nối được bảng tính giáo viên — vui lòng kiểm tra lại mạng nhé!', '📶', 'warning');
+        }
+      } finally {
+        if (btn) btn.disabled = false;
+      }
+    }
+
+    async function flushPendingTeacherScores() {
+      const queue = getPendingTeacherScores();
+      if (!queue.length) return;
+      for (const item of queue) {
+        if (!item || !item.scriptUrl || !item.payload) continue;
+        try {
+          await postScorePayloadToTeacherScript(item.scriptUrl, item.payload);
+          removePendingTeacherScore(item.resultId);
+          const matched = resultsList.find(r => r && r.id === item.resultId);
+          if (matched) {
+            matched.teacherSyncStatus = 'sent';
+            matched.teacherSyncedAt = Date.now();
+            persistResultsToLocal();
+            if (lastViewedResult && lastViewedResult.id === matched.id) {
+              updateTeacherSyncResultUI(matched);
+            }
+          }
+        } catch (e) { }
       }
     }
 
@@ -7433,7 +8044,7 @@ ANSWER KEYS
         return pushToken(`<img src="${safeSrc}" class="exam-illustration" alt="Hình minh họa" onclick="openExamImageZoom(this)" />`);
       });
 
-      // 3. Preserve safe <sup> / <sub> tags (stripping any attributes, balancing dangling tags)
+      // 3. Preserve safe <sup> / <sub> / <table> tags (stripping any dangerous attributes, balancing dangling tags)
       let supDepth = 0;
       let subDepth = 0;
       str = str.replace(/<\s*(\/?)\s*(sup|sub)(?:\s+[^>]*)?>/gi, (full, isClose, tagName) => {
@@ -7457,6 +8068,20 @@ ANSWER KEYS
             return pushToken('<sub>');
           }
         }
+      });
+
+      str = str.replace(/<\s*(\/?)\s*(table|thead|tbody|tfoot|tr|th|td)(\s+[^>]*)?>/gi, (full, isClose, tagName, attrs = '') => {
+        const tag = tagName.toLowerCase();
+        if (isClose) return pushToken(`</${tag}>`);
+        if (tag === 'table') return pushToken('<table class="exam-table-safe">');
+        if (tag === 'th' || tag === 'td') {
+          const cs = attrs.match(/\bcolspan\s*=\s*(?:"(\d{1,2})"|'(\d{1,2})'|(\d{1,2}))/i);
+          const rs = attrs.match(/\browspan\s*=\s*(?:"(\d{1,2})"|'(\d{1,2})'|(\d{1,2}))/i);
+          const csAttr = cs ? ` colspan="${cs[1] || cs[2] || cs[3]}"` : '';
+          const rsAttr = rs ? ` rowspan="${rs[1] || rs[2] || rs[3]}"` : '';
+          return pushToken(`<${tag}${csAttr}${rsAttr}>`);
+        }
+        return pushToken(`<${tag}>`);
       });
 
       // 4. Escape all remaining text safely against XSS
@@ -7624,21 +8249,28 @@ ANSWER KEYS
 
       const starName = document.getElementById('modal-req-star-name');
       const starClass = document.getElementById('modal-req-star-class');
-      const showReqStar = Boolean(exam.requireInfo) && !pendingStartIsPreview;
-      if (starName) starName.classList.toggle('hidden', !showReqStar);
-      if (starClass) starClass.classList.toggle('hidden', !showReqStar);
+      const mustEnterStudentInfo = Boolean(exam.requireInfo || exam.fromTeacherLink || exam.teacherScriptUrl) && !pendingStartIsPreview;
+      if (starName) starName.classList.toggle('hidden', !mustEnterStudentInfo);
+      if (starClass) starClass.classList.toggle('hidden', !mustEnterStudentInfo);
 
-      // Restore last entered student name & class if available
+      const privacyNoteTxt = document.getElementById('modal-student-privacy-note-text');
+      if (privacyNoteTxt) {
+        privacyNoteTxt.textContent = (exam.fromTeacherLink || exam.teacherScriptUrl)
+          ? 'Họ tên, lớp và điểm số của bạn sẽ được gửi trực tiếp về bảng tính quản lý của giáo viên giao đề (không lưu trên máy chủ web).'
+          : 'Tuân thủ Luật Bảo vệ dữ liệu cá nhân 91/2025/QH15: Họ tên & bài làm chỉ lưu cục bộ trên trình duyệt, hoặc gửi thẳng về Google Sheets của giáo viên giao đề (nếu thi qua link giáo viên).';
+      }
+
+      // Restore last entered student name & class if available (never pre-fill hardcoded class)
       const savedStudentName = safeGetLocalStorage('thpt_anninh_last_student_name') || '';
       const savedStudentClass = safeGetLocalStorage('thpt_anninh_last_student_class') || '';
 
       const nameInput = document.getElementById('input-student-name');
       const classInput = document.getElementById('input-student-class');
-      if (nameInput && savedStudentName && !nameInput.value.trim()) {
-        nameInput.value = savedStudentName;
+      if (nameInput) {
+        nameInput.value = savedStudentName || '';
       }
-      if (classInput && savedStudentClass) {
-        classInput.value = savedStudentClass;
+      if (classInput) {
+        classInput.value = savedStudentClass || '';
       }
 
       // Show student info fields
@@ -7761,8 +8393,9 @@ ANSWER KEYS
         const studentName = nameInp ? nameInp.value.trim() : '';
         const studentClass = classInp ? classInp.value.trim() : '';
 
-        if (!isPreviewLaunch && examToLaunch.requireInfo && (!studentName || !studentClass)) {
-          const infoErrMsg = '⚠️ Vui lòng nhập đầy đủ Họ và Tên cùng Lớp học của bạn trước khi vào thi nhé!';
+        const requireStudentFields = Boolean(examToLaunch.requireInfo || examToLaunch.fromTeacherLink || examToLaunch.teacherScriptUrl);
+        if (!isPreviewLaunch && requireStudentFields && (!studentName || !studentClass)) {
+          const infoErrMsg = '⚠️ Vui lòng nhập đầy đủ Họ và Tên và Lớp của bạn trước khi bắt đầu làm bài!';
           showStartModalError(infoErrMsg);
           showCuteToast(infoErrMsg, '⚠️', 'warning');
           if (!studentName && nameInp) nameInp.focus();
@@ -7785,7 +8418,7 @@ ANSWER KEYS
         }
 
         const finalName = studentName || (isPreviewLaunch ? 'Giáo viên (Thi thử)' : 'Thí sinh tự do');
-        const finalClass = studentClass || '11A1';
+        const finalClass = studentClass || (isPreviewLaunch ? 'GV' : '');
 
         // Check attempt limit for student (excluding demo seeds, vault practice, and creator previews)
         const normalizedName = finalName.toLowerCase();
@@ -8965,9 +9598,16 @@ ANSWER KEYS
       resultRecord.integritySeal = computeResultIntegritySeal(resultRecord);
 
       if (!isVaultPractice) {
+        if (session.exam?.teacherScriptUrl && !session.isPreview) {
+          resultRecord.teacherScriptUrl = session.exam.teacherScriptUrl;
+          resultRecord.shortExamId = session.exam.shortExamId || session.exam.id;
+          resultRecord.teacherSyncStatus = 'sending';
+        }
         resultsList.unshift(resultRecord);
         persistResultsToLocal();
-        try { sendAnonymousTelemetry(resultRecord); } catch (e) { }
+        if (session.exam?.teacherScriptUrl && !session.isPreview) {
+          submitScoreToTeacherSheet(resultRecord, session);
+        }
       }
       checkInStudyStreak(false);
 
@@ -9005,6 +9645,7 @@ ANSWER KEYS
       setTxt('res-time-spent', formatSecondsToMMSS(res.timeSpentSeconds || 0));
       setTxt('res-violations', `${res.violations || 0} lần`);
 
+      updateTeacherSyncResultUI(res);
       renderResultReportCard(res);
 
       const praiseBadge = document.getElementById('res-praise-badge');
@@ -9875,25 +10516,229 @@ ANSWER KEYS
       return `${base}#de=${compressed}`;
     }
 
-    function handleIncomingExamFromUrl() {
+    function countExamImages(exam) {
+      let count = 0;
+      const countInStr = (s) => {
+        if (!s || typeof s !== 'string') return;
+        const imgs = s.match(/<img\b[^>]*\bsrc\s*=\s*(?:"(?:data:image\/|https?:\/\/)|'(?:data:image\/|https?:\/\/))/gi);
+        if (imgs) count += imgs.length;
+        const legacy = s.match(/\[IMG:\s*(?:data:image\/|https?:\/\/)[^\]]+\]/gi);
+        if (legacy) count += legacy.length;
+      };
+      (exam?.questions || []).forEach(q => {
+        if (!q) return;
+        if (q.image && sanitizeImageUrl(q.image)) count++;
+        countInStr(q.text);
+        countInStr(q.explanation);
+        (q.options || []).forEach(o => countInStr(o?.text));
+        (q.statements || []).forEach(st => countInStr(st?.text));
+      });
+      return count;
+    }
+
+    function buildShortExamShareUrl(examId, scriptUrl) {
+      const base = getShareBaseUrl();
+      const cleanId = encodeURIComponent(String(examId || '').trim());
+      const normUsed = normalizeTeacherScriptUrl(scriptUrl);
+      const normDefault = normalizeTeacherScriptUrl(DEFAULT_SHEET_SCRIPT_URL);
+      const urlObj = new URL(base);
+      urlObj.searchParams.set('id', String(examId || '').trim());
+      if (normUsed && (!normDefault || normUsed !== normDefault)) {
+        const deployId = extractScriptDeployId(normUsed);
+        if (deployId) urlObj.searchParams.set('s', deployId);
+      }
+      if (anonShowcaseEnabled) {
+        urlObj.searchParams.set('anon', '1');
+      }
+      return urlObj.toString();
+    }
+
+    function sanitizeExamStringWithDOMPurify(rawVal) {
+      if (rawVal === null || rawVal === undefined) return '';
+      const str = String(rawVal);
+      if (!str) return '';
+
+      // Protect standalone math inequalities like "x < 5" before HTML sanitization
+      const protectedMath = str.replace(/<(?![a-zA-Z/!])/g, '&lt;');
+
+      let clean = protectedMath;
+      if (window.DOMPurify && typeof window.DOMPurify.sanitize === 'function') {
+        clean = window.DOMPurify.sanitize(protectedMath, {
+          ALLOWED_TAGS: ['img', 'sup', 'sub', 'br', 'b', 'strong', 'i', 'em', 'table', 'thead', 'tbody', 'tfoot', 'tr', 'th', 'td', 'p', 'div', 'span'],
+          ALLOWED_ATTR: ['src', 'class', 'alt', 'colspan', 'rowspan'],
+          ALLOW_DATA_ATTR: false,
+          FORBID_TAGS: ['script', 'iframe', 'object', 'embed', 'svg', 'math', 'style', 'link'],
+          FORBID_ATTR: ['onerror', 'onload', 'onclick', 'onmouseover', 'onfocus', 'style'],
+          ALLOWED_URI_REGEXP: /^(?:https?:|data:image\/(?:png|jpeg|jpg|gif|webp|bmp);base64,)/i
+        });
+      }
+
+      // Enforce raster-only data:image/ or https:// on every <img> and keep only safe classes
+      clean = clean.replace(/<img\b([^>]*)>/gi, (full, attrs) => {
+        const srcMatch = attrs.match(/\bsrc\s*=\s*(?:"([^"]*)"|'([^']*)')/i);
+        const safeSrc = sanitizeImageUrl((srcMatch && (srcMatch[1] || srcMatch[2])) || '');
+        if (!safeSrc) return '';
+        const cls = /\bexam-illustration\b/i.test(attrs) ? 'exam-illustration' : 'inline-formula';
+        return `<img src="${safeSrc}" class="${cls}">`;
+      });
+
+      return clean;
+    }
+
+    function sanitizeIncomingExamWithDOMPurify(rawExam) {
+      if (!rawExam || typeof rawExam !== 'object') return null;
+      const cleanQuestions = (Array.isArray(rawExam.questions) ? rawExam.questions : [])
+        .filter(q => q && [1, 2, 3].includes(Number(q.part)))
+        .map((q, idx) => {
+          const cleanImg = q.image ? sanitizeImageUrl(String(q.image)) : null;
+          return {
+            ...q,
+            id: typeof sanitizeQuestionId === 'function' ? sanitizeQuestionId(q.id, idx + 1) : String(q.id || `q_${idx + 1}`),
+            number: Number(q.number) || (idx + 1),
+            part: Number(q.part),
+            text: sanitizeExamStringWithDOMPurify(q.text || ''),
+            explanation: q.explanation ? sanitizeExamStringWithDOMPurify(q.explanation) : '',
+            image: cleanImg || null,
+            options: Array.isArray(q.options)
+              ? q.options.map(o => ({ ...o, text: sanitizeExamStringWithDOMPurify(o?.text || '') }))
+              : [],
+            statements: Array.isArray(q.statements)
+              ? q.statements.map(st => ({ ...st, text: sanitizeExamStringWithDOMPurify(st?.text || '') }))
+              : [],
+            shortAnswer: q.shortAnswer !== undefined && q.shortAnswer !== null ? sanitizeExamStringWithDOMPurify(String(q.shortAnswer)) : ''
+          };
+        });
+
+      return {
+        ...rawExam,
+        id: String(rawExam.id || ('exam_' + Date.now())),
+        title: stripInlineImageMarkup(String(rawExam.title || 'Đề Thi Trực Tuyến')) || 'Đề Thi Trực Tuyến',
+        grade: String(rawExam.grade || '11'),
+        subject: String(rawExam.subject || 'Tổng hợp'),
+        duration: Math.max(1, parseInt(rawExam.duration, 10) || 45),
+        mode: rawExam.mode === 'practice' ? 'practice' : 'exam',
+        maxAttempts: Math.max(0, parseInt(rawExam.maxAttempts, 10) || 0),
+        password: '',
+        passwordHash: String(rawExam.passwordHash || ''),
+        passwordSalt: String(rawExam.passwordSalt || ''),
+        scoringMode: rawExam.scoringMode === 'equal' ? 'equal' : 'moet',
+        antiCheat: Boolean(rawExam.antiCheat),
+        requireInfo: true,
+        shuffle: Boolean(rawExam.shuffle),
+        subExamCount: Math.max(1, parseInt(rawExam.subExamCount, 10) || 1),
+        subExamLimit: Math.max(0, parseInt(rawExam.subExamLimit, 10) || 0),
+        questions: cleanQuestions
+      };
+    }
+
+    function showRemoteExamLoader(isError = false, titleText = '', descText = '') {
+      const modal = document.getElementById('modal-loading-remote-exam');
+      const spinner = document.getElementById('loading-remote-exam-spinner');
+      const titleEl = document.getElementById('loading-remote-exam-title');
+      const descEl = document.getElementById('loading-remote-exam-desc');
+      const errActions = document.getElementById('loading-remote-exam-error-actions');
+      if (spinner) spinner.classList.toggle('hidden', Boolean(isError));
+      if (titleEl) titleEl.textContent = titleText || (isError ? 'Không tải được đề thi' : 'Đang tải đề thi và hình ảnh...');
+      if (descEl) descEl.textContent = descText || 'Hệ thống đang nạp toàn bộ câu hỏi, ảnh minh họa và công thức Toán/Lý/Hóa trực tiếp từ link giáo viên giao.';
+      if (errActions) {
+        errActions.classList.toggle('hidden', !isError);
+        errActions.classList.toggle('flex', Boolean(isError));
+      }
+      if (modal) showModalElement('modal-loading-remote-exam');
+    }
+
+    function hideRemoteExamLoader() {
+      hideModalElement('modal-loading-remote-exam');
+    }
+
+    function dismissRemoteExamLoaderToHome() {
+      hideRemoteExamLoader();
+      switchTab('home');
+    }
+
+    function retryLoadIncomingExamFromUrl() {
+      handleIncomingExamFromUrl();
+    }
+
+    async function handleIncomingExamFromUrl() {
       const params = new URLSearchParams(window.location.search);
+      const shortId = String(params.get('id') || '').trim();
       const queryExamId = params.get('exam');
       const hash = window.location.hash || '';
+
+      if (shortId) {
+        const scriptUrl = resolveScriptUrlFromQuery(params);
+        if (!scriptUrl) {
+          showRemoteExamLoader(
+            true,
+            'Thiếu thông tin máy chủ bảng tính giáo viên',
+            'Đường dẫn chưa có tham số Script (?s=...) và hệ thống chưa cấu hình script mặc định. Vui lòng nhờ giáo viên gửi lại link đầy đủ.'
+          );
+          return;
+        }
+
+        showRemoteExamLoader(
+          false,
+          'Đang tải đề thi và hình ảnh...',
+          'Đang nạp 100% câu hỏi, ảnh minh họa và công thức trực tiếp từ link giáo viên giao...'
+        );
+
+        try {
+          const fetchUrl = `${scriptUrl}${scriptUrl.includes('?') ? '&' : '?'}id=${encodeURIComponent(shortId)}`;
+          const resp = await fetch(fetchUrl, { method: 'GET', cache: 'no-store' });
+          if (!resp.ok) {
+            throw new Error(`HTTP ${resp.status}`);
+          }
+          const json = await resp.json();
+          const rawPayload = (json && json.examPayload) ? json.examPayload : json;
+          if ((json && json.ok === false) || !rawPayload || !Array.isArray(rawPayload.questions)) {
+            throw new Error((json && json.error) || 'Dữ liệu đề thi không hợp lệ hoặc không tồn tại.');
+          }
+
+          const sanitizedExam = sanitizeIncomingExamWithDOMPurify(rawPayload);
+          if (!sanitizedExam || sanitizedExam.questions.length === 0) {
+            throw new Error('Đề thi không chứa câu hỏi hợp lệ thuộc 3 phần trắc nghiệm.');
+          }
+
+          sanitizedExam.shortExamId = shortId;
+          sanitizedExam.teacherScriptUrl = scriptUrl;
+          sanitizedExam.fromTeacherLink = true;
+          sanitizedExam.requireInfo = true;
+
+          mergeExamsById([sanitizedExam]);
+          renderHomeStatsAndExams();
+          renderArchiveAndLeaderboard();
+          refreshIconsAndMath(document.body);
+          hideRemoteExamLoader();
+
+          const imgTotal = countExamImages(sanitizedExam);
+          showCuteToast(
+            `📩 Đã tải trọn vẹn đề "${sanitizedExam.title}" (${sanitizedExam.questions.length} câu${imgTotal > 0 ? `, ${imgTotal} ảnh/công thức` : ''})!`,
+            '🎉',
+            'success'
+          );
+          openStartExamModal(sanitizedExam.id, false);
+        } catch (err) {
+          showRemoteExamLoader(
+            true,
+            'Không thể tải đề thi từ link giáo viên',
+            `Chi tiết: ${err && err.message ? err.message : 'Lỗi kết nối mạng'}. Vui lòng kiểm tra kết nối Internet và bấm thử lại.`
+          );
+        }
+        return;
+      }
 
       if (hash.startsWith('#de=')) {
         const encoded = hash.slice(4);
         const decodedExam = decompressSharePayload(encoded);
-        if (decodedExam && decodedExam.id && Array.isArray(decodedExam.questions) && decodedExam.questions.length > 0) {
-          decodedExam.questions = decodedExam.questions.filter(q => [1, 2, 3].includes(Number(q.part)));
-          if (decodedExam.questions.length === 0) {
-            showCuteToast('⚠️ Đề chia sẻ không có câu hỏi hợp lệ thuộc 3 phần trắc nghiệm!', '❌');
-            return;
-          }
-          mergeExamsById([decodedExam]);
+        const sanitizedDecoded = sanitizeIncomingExamWithDOMPurify(decodedExam);
+        if (sanitizedDecoded && sanitizedDecoded.id && Array.isArray(sanitizedDecoded.questions) && sanitizedDecoded.questions.length > 0) {
+          mergeExamsById([sanitizedDecoded]);
           renderHomeStatsAndExams();
           renderArchiveAndLeaderboard();
-          showCuteToast(`📩 Đã nhận đề "${decodedExam.title}" từ link chia sẻ!`, '🎉');
-          openStartExamModal(decodedExam.id, false);
+          refreshIconsAndMath(document.body);
+          showCuteToast(`📩 Đã nhận đề "${sanitizedDecoded.title}" từ link chia sẻ!`, '🎉');
+          openStartExamModal(sanitizedDecoded.id, false);
           return;
         } else {
           showCuteToast('⚠️ Link đề thi không hợp lệ hoặc bị cắt ngắn khi sao chép!', '❌');
@@ -9906,7 +10751,7 @@ ANSWER KEYS
         if (target) {
           openStartExamModal(target.id, false);
         } else {
-          showCuteToast('⚠️ Không tìm thấy bài thi theo mã ID này trên thiết bị. Hãy dùng Link chia sẻ đầy đủ (#de=...).', '🔗');
+          showCuteToast('⚠️ Không tìm thấy bài thi theo mã ID này trên thiết bị. Hãy dùng Link chia sẻ từ giáo viên.', '🔗');
         }
       }
     }
@@ -10045,38 +10890,71 @@ ANSWER KEYS
       document.getElementById('inline-img-input').click();
     }
 
-    function compressImageDataUrl(dataUrl, maxWidth = 900, quality = 0.78, preserveTransparentPng = false) {
+    function smartOptimizeExamImage(dataUrl, options = {}) {
       return new Promise(resolve => {
         try {
           if (!dataUrl || typeof dataUrl !== 'string' || !dataUrl.startsWith('data:image/')) {
             resolve(dataUrl);
             return;
           }
-          // SVG or tiny formula images (< 80KB) keep as-is
-          if (dataUrl.startsWith('data:image/svg') || dataUrl.length < 80000) {
+          if (dataUrl.startsWith('data:image/svg')) {
             resolve(dataUrl);
             return;
           }
+          const isFormula = Boolean(options.isFormula);
+          const maxWidth = Number(options.maxWidth) > 0 ? Number(options.maxWidth) : 1280;
+          const quality = Number(options.quality) > 0 ? Number(options.quality) : 0.85;
+
           const img = new Image();
           img.onload = function () {
             try {
-              const scale = img.width > maxWidth ? (maxWidth / img.width) : 1;
-              const targetW = Math.max(1, Math.round(img.width * scale));
-              const targetH = Math.max(1, Math.round(img.height * scale));
+              const nw = Number(img.naturalWidth || img.width || 0);
+              const nh = Number(img.naturalHeight || img.height || 0);
+              if (!nw || !nh) {
+                resolve(dataUrl);
+                return;
+              }
+              // Keep inline formula images or small images (< 400px) 100% original crisp PNG without lossy blur
+              if (isFormula || (nw < 400 && nh < 400)) {
+                resolve(dataUrl);
+                return;
+              }
+
+              const needsResize = nw > maxWidth;
+              const needsCompress = dataUrl.length > 180000;
+              if (!needsResize && !needsCompress) {
+                resolve(dataUrl);
+                return;
+              }
+
+              const scale = needsResize ? (maxWidth / nw) : 1;
+              const targetW = Math.max(1, Math.round(nw * scale));
+              const targetH = Math.max(1, Math.round(nh * scale));
               const canvas = document.createElement('canvas');
               canvas.width = targetW;
               canvas.height = targetH;
               const ctx = canvas.getContext('2d');
-              const keepPng = preserveTransparentPng && (dataUrl.startsWith('data:image/png') || targetH <= 160);
-              if (!keepPng) {
-                ctx.fillStyle = '#ffffff';
-                ctx.fillRect(0, 0, targetW, targetH);
-              }
+              // Preserve crisp white background for transparent diagrams
+              ctx.fillStyle = '#ffffff';
+              ctx.fillRect(0, 0, targetW, targetH);
               ctx.drawImage(img, 0, 0, targetW, targetH);
-              const compressed = keepPng
-                ? canvas.toDataURL('image/png')
-                : canvas.toDataURL('image/jpeg', quality);
-              resolve(compressed && compressed.length < dataUrl.length ? compressed : dataUrl);
+
+              let outUrl = '';
+              try {
+                const webpUrl = canvas.toDataURL('image/webp', quality);
+                if (webpUrl && webpUrl.startsWith('data:image/webp')) {
+                  outUrl = webpUrl;
+                }
+              } catch (e) { }
+              if (!outUrl) {
+                outUrl = canvas.toDataURL('image/jpeg', quality);
+              }
+
+              if (needsResize || (outUrl && outUrl.length < dataUrl.length)) {
+                resolve(outUrl || dataUrl);
+              } else {
+                resolve(dataUrl);
+              }
             } catch (e) {
               resolve(dataUrl);
             }
@@ -10086,6 +10964,14 @@ ANSWER KEYS
         } catch (err) {
           resolve(dataUrl);
         }
+      });
+    }
+
+    function compressImageDataUrl(dataUrl, maxWidth = 1280, quality = 0.85, preserveTransparentPng = false) {
+      return smartOptimizeExamImage(dataUrl, {
+        isFormula: preserveTransparentPng && dataUrl && dataUrl.length < 120000,
+        maxWidth,
+        quality
       });
     }
 
@@ -10384,15 +11270,20 @@ ANSWER KEYS
         const rawHtml = (htmlRes && htmlRes.value) || '';
         if (rawHtml.trim()) {
           const doc = new DOMParser().parseFromString(rawHtml, 'text/html');
-          // Convert embedded Word images: keep tiny formulas inline, upgrade large diagrams/charts to full-size illustrations
+          // Convert embedded Word images: keep small formulas (<400px) crisp original PNG; optimize large illustrations (>1280px)
           const imgs = Array.from(doc.querySelectorAll('img'));
           for (const imgEl of imgs) {
             const src = imgEl.getAttribute('src') || '';
             if (src.startsWith('data:image/')) {
-              const compressed = await compressImageDataUrl(src, 800, 0.82, true);
-              const dims = await getImageDataUrlDimensions(compressed);
-              const isIllustration = dims.height > 90 || dims.width > 280;
-              imgEl.setAttribute('src', compressed);
+              const origDims = await getImageDataUrlDimensions(src);
+              const isIllustration = origDims.height > 90 || origDims.width > 280;
+              const isSmallFormula = !isIllustration || (origDims.width > 0 && origDims.width < 400 && origDims.height > 0 && origDims.height < 400);
+              const optimizedSrc = await smartOptimizeExamImage(src, {
+                isFormula: isSmallFormula,
+                maxWidth: 1280,
+                quality: 0.85
+              });
+              imgEl.setAttribute('src', optimizedSrc);
               imgEl.setAttribute('class', isIllustration ? 'exam-illustration' : 'inline-formula');
             } else {
               imgEl.remove();
@@ -10762,7 +11653,7 @@ ANSWER KEYS
     // ---------------------------------------------------------------------
     let isSavingCreatedExam = false;
 
-    async function saveCreatedExam(startImmediately) {
+    async function saveCreatedExam(startImmediately, shareOptions = null) {
       if (isSavingCreatedExam) return;
       isSavingCreatedExam = true;
       try {
@@ -10886,11 +11777,15 @@ ANSWER KEYS
           openStartExamModal(newExam.id, true);
         } else {
           switchTab('archive');
-          openShareExamModal(newExam.id, true);
+          openShareExamModal(newExam.id, true, shareOptions);
         }
       } finally {
         isSavingCreatedExam = false;
       }
+    }
+
+    async function saveAndCreateStudentLink() {
+      await saveCreatedExam(false, { autoPublishShortLink: true });
     }
 
     function editExamById(examId) {
@@ -11386,7 +12281,201 @@ ANSWER KEYS
     // ---------------------------------------------------------------------
     // 14. SHARE MODAL, IMPORT / EXPORT DATA & UTILITIES
     // ---------------------------------------------------------------------
-    function openShareExamModal(examId, justSaved = false) {
+    async function optimizeHtmlImagesSmart(str) {
+      if (!str || typeof str !== 'string') return str || '';
+      let out = str;
+      const imgMatches = [...out.matchAll(/<img\b[^>]*\bsrc\s*=\s*(?:"([^"]*)"|'([^']*)')[^>]*>/gi)];
+      for (const m of imgMatches) {
+        const fullTag = m[0];
+        const rawSrc = m[1] || m[2] || '';
+        if (!rawSrc.startsWith('data:image/')) continue;
+        const isIllus = /\bexam-illustration\b/i.test(fullTag);
+        const optSrc = await smartOptimizeExamImage(rawSrc, {
+          isFormula: !isIllus,
+          maxWidth: 1280,
+          quality: 0.85
+        });
+        if (optSrc && optSrc !== rawSrc) {
+          out = out.split(rawSrc).join(optSrc);
+        }
+      }
+      const legacyMatches = [...out.matchAll(/\[IMG:\s*(data:image\/[^\]]+)\s*\]/gi)];
+      for (const m of legacyMatches) {
+        const rawSrc = (m[1] || '').trim();
+        const optSrc = await smartOptimizeExamImage(rawSrc, {
+          isFormula: false,
+          maxWidth: 1280,
+          quality: 0.85
+        });
+        if (optSrc && optSrc !== rawSrc) {
+          out = out.split(rawSrc).join(optSrc);
+        }
+      }
+      return out;
+    }
+
+    async function optimizeExamPayloadForPublish(exam) {
+      const clonedQuestions = [];
+      for (const origQ of (exam.questions || [])) {
+        if (!origQ || ![1, 2, 3].includes(Number(origQ.part))) continue;
+        const q = JSON.parse(JSON.stringify(origQ));
+        if (q.image && String(q.image).startsWith('data:image/')) {
+          q.image = await smartOptimizeExamImage(q.image, { isFormula: false, maxWidth: 1280, quality: 0.85 });
+        }
+        q.text = await optimizeHtmlImagesSmart(q.text || '');
+        if (q.explanation) {
+          q.explanation = await optimizeHtmlImagesSmart(q.explanation);
+        }
+        if (Array.isArray(q.options)) {
+          for (const opt of q.options) {
+            if (opt && opt.text) opt.text = await optimizeHtmlImagesSmart(opt.text);
+          }
+        }
+        if (Array.isArray(q.statements)) {
+          for (const st of q.statements) {
+            if (st && st.text) st.text = await optimizeHtmlImagesSmart(st.text);
+          }
+        }
+        clonedQuestions.push(q);
+      }
+
+      const payload = {
+        id: exam.id,
+        title: exam.title,
+        grade: exam.grade,
+        subject: exam.subject,
+        duration: exam.duration,
+        mode: exam.mode,
+        maxAttempts: exam.maxAttempts,
+        password: '',
+        passwordHash: exam.passwordHash || '',
+        passwordSalt: exam.passwordSalt || '',
+        scoringMode: exam.scoringMode || 'moet',
+        antiCheat: !!exam.antiCheat,
+        requireInfo: true,
+        shuffle: !!exam.shuffle,
+        subExamCount: exam.subExamCount || 1,
+        subExamLimit: exam.subExamLimit || 0,
+        createdAt: exam.createdAt || new Date().toLocaleDateString('vi-VN'),
+        createdTimestamp: exam.createdTimestamp || Date.now(),
+        questions: clonedQuestions
+      };
+      return {
+        payload,
+        questionCount: clonedQuestions.length,
+        imageCount: countExamImages(payload)
+      };
+    }
+
+    function getPublishedShortLinksMap() {
+      const raw = safeGetLocalStorage(STORAGE_PUBLISHED_LINKS_KEY);
+      if (!raw) return {};
+      try {
+        const parsed = JSON.parse(raw);
+        return (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) ? parsed : {};
+      } catch (e) {
+        return {};
+      }
+    }
+
+    function savePublishedShortLinkEntry(localExamId, entry) {
+      if (!localExamId || !entry) return;
+      const map = getPublishedShortLinksMap();
+      map[String(localExamId)] = entry;
+      safeSetLocalStorage(STORAGE_PUBLISHED_LINKS_KEY, JSON.stringify(map));
+    }
+
+    let isPublishingShortLink = false;
+
+    async function publishExamShortLinkFromModal(autoSilent = false) {
+      if (!currentShareExam || isPublishingShortLink) return;
+      const shareInp = document.getElementById('share-teacher-script-url');
+      const rawVal = shareInp ? shareInp.value.trim() : '';
+      if (rawVal) {
+        handleTeacherScriptUrlInput(rawVal, 'share');
+      }
+      const scriptUrl = normalizeTeacherScriptUrl(rawVal) || getActiveTeacherScriptUrl();
+      if (!scriptUrl) {
+        const reminder = document.getElementById('share-no-script-reminder');
+        if (reminder) reminder.classList.remove('hidden');
+        if (!autoSilent) {
+          showCuteToast('⚠️ Vui lòng dán Link Google Apps Script (/exec) của giáo viên để tạo link ngắn đủ ảnh!', '📊', 'warning');
+          if (shareInp) shareInp.focus();
+        }
+        return;
+      }
+
+      const btn = document.getElementById('btn-generate-short-link');
+      const statusEl = document.getElementById('share-modal-status');
+      const reminder = document.getElementById('share-no-script-reminder');
+      if (reminder) reminder.classList.add('hidden');
+
+      isPublishingShortLink = true;
+      if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = '<i data-lucide="loader-2" class="w-3.5 h-3.5 animate-spin"></i><span>Đang đóng gói đề...</span>';
+        refreshIconsAndMath(btn);
+      }
+      if (statusEl) {
+        statusEl.innerHTML = '⏳ <strong>Đang tối ưu ảnh thông minh &amp; đóng gói đề thi lên Google Drive của giáo viên...</strong>';
+      }
+
+      try {
+        const { payload, questionCount, imageCount } = await optimizeExamPayloadForPublish(currentShareExam);
+        const resp = await fetch(scriptUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify({
+            action: 'saveExam',
+            examTitle: currentShareExam.title,
+            examPayload: payload
+          })
+        });
+        if (!resp.ok) {
+          throw new Error(`HTTP ${resp.status}`);
+        }
+        const resJson = await resp.json();
+        const remoteId = String((resJson && resJson.examId) || '').trim();
+        if ((resJson && resJson.ok === false) || !remoteId) {
+          throw new Error((resJson && resJson.error) || 'Apps Script không trả về mã đề examId.');
+        }
+
+        const shortUrl = buildShortExamShareUrl(remoteId, scriptUrl);
+        savePublishedShortLinkEntry(currentShareExam.id, {
+          examId: remoteId,
+          shortUrl,
+          scriptUrl,
+          questionCount,
+          imageCount,
+          examUpdatedAt: currentShareExam.updatedTimestamp || currentShareExam.createdTimestamp || 0,
+          publishedAt: Date.now()
+        });
+
+        if (statusEl) {
+          statusEl.innerHTML = `✅ <strong>Đã đóng gói thành công ${questionCount} câu hỏi &amp; ${imageCount} hình ảnh/công thức (100% đầy đủ)!</strong><br/>Mã đề: <code class="px-1.5 py-0.5 rounded bg-white border border-emerald-300 font-extrabold text-emerald-800">${escapeHTML(remoteId)}</code> • Điểm học sinh sẽ tự động đổ về bảng tính Excel của giáo viên.`;
+        }
+        updateShareModalUrlDisplay(shortUrl, imageCount, true);
+        if (!autoSilent) {
+          showCuteToast(`🔗 Đã tạo link siêu ngắn (${remoteId}) giữ trọn ${imageCount} ảnh/công thức!`, '🎉', 'success');
+        }
+      } catch (err) {
+        if (statusEl) {
+          statusEl.innerHTML = `⚠️ <strong>Chưa gửi được đề lên Apps Script:</strong> ${escapeHTML((err && err.message) || 'Lỗi kết nối')}. Hãy kiểm tra lại quyền truy cập <em>"Bất kỳ ai"</em> của Web App (/exec) và thử lại.`;
+        }
+        if (!autoSilent) {
+          showCuteToast('❌ Không tạo được link qua Apps Script: ' + ((err && err.message) || 'Lỗi kết nối'), '⚠️', 'error');
+        }
+      } finally {
+        isPublishingShortLink = false;
+        if (btn) {
+          btn.disabled = false;
+          btn.innerHTML = '<i data-lucide="sparkles" class="w-3.5 h-3.5"></i><span>Tạo link gửi học sinh</span>';
+          refreshIconsAndMath(btn);
+        }
+      }
+    }
+
+    function openShareExamModal(examId, justSaved = false, shareOptions = null) {
       const exam = findExamById(examId);
       if (!exam) {
         showCuteToast('⚠️ Không tìm thấy dữ liệu đề thi để chia sẻ!', '⚠️', 'warning');
@@ -11397,47 +12486,93 @@ ANSWER KEYS
       const kicker = document.getElementById('share-modal-kicker');
       const titleEl = document.getElementById('share-modal-title');
       const statusEl = document.getElementById('share-modal-status');
+      const shareScriptInp = document.getElementById('share-teacher-script-url');
+      const reminder = document.getElementById('share-no-script-reminder');
 
       if (kicker) kicker.textContent = justSaved ? '🎉 Đã lưu đề thi thành công!' : 'Phát hành bài thi trực tuyến';
       if (titleEl) titleEl.textContent = exam.title || 'Chia sẻ đề thi';
 
-      if (statusEl) {
-        statusEl.innerHTML = '🔗 <strong>Chia sẻ trực tuyến qua Cloudflare Pages (<a href="https://onthithptanninh.pages.dev/" target="_blank" rel="noopener noreferrer" class="underline text-sky-700">onthithptanninh.pages.dev</a>):</strong> Không giới hạn băng thông hay lượt truy cập đồng thời. Toàn bộ câu hỏi và đáp án đã được nén gọn ngay trong link bên dưới — gửi cho học sinh là vào thi được ngay!';
-      }
+      const savedTeacherUrl = getSavedTeacherScriptUrl();
+      if (shareScriptInp) shareScriptInp.value = savedTeacherUrl;
 
-      const shareUrl = buildExamShareUrl(exam, false);
-      const hasImages = (exam.questions || []).some(q => questionHasAnyImage(q));
-      updateShareModalUrlDisplay(shareUrl, hasImages);
+      const activeScriptUrl = getActiveTeacherScriptUrl();
+      const qCount = (exam.questions || []).length;
+      const imgCount = countExamImages(exam);
 
       const modalEl = showModalElement('modal-share-exam');
+
+      if (activeScriptUrl) {
+        if (reminder) reminder.classList.add('hidden');
+        const cached = getPublishedShortLinksMap()[String(exam.id)];
+        const examStamp = exam.updatedTimestamp || exam.createdTimestamp || 0;
+        const canReuseCached = Boolean(
+          cached &&
+          cached.shortUrl &&
+          cached.scriptUrl === activeScriptUrl &&
+          Number(cached.examUpdatedAt || 0) === Number(examStamp) &&
+          !(shareOptions && shareOptions.forceRepublish)
+        );
+
+        if (canReuseCached) {
+          if (statusEl) {
+            statusEl.innerHTML = `✅ <strong>Đã đóng gói thành công ${cached.questionCount || qCount} câu hỏi &amp; ${cached.imageCount ?? imgCount} hình ảnh/công thức (100% đầy đủ)!</strong><br/>Mã đề: <code class="px-1.5 py-0.5 rounded bg-white border border-emerald-300 font-extrabold text-emerald-800">${escapeHTML(cached.examId)}</code> • Điểm học sinh sẽ tự động đổ về bảng tính Excel của giáo viên.`;
+          }
+          updateShareModalUrlDisplay(cached.shortUrl, imgCount, true);
+        } else {
+          updateShareModalUrlDisplay('', imgCount, false);
+          publishExamShortLinkFromModal(true);
+        }
+      } else {
+        if (reminder) reminder.classList.remove('hidden');
+        const fallbackUrl = imgCount === 0 ? buildExamShareUrl(exam, false) : '';
+        if (imgCount === 0 && fallbackUrl && fallbackUrl.length <= 2400) {
+          if (statusEl) {
+            statusEl.innerHTML = `🔗 <strong>Chế độ link nén chữ (${qCount} câu, 0 ảnh):</strong> Đề chỉ có chữ ngắn nên đã tạo link dự phòng bên dưới. Khuyên dùng: gắn link Apps Script để nhận điểm học sinh tự động về Excel!`;
+          }
+          updateShareModalUrlDisplay(fallbackUrl, 0, false);
+        } else {
+          if (statusEl) {
+            statusEl.innerHTML = `📌 <strong>Đề gồm ${qCount} câu hỏi &amp; ${imgCount} ảnh/công thức:</strong> Hãy dán link Google Apps Script (<code>/exec</code>) của giáo viên ở ô bên dưới rồi bấm <strong>"Tạo link gửi học sinh"</strong> để tạo link siêu ngắn giữ nguyên 100% ảnh &amp; công thức.`;
+          }
+          updateShareModalUrlDisplay('', imgCount, false);
+        }
+      }
+
       refreshIconsAndMath(modalEl || document.getElementById('modal-share-exam'));
     }
 
-    function updateShareModalUrlDisplay(shareUrl, hasImages) {
+    function updateShareModalUrlDisplay(shareUrl, imageCountOrHasImg, isShortTeacherLink = false) {
       const linkInp = document.getElementById('share-link-input');
       const warnWrap = document.getElementById('share-link-warning');
       const warnTxt = document.getElementById('share-link-warning-text');
-      const noImgBtn = document.getElementById('btn-copy-no-img-link');
       const canvas = document.getElementById('share-qr-canvas');
       const qrFallback = document.getElementById('share-qr-fallback');
       const dlBtn = document.getElementById('btn-download-qr');
+      const imgCount = typeof imageCountOrHasImg === 'number' ? imageCountOrHasImg : (imageCountOrHasImg ? 1 : 0);
 
-      if (linkInp) linkInp.value = shareUrl;
+      if (linkInp) {
+        linkInp.value = shareUrl || '';
+        linkInp.placeholder = shareUrl ? '' : 'Dán link Apps Script (/exec) rồi bấm "Tạo link gửi học sinh"...';
+      }
 
-      if (warnWrap && warnTxt && noImgBtn) {
-        if (shareUrl.length > 2400) {
+      if (warnWrap && warnTxt) {
+        if (shareUrl && !isShortTeacherLink && shareUrl.length > 2400) {
           warnWrap.classList.remove('hidden');
-          warnTxt.textContent = hasImages
-            ? `⚠️ Đề thi có ảnh/công thức minh họa nên link khá dài (${shareUrl.length} ký tự). Nếu ứng dụng chat cắt bớt link, hãy bấm nút dưới hoặc dùng nút "Xuất file đề (.JSON)".`
-            : `⚠️ Đề thi nhiều câu nên link hơi dài (${shareUrl.length} ký tự). Bạn vẫn copy gửi qua trình duyệt/Zalo hoặc dùng nút "Xuất file đề (.JSON)" đều mở được nguyên vẹn.`;
-          noImgBtn.classList.toggle('hidden', !hasImages);
+          warnTxt.textContent = `⚠️ Link nén dự phòng khá dài (${shareUrl.length} ký tự). Hãy gắn link Apps Script (/exec) để tạo link siêu ngắn mà vẫn giữ 100% ${imgCount} ảnh/công thức.`;
         } else {
           warnWrap.classList.add('hidden');
-          noImgBtn.classList.add('hidden');
         }
       }
 
       if (canvas && qrFallback && dlBtn) {
+        if (!shareUrl) {
+          canvas.classList.add('hidden');
+          dlBtn.classList.add('hidden');
+          qrFallback.textContent = 'Mã QR siêu nét sẽ xuất hiện ngay sau khi bạn tạo link gửi học sinh.';
+          qrFallback.classList.remove('hidden');
+          return;
+        }
+
         qrFallback.classList.add('hidden');
         canvas.classList.remove('hidden');
         dlBtn.classList.remove('hidden');
@@ -11446,12 +12581,12 @@ ANSWER KEYS
           QRCode.toCanvas(
             canvas,
             shareUrl,
-            { width: 196, margin: 2, errorCorrectionLevel: 'L', color: { dark: '#1e293b', light: '#ffffff' } },
+            { width: 208, margin: 2, errorCorrectionLevel: isShortTeacherLink ? 'M' : 'L', color: { dark: '#1e293b', light: '#ffffff' } },
             err => {
               if (err) {
                 canvas.classList.add('hidden');
                 dlBtn.classList.add('hidden');
-                qrFallback.textContent = `Mã QR không hiển thị được do link quá dài (${shareUrl.length} ký tự) — hãy dùng nút Copy Link ở trên nhé!`;
+                qrFallback.textContent = `Mã QR không hiển thị được do link quá dài (${shareUrl.length} ký tự) — hãy dùng nút Sao chép link ở trên nhé!`;
                 qrFallback.classList.remove('hidden');
               }
             }
@@ -11460,8 +12595,8 @@ ANSWER KEYS
           canvas.classList.add('hidden');
           dlBtn.classList.add('hidden');
           qrFallback.textContent = shareUrl.length > 2400
-            ? `Đề thi dài (${shareUrl.length} ký tự) vượt dung lượng tối đa của mã QR — hãy dùng nút "Copy Link" ở trên để gửi cho học sinh!`
-            : 'Hãy dùng nút "Copy Link" hoặc "Xuất file đề (.JSON)" bên dưới để gửi cho học sinh.';
+            ? `Đề thi dài (${shareUrl.length} ký tự) vượt dung lượng tối đa của mã QR — hãy gắn link Apps Script để có link siêu ngắn kèm QR!`
+            : 'Hãy dùng nút "Sao chép link" hoặc "Xuất file đề (.JSON)" bên dưới để gửi cho học sinh.';
           qrFallback.classList.remove('hidden');
         }
       }
@@ -14321,11 +15456,16 @@ ANSWER KEYS
         closeNavMenuDropdown();
         closeStartExamModal();
         closeShareExamModal();
+        closeTeacherSheetGuideModal();
         closeSubmitConfirmModal();
         closeLegalPrivacyModal();
         closeExamImageZoom();
         if (typeof hideMotivationAlert === 'function') hideMotivationAlert(false);
       }
+    });
+
+    window.addEventListener('online', () => {
+      try { flushPendingTeacherScores(); } catch (e) { }
     });
 
     window.addEventListener('scroll', updateBackToTopButton, { passive: true });
@@ -14343,15 +15483,19 @@ ANSWER KEYS
       try {
         try { initThemeMode(); } catch (e) { }
         try { initAppStorage(); } catch (e) { }
+        try { initTeacherScriptConfigUI(); } catch (e) { }
         try { initSoundSettingsStorage(); } catch (e) { }
         try { initPrivacyAndLegalUI(); } catch (e) { }
         try { initAnonShowcaseMode(); } catch (e) { }
         try { initPwaSupport(); } catch (e) { }
         try { initMotivationAlerts(); } catch (e) { }
         try { updateOnlineSyncBadge(); } catch (e) { }
+        try { flushPendingTeacherScores(); } catch (e) { }
         try {
           hideModalElement('modal-start-exam');
           hideModalElement('modal-share-exam');
+          hideModalElement('modal-teacher-sheet-guide');
+          hideModalElement('modal-loading-remote-exam');
           hideModalElement('modal-submit-confirm');
           hideModalElement('modal-legal-privacy');
           hideModalElement('modal-image-zoom');
@@ -14366,7 +15510,8 @@ ANSWER KEYS
         try { updateBackToTopButton(); } catch (e) { }
 
         try {
-          const hasIncomingUrl = Boolean(new URLSearchParams(window.location.search).get('exam')) || (window.location.hash || '').startsWith('#de=');
+          const sp = new URLSearchParams(window.location.search);
+          const hasIncomingUrl = Boolean(sp.get('id') || sp.get('exam')) || (window.location.hash || '').startsWith('#de=');
           if (hasIncomingUrl) {
             handleIncomingExamFromUrl();
           } else {
@@ -14437,6 +15582,23 @@ ANSWER KEYS
       hideMotivationAlert,
       updateMotivationToggleUI,
       TELEMETRY_ENDPOINT,
+      DEFAULT_SHEET_SCRIPT_URL,
+      TEACHER_APPS_SCRIPT_TEMPLATE,
+      normalizeTeacherScriptUrl,
+      extractScriptDeployId,
+      handleTeacherScriptUrlInput,
+      openTeacherSheetGuideModal,
+      closeTeacherSheetGuideModal,
+      copyTeacherAppsScriptCode,
+      smartOptimizeExamImage,
+      saveAndCreateStudentLink,
+      publishExamShortLinkFromModal,
+      retryLoadIncomingExamFromUrl,
+      dismissRemoteExamLoaderToHome,
+      retrySendScoreToTeacher,
+      flushPendingTeacherScores,
+      sanitizeExamStringWithDOMPurify,
+      sanitizeIncomingExamWithDOMPurify,
       getOrCreateAnonTelemetryId,
       sendAnonymousTelemetry,
       initAnonShowcaseMode,
