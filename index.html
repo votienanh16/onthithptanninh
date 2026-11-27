@@ -111,7 +111,9 @@
   <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
 
-  <!-- Mammoth.js (.docx reader), SheetJS (.xlsx reader), PDF.js (.pdf reader), LZString & QRCode -->
+  <!-- JSZip + Mammoth.js (.docx reader), SheetJS (.xlsx reader), PDF.js (.pdf reader) & DOMPurify -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"
+    onerror="var s=document.createElement('script');s.src='https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js';document.head.appendChild(s);"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
@@ -120,9 +122,6 @@
       pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
     }
   </script>
-  <script src="https://cdn.jsdelivr.net/npm/lz-string@1.5.0/libs/lz-string.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.1/build/qrcode.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script><!-- /* QRCode.js - MIT License */ -->
   <script src="https://cdn.jsdelivr.net/npm/dompurify@3.1.6/dist/purify.min.js"
     onerror="var s=document.createElement('script');s.src='https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.1.6/purify.min.js';document.head.appendChild(s);"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
@@ -178,7 +177,6 @@
     .hidden,
     .glass-modal-backdrop.hidden,
     #modal-start-exam.hidden,
-    #modal-share-exam.hidden,
     #modal-submit-confirm.hidden,
     #modal-legal-privacy.hidden,
     #modal-image-zoom.hidden,
@@ -1778,10 +1776,6 @@
         }
 
         /* Keep functional white surfaces where contrast/scannability requires it */
-        html[data-theme="dark"] #share-qr-canvas {
-          background-color: #ffffff !important;
-        }
-
         html[data-theme="dark"] #main-site-header .rounded-full.bg-white {
           background-color: #ffffff;
         }
@@ -2118,6 +2112,54 @@
           break-inside: avoid;
         }
       }
+
+      /* 100% Solid Opaque Cards for Guide & Empty State (Light & Dark Mode) */
+      .guide-solid-card {
+        background: #ffffff !important;
+        background-color: #ffffff !important;
+        background-image: none !important;
+        opacity: 1 !important;
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+        color: #1e293b;
+      }
+      html[data-theme="dark"] .guide-solid-card {
+        background: #1e293b !important;
+        background-color: #1e293b !important;
+        background-image: none !important;
+        opacity: 1 !important;
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+        color: #f8fafc;
+        border-color: #334155 !important;
+      }
+      .guide-sub-box {
+        background: #f8fafc !important;
+        background-color: #f8fafc !important;
+        background-image: none !important;
+        border: 1.5px solid #e2e8f0;
+        color: #334155;
+      }
+      html[data-theme="dark"] .guide-sub-box {
+        background: #0f172a !important;
+        background-color: #0f172a !important;
+        background-image: none !important;
+        border-color: #334155 !important;
+        color: #e2e8f0;
+      }
+      details.guide-accordion > summary {
+        list-style: none;
+        cursor: pointer;
+      }
+      details.guide-accordion > summary::-webkit-details-marker {
+        display: none;
+      }
+      details.guide-accordion .guide-chevron {
+        transition: transform 0.22s ease;
+      }
+      details.guide-accordion[open] .guide-chevron {
+        transform: rotate(180deg);
+      }
   </style>
 </head>
 
@@ -2150,7 +2192,7 @@
                 class="px-3 py-2 mb-1.5 rounded-2xl bg-gradient-to-r from-pink-50 via-amber-50/70 to-emerald-50 border border-pink-100 flex items-center justify-between gap-2">
                 <span class="text-[11px] font-extrabold text-pink-700">🌸 Danh mục điều hướng nhanh</span>
                 <span
-                  class="px-2 py-0.5 rounded-full bg-white text-slate-600 border border-pink-100 text-[10px] font-extrabold">9
+                  class="px-2 py-0.5 rounded-full bg-white text-slate-600 border border-pink-100 text-[10px] font-extrabold">8
                   mục</span>
               </div>
 
@@ -2180,7 +2222,7 @@
                     class="w-8 h-8 rounded-xl bg-amber-100 text-amber-600 flex items-center justify-center shrink-0">
                     <i data-lucide="book-open-check" class="w-4 h-4"></i>
                   </span>
-                  <span class="flex-1 truncate">Hướng dẫn định dạng chuẩn</span>
+                  <span class="flex-1 truncate">Hướng dẫn sử dụng web</span>
                 </button>
 
                 <button type="button" role="menuitem" data-menu-target="archive" id="menu-item-archive"
@@ -2193,15 +2235,6 @@
                   <span class="flex-1 truncate">Lưu trữ bài thi</span>
                 </button>
 
-                <button type="button" role="menuitem" data-menu-target="leaderboard" id="menu-item-leaderboard"
-                  onclick="selectNavMenuItem('leaderboard')"
-                  class="nav-menu-item w-full text-left px-3 py-2.5 rounded-2xl text-xs sm:text-sm font-bold flex items-center gap-2.5 cursor-pointer transition-all text-slate-700 hover:bg-amber-50/80 hover:text-amber-800 border border-transparent">
-                  <span
-                    class="w-8 h-8 rounded-xl bg-yellow-100 text-amber-600 flex items-center justify-center shrink-0">
-                    <i data-lucide="trophy" class="w-4 h-4"></i>
-                  </span>
-                  <span class="flex-1 truncate">Bảng xếp hạng</span>
-                </button>
 
                 <button type="button" role="menuitem" data-menu-target="vault" id="menu-item-vault"
                   onclick="selectNavMenuItem('vault')"
@@ -2299,6 +2332,11 @@
                     </span>
                     <span id="menu-anon-status"
                       class="px-2 py-0.5 text-[10px] leading-none rounded-full bg-white text-slate-500 border border-slate-300 font-extrabold shrink-0">Đang tắt</span>
+                  </button>
+                  <button id="btn-menu-clear-session" type="button" onclick="eraseAllPersonalLocalData(); closeNavMenuDropdown();"
+                    class="w-full text-left px-3 py-2 rounded-2xl text-xs font-extrabold flex items-center gap-2 cursor-pointer transition-all bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200">
+                    <i data-lucide="trash-2" class="w-3.5 h-3.5 text-rose-600 shrink-0"></i>
+                    <span class="truncate">Xóa phiên làm việc</span>
                   </button>
                 </div>
               </div>
@@ -2539,7 +2577,7 @@
             <button type="button" onclick="switchTab('archive')"
               class="cursor-pointer px-4 py-2.5 rounded-2xl bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 font-bold text-xs sm:text-sm transition-all flex items-center gap-1.5">
               <i data-lucide="folder-heart" class="w-4 h-4"></i>
-              <span>Xem tất cả &amp; BXH</span>
+              <span>Xem kho đề lưu trữ</span>
             </button>
             <button type="button" onclick="switchTab('create')"
               class="cursor-pointer px-4 py-2.5 rounded-2xl bg-pink-500 hover:bg-pink-600 text-white font-bold text-xs sm:text-sm shadow-sm transition-all flex items-center gap-1.5">
@@ -2702,297 +2740,219 @@
     </section>
 
     <!-- ===================================================================== -->
-    <!-- 3. MỤC "HƯỚNG DẪN ĐỊNH DẠNG CHUẨN"                                    -->
+    <!-- 3. MỤC "HƯỚNG DẪN SỬ DỤNG WEB"                                        -->
     <!-- ===================================================================== -->
-    <section id="tab-guide" class="tab-section hidden space-y-8">
-      <!-- Top Header Banner -->
-      <div
-        class="bg-gradient-to-r from-amber-100/90 via-rose-100/80 to-emerald-100/90 rounded-3xl p-6 sm:p-8 border-2 border-amber-200 shadow-cute flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+    <section id="tab-guide" class="tab-section hidden space-y-6 sm:space-y-7">
+      <!-- Top Header Banner (100% Solid Opaque) -->
+      <div class="guide-solid-card rounded-3xl p-6 sm:p-8 border-2 border-amber-200 shadow-cute flex flex-col lg:flex-row lg:items-center justify-between gap-5">
         <div class="space-y-2 max-w-2xl">
-          <span
-            class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white text-amber-700 border border-amber-300 text-xs font-bold">
-            <i data-lucide="wand-2" class="w-3.5 h-3.5"></i> Cẩm Nang Chuẩn Hóa Đề Thi
+          <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-50 text-amber-800 border border-amber-300 text-xs font-bold">
+            <i data-lucide="compass" class="w-3.5 h-3.5"></i> Cẩm nang sử dụng nhanh • Web Tĩnh 100%
           </span>
-          <h2 class="text-2xl sm:text-3xl font-bold text-slate-800">
-            Hướng Dẫn Định Dạng Chuẩn (3 Phần Thi)
+          <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-800">
+            Hướng dẫn sử dụng web
           </h2>
-          <p class="text-sm sm:text-base text-slate-600 font-medium">
-            Chỉ cần soạn văn bản theo quy tắc siêu đơn giản dưới đây, trình phân tích thông minh của hệ thống sẽ tự động
-            bóc tách 100% câu hỏi, đáp án đúng và công thức Toán/Lý/Hóa!
+          <p class="text-sm sm:text-base text-slate-600 font-medium leading-relaxed">
+            Chỉ cần kéo thả file đề Word (<code class="px-1.5 py-0.5 rounded bg-pink-50 text-pink-700 font-bold">.docx</code>), hệ thống tự động chuẩn hóa 3 phần thi 2026 và chấm điểm ngay trên trình duyệt — không cần đăng nhập.
           </p>
         </div>
 
-        <div class="flex flex-wrap items-center gap-3 shrink-0">
-          <button onclick="copySampleAzota()"
-            class="px-5 py-3 rounded-2xl bg-white hover:bg-pink-50 text-pink-600 border-2 border-pink-300 font-bold text-sm shadow-sm hover:-translate-y-0.5 transition-all flex items-center gap-2">
-            <i data-lucide="copy" class="w-4 h-4"></i>
-            <span>Sao chép đề mẫu chuẩn</span>
+        <div class="flex flex-wrap items-center gap-2.5 shrink-0">
+          <button type="button" onclick="openCreatorFromEmptyState()"
+            class="btn-3d btn-3d-pink cursor-pointer px-5 py-3 rounded-2xl bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white font-extrabold text-xs sm:text-sm flex items-center gap-2">
+            <i data-lucide="file-up" class="w-4 h-4"></i>
+            <span>Nhập file đề (.docx) ngay</span>
           </button>
-          <button onclick="downloadSampleAzotaFile()"
-            class="px-5 py-3 rounded-2xl bg-amber-500 hover:bg-amber-600 text-white font-bold text-sm shadow-md shadow-amber-200 hover:-translate-y-0.5 transition-all flex items-center gap-2">
-            <i data-lucide="download" class="w-4 h-4"></i>
-            <span>Tải file đề mẫu (.txt)</span>
-          </button>
-          <button onclick="loadSampleIntoCreator()"
-            class="px-5 py-3 rounded-2xl bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-sm shadow-md shadow-emerald-200 hover:-translate-y-0.5 transition-all flex items-center gap-2">
-            <i data-lucide="play" class="w-4 h-4"></i>
-            <span>Nạp thử ngay vào Trình Tạo Đề</span>
+          <button type="button" onclick="eraseAllPersonalLocalData()"
+            class="cursor-pointer px-4 py-3 rounded-2xl bg-rose-50 hover:bg-rose-100 text-rose-700 border-2 border-rose-200 font-extrabold text-xs sm:text-sm transition-all flex items-center gap-2">
+            <i data-lucide="trash-2" class="w-4 h-4"></i>
+            <span>Xóa phiên làm việc</span>
           </button>
         </div>
       </div>
 
-      <!-- System Overview & 3-Part Feature Summary (Moved from Home Hero for cleaner first screen) -->
-      <div id="guide-system-overview"
-        class="bg-white/95 rounded-3xl border-2 border-pink-100 p-5 sm:p-6 shadow-sm space-y-4">
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-pink-100 pb-3.5">
-          <div>
-            <h3 class="text-base sm:text-lg font-extrabold text-slate-800">Tổng Quan Cấu Trúc 3 Phần &amp; Tính Năng Hệ
-              Thống</h3>
-            <p id="home-overview-subtitle" class="text-xs sm:text-sm text-slate-500 font-medium">Góc Học Tập Số THPT An Ninh — Chấm điểm tự động
-              chuẩn Bộ GD&amp;ĐT</p>
-          </div>
-          <div class="flex flex-wrap items-center gap-2 text-xs font-bold text-slate-600">
-            <span class="px-3 py-1.5 rounded-xl bg-pink-50 border border-pink-200 flex items-center gap-1.5">
-              <i data-lucide="check-circle-2" class="w-4 h-4 text-pink-500"></i> Chuẩn 3 phần chấm tự động 100%
-            </span>
-            <span class="px-3 py-1.5 rounded-xl bg-emerald-50 border border-emerald-200 flex items-center gap-1.5">
-              <i data-lucide="sigma" class="w-4 h-4 text-emerald-500"></i> Hiển thị công thức LaTeX
-            </span>
-            <span class="px-3 py-1.5 rounded-xl bg-amber-50 border border-amber-200 flex items-center gap-1.5">
-              <i data-lucide="shield-check" class="w-4 h-4 text-amber-500"></i> Cảnh báo chuyển Tab tự động
-            </span>
-          </div>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs sm:text-sm">
-          <div class="p-3.5 rounded-2xl bg-pink-50/90 border border-pink-200 flex items-center gap-3">
-            <div class="w-9 h-9 rounded-xl bg-pink-500 text-white flex items-center justify-center shrink-0 font-bold">1
-            </div>
-            <div>
-              <div class="font-bold text-pink-900">Trắc nghiệm 4 lựa chọn (A, B, C, D)</div>
-              <div class="text-xs text-pink-700">Chấm điểm tự động, hỗ trợ đảo câu &amp; đáp án</div>
-            </div>
-          </div>
-          <div class="p-3.5 rounded-2xl bg-emerald-50/90 border border-emerald-200 flex items-center gap-3">
-            <div
-              class="w-9 h-9 rounded-xl bg-emerald-500 text-white flex items-center justify-center shrink-0 font-bold">2
-            </div>
-            <div>
-              <div class="font-bold text-emerald-900">Trắc nghiệm Đúng / Sai (a, b, c, d)</div>
-              <div class="text-xs text-emerald-700">Tính điểm chi tiết từng mệnh đề chuẩn cấu trúc mới</div>
-            </div>
-          </div>
-          <div class="p-3.5 rounded-2xl bg-amber-50/90 border border-amber-200 flex items-center gap-3">
-            <div class="w-9 h-9 rounded-xl bg-amber-500 text-white flex items-center justify-center shrink-0 font-bold">
-              3</div>
-            <div>
-              <div class="font-bold text-amber-900">Trả lời ngắn &amp; ANSWER KEYS</div>
-              <div class="text-xs text-amber-700">Đối chiếu đáp án số &amp; phân số chính xác từ bảng cuối đề</div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- 4 Visual Rules Cards (Phần 1, Phần 2, Phần 3, ANSWER KEYS) -->
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-
-        <!-- Quy tắc Phần 1 -->
-        <div class="bg-white rounded-3xl border-2 border-pink-200 p-6 shadow-sm space-y-4">
+      <!-- 4 Core Steps Cards (100% Solid Opaque) -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <!-- Step 1 -->
+        <div class="guide-solid-card rounded-3xl border-2 border-pink-200 p-6 shadow-sm space-y-3">
           <div class="flex items-center gap-3">
-            <div
-              class="w-11 h-11 rounded-2xl bg-pink-100 text-pink-600 border border-pink-200 flex items-center justify-center font-bold text-lg">
-              P1
-            </div>
+            <div class="w-10 h-10 rounded-2xl bg-pink-500 text-white flex items-center justify-center font-black text-base shrink-0">1</div>
             <div>
-              <span class="text-xs font-bold text-pink-500 uppercase">Phần 1 • Trắc nghiệm khách quan</span>
-              <h3 class="text-lg font-bold text-slate-800">Trắc nghiệm 4 lựa chọn (A, B, C, D)</h3>
+              <span class="text-[11px] font-extrabold text-pink-600 uppercase">Bước 1 • Tạo đề siêu tốc</span>
+              <h3 class="text-base sm:text-lg font-extrabold text-slate-800">Tạo bài thi nhanh từ file Word (.docx)</h3>
             </div>
           </div>
-          <ul class="space-y-2 text-sm text-slate-600 font-medium">
-            <li class="flex items-start gap-2">
-              <i data-lucide="check" class="w-4 h-4 text-pink-500 shrink-0 mt-1"></i>
-              <span>Bắt đầu câu hỏi bằng chữ <code
-                  class="px-1.5 py-0.5 rounded bg-pink-50 text-pink-700 font-bold">Câu 1.</code> hoặc <code
-                  class="px-1.5 py-0.5 rounded bg-pink-50 text-pink-700 font-bold">Câu 1:</code></span>
-            </li>
-            <li class="flex items-start gap-2">
-              <i data-lucide="check" class="w-4 h-4 text-pink-500 shrink-0 mt-1"></i>
-              <span>Các phương án viết <strong>IN HOA</strong>: <code
-                  class="px-1.5 py-0.5 rounded bg-slate-100 font-bold">A.</code>, <code
-                  class="px-1.5 py-0.5 rounded bg-slate-100 font-bold">B.</code>, <code
-                  class="px-1.5 py-0.5 rounded bg-slate-100 font-bold">C.</code>, <code
-                  class="px-1.5 py-0.5 rounded bg-slate-100 font-bold">D.</code></span>
-            </li>
-            <li class="flex items-start gap-2">
-              <i data-lucide="star" class="w-4 h-4 text-amber-500 shrink-0 mt-1"></i>
-              <span>Đặt dấu sao <code class="px-2 py-0.5 rounded bg-amber-100 text-amber-800 font-bold">*</code>
-                <strong>dính liền ngay trước chữ cái</strong> của đáp án đúng (VD: <code
-                  class="px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-800 font-bold">*A.</code>).</span>
-            </li>
+          <p class="text-xs sm:text-sm text-slate-600 font-medium leading-relaxed">
+            Vào mục <strong>Tạo đề &amp; Nhập file</strong>, kéo thả hoặc chọn tệp <code class="px-1.5 py-0.5 rounded bg-pink-50 text-pink-700 font-bold">.docx</code> bất kỳ:
+          </p>
+          <ul class="space-y-1.5 text-xs sm:text-sm text-slate-600 font-medium">
+            <li class="flex items-start gap-2"><span class="text-pink-500 font-black">•</span><span>Tự động tách đúng <strong>3 phần thi 2026</strong> (A/B/C/D, Đúng/Sai, Trả lời ngắn) và tự lược bỏ phần <strong>Tự luận</strong>.</span></li>
+            <li class="flex items-start gap-2"><span class="text-pink-500 font-black">•</span><span>Tự nhận diện đáp án có sẵn: <strong>gạch chân, in đỏ/màu nổi bật, tô nền Highlight, in đậm đặc biệt, dấu <code class="font-bold">*</code></strong> hoặc <strong>bảng đáp án cuối file</strong>.</span></li>
+            <li class="flex items-start gap-2"><span class="text-pink-500 font-black">•</span><span>Giữ nguyên 100% công thức Toán/Lý/Hóa, chỉ số trên/dưới, bảng số liệu và hình ảnh/đồ thị — bấm <strong>"Tạo bài thi &amp; Vào làm ngay"</strong> để thi tức thì.</span></li>
           </ul>
-          <div
-            class="bg-pink-50/70 rounded-2xl p-4 border border-pink-200 font-mono text-xs sm:text-sm text-slate-700 whitespace-pre-line">
-            Câu 1. Đạo hàm của hàm số $y = x^2 + 2x$ là:
-            *A. $y' = 2x + 2$
-            B. $y' = x + 2$
-            C. $y' = 2x$
-            D. $y' = x^2$</div>
         </div>
 
-        <!-- Quy tắc Phần 2 -->
-        <div class="bg-white rounded-3xl border-2 border-emerald-200 p-6 shadow-sm space-y-4">
+        <!-- Step 2 -->
+        <div class="guide-solid-card rounded-3xl border-2 border-emerald-200 p-6 shadow-sm space-y-3">
           <div class="flex items-center gap-3">
-            <div
-              class="w-11 h-11 rounded-2xl bg-emerald-100 text-emerald-600 border border-emerald-200 flex items-center justify-center font-bold text-lg">
-              P2
-            </div>
+            <div class="w-10 h-10 rounded-2xl bg-emerald-500 text-white flex items-center justify-center font-black text-base shrink-0">2</div>
             <div>
-              <span class="text-xs font-bold text-emerald-600 uppercase">Phần 2 • Trắc nghiệm Đúng / Sai</span>
-              <h3 class="text-lg font-bold text-slate-800">4 mệnh đề viết thường a), b), c), d)</h3>
+              <span class="text-[11px] font-extrabold text-emerald-600 uppercase">Bước 2 • Ôn luyện thông minh</span>
+              <h3 class="text-base sm:text-lg font-extrabold text-slate-800">Các công cụ ôn tập tích hợp</h3>
             </div>
           </div>
-          <ul class="space-y-2 text-sm text-slate-600 font-medium">
-            <li class="flex items-start gap-2">
-              <i data-lucide="check" class="w-4 h-4 text-emerald-500 shrink-0 mt-1"></i>
-              <span>Đánh số thứ tự câu <strong>nối tiếp từ Phần 1</strong> (ví dụ: sau Câu 2 ở Phần 1 sẽ là <code
-                  class="px-1.5 py-0.5 rounded bg-emerald-50 text-emerald-700 font-bold">Câu 3.</code>).</span>
-            </li>
-            <li class="flex items-start gap-2">
-              <i data-lucide="check" class="w-4 h-4 text-emerald-500 shrink-0 mt-1"></i>
-              <span>Các ý viết <strong>chữ thường kèm dấu ngoặc đơn</strong>: <code
-                  class="px-1.5 py-0.5 rounded bg-slate-100 font-bold">a)</code>, <code
-                  class="px-1.5 py-0.5 rounded bg-slate-100 font-bold">b)</code>, <code
-                  class="px-1.5 py-0.5 rounded bg-slate-100 font-bold">c)</code>, <code
-                  class="px-1.5 py-0.5 rounded bg-slate-100 font-bold">d)</code>.</span>
-            </li>
-            <li class="flex items-start gap-2">
-              <i data-lucide="star" class="w-4 h-4 text-amber-500 shrink-0 mt-1"></i>
-              <span>Ý nào <strong>ĐÚNG</strong> thì thêm dấu <code
-                  class="px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-800 font-bold">*</code> dính liền phía trước
-                (<code class="px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-800 font-bold">*a)</code>, <code
-                  class="px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-800 font-bold">*c)</code>). Ý nào
-                <strong>SAI</strong> thì để bình thường (<code
-                  class="px-1.5 py-0.5 rounded bg-rose-100 text-rose-800 font-bold">b)</code>, <code
-                  class="px-1.5 py-0.5 rounded bg-rose-100 text-rose-800 font-bold">d)</code>).</span>
-            </li>
-          </ul>
-          <div
-            class="bg-emerald-50/70 rounded-2xl p-4 border border-emerald-200 font-mono text-xs sm:text-sm text-slate-700 whitespace-pre-line">
-            Câu 3. Cho hàm số $f(x) = 2x - 4$. Xét tính đúng sai của các mệnh đề:
-            *a) Hệ số góc của đường thẳng là $k = 2$.
-            b) Đồ thị hàm số đi qua gốc tọa độ $O(0;0)$.
-            *c) Nghiệm của phương trình $f(x) = 0$ là $x = 2$.
-            d) Hàm số nghịch biến trên $\mathbb{R}$.</div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs font-semibold">
+            <div class="guide-sub-box p-2.5 rounded-xl">🧠 <strong>Kho câu hay sai:</strong> Biểu đồ mạng nhện &amp; ôn giãn cách 1–3–7 ngày.</div>
+            <div class="guide-sub-box p-2.5 rounded-xl">🃏 <strong>Flashcard 3D:</strong> Lật thẻ, đánh dấu "Đã nhớ" / "Cần ôn".</div>
+            <div class="guide-sub-box p-2.5 rounded-xl">⚡ <strong>Speedrun 5 phút:</strong> Trả lời nhanh 300s tích chuỗi Combo.</div>
+            <div class="guide-sub-box p-2.5 rounded-xl">🍅 <strong>Pomodoro &amp; Streak:</strong> Đồng hồ 25p/5p &amp; điểm danh mỗi ngày.</div>
+            <div class="guide-sub-box p-2.5 rounded-xl sm:col-span-2">🌙 <strong>Sáng / Tối &amp; Phiếu kết quả:</strong> Nút gạt giao diện Sáng/Tối ở góc trên; xuất phiếu điểm PNG / PDF / CSV sau khi nộp bài.</div>
+          </div>
         </div>
 
-        <!-- Quy tắc Phần 3 -->
-        <div class="bg-white rounded-3xl border-2 border-amber-200 p-6 shadow-sm space-y-4">
+        <!-- Step 3 -->
+        <div class="guide-solid-card rounded-3xl border-2 border-sky-200 p-6 shadow-sm space-y-3">
           <div class="flex items-center gap-3">
-            <div
-              class="w-11 h-11 rounded-2xl bg-amber-100 text-amber-700 border border-amber-200 flex items-center justify-center font-bold text-lg">
-              P3
-            </div>
+            <div class="w-10 h-10 rounded-2xl bg-sky-500 text-white flex items-center justify-center font-black text-base shrink-0">3</div>
             <div>
-              <span class="text-xs font-bold text-amber-600 uppercase">Phần 3 • Trắc nghiệm trả lời ngắn</span>
-              <h3 class="text-lg font-bold text-slate-800">Câu hỏi Trả lời ngắn (Số / Giá trị)</h3>
+              <span class="text-[11px] font-extrabold text-sky-600 uppercase">Bước 3 • Học mọi lúc mọi nơi</span>
+              <h3 class="text-base sm:text-lg font-extrabold text-slate-800">Cài thành App &amp; Học Offline (PWA)</h3>
             </div>
           </div>
-          <ul class="space-y-2 text-sm text-slate-600 font-medium">
-            <li class="flex items-start gap-2">
-              <i data-lucide="check" class="w-4 h-4 text-amber-500 shrink-0 mt-1"></i>
-              <span>Tiếp tục <strong>đánh số câu tăng dần</strong> nối tiếp từ Phần 2 (ví dụ: <code
-                  class="px-1.5 py-0.5 rounded bg-amber-50 text-amber-800 font-bold">Câu 5.</code>, <code
-                  class="px-1.5 py-0.5 rounded bg-amber-50 text-amber-800 font-bold">Câu 6.</code>, <code
-                  class="px-1.5 py-0.5 rounded bg-amber-50 text-amber-800 font-bold">Câu 7.</code>).</span>
-            </li>
-            <li class="flex items-start gap-2">
-              <i data-lucide="check" class="w-4 h-4 text-amber-500 shrink-0 mt-1"></i>
-              <span>Chỉ ghi nội dung câu hỏi, không có phương án A, B, C, D hay a), b), c), d).</span>
-            </li>
-            <li class="flex items-start gap-2">
-              <i data-lucide="check" class="w-4 h-4 text-amber-500 shrink-0 mt-1"></i>
-              <span>Đáp án của các câu trả lời ngắn được đặt tập trung tại mục <code
-                  class="px-1.5 py-0.5 rounded bg-amber-100 text-amber-900 font-bold">ANSWER KEYS</code> ở cuối
-                đề.</span>
-            </li>
-          </ul>
-          <div
-            class="bg-amber-50/70 rounded-2xl p-4 border border-amber-200 font-mono text-xs sm:text-sm text-slate-700 whitespace-pre-line">
-            Câu 5. Tính giá trị biểu thức $P = 100 + 23$.
-            Câu 6. Một vật chuyển động đều với vận tốc $v = 78$ km/h trong $3$ giờ. Quãng đường đi được (km) là bao
-            nhiêu?
-            Câu 7. Tìm số nguyên dương $x$ thỏa mãn $x - 300 = 45$.</div>
+          <div class="space-y-2 text-xs sm:text-sm text-slate-600 font-medium leading-relaxed">
+            <div class="guide-sub-box p-3 rounded-2xl">
+              <strong>💻 Chrome / Edge / Android:</strong> Bấm nút <strong>"Cài đặt App"</strong> trên thanh tiêu đề hoặc trong <strong>Menu</strong> để cài đặt như ứng dụng độc lập và học bình thường khi không có Internet.
+            </div>
+            <div class="guide-sub-box p-3 rounded-2xl">
+              <strong>📱 Safari trên iPhone / iPad (iOS):</strong> Bấm biểu tượng <strong>Chia sẻ (↑)</strong> ở thanh trình duyệt → chọn <strong>"Thêm vào Màn hình chính"</strong>.
+            </div>
+          </div>
         </div>
 
-        <!-- Quy tắc ANSWER KEYS -->
-        <div class="bg-white rounded-3xl border-2 border-purple-200 p-6 shadow-sm space-y-4">
-          <div class="flex items-center gap-3">
-            <div
-              class="w-11 h-11 rounded-2xl bg-purple-100 text-purple-700 border border-purple-200 flex items-center justify-center font-bold text-lg">
-              KEY
+        <!-- Step 4 -->
+        <div class="guide-solid-card rounded-3xl border-2 border-rose-200 p-6 shadow-sm space-y-3 flex flex-col justify-between">
+          <div class="space-y-3">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-2xl bg-rose-500 text-white flex items-center justify-center font-black text-base shrink-0">4</div>
+              <div>
+                <span class="text-[11px] font-extrabold text-rose-600 uppercase">Bước 4 • An toàn dữ liệu</span>
+                <h3 class="text-base sm:text-lg font-extrabold text-slate-800">Quyền riêng tư &amp; Máy tính dùng chung</h3>
+              </div>
             </div>
-            <div>
-              <span class="text-xs font-bold text-purple-600 uppercase">Cuối đề • Bảng đáp án trả lời ngắn</span>
-              <h3 class="text-lg font-bold text-slate-800">Cấu trúc khối ANSWER KEYS</h3>
+            <p class="text-xs sm:text-sm text-slate-600 font-medium leading-relaxed">
+              Hệ thống chạy thuần Web Tĩnh: <strong>không cần đăng nhập</strong>, không gửi bài thi hay thông tin cá nhân lên máy chủ. Mọi đề thi và kết quả chỉ lưu cục bộ trong trình duyệt của thiết bị này.
+            </p>
+            <div class="guide-sub-box p-3 rounded-2xl text-xs font-semibold leading-relaxed">
+              🏫 Khi học xong trên <strong>máy tính phòng máy trường hoặc máy dùng chung</strong>, hãy bấm nút <strong>"Xóa phiên làm việc"</strong> để dọn sạch đề thi, lịch sử và tên học sinh trước khi rời máy.
             </div>
           </div>
-          <ul class="space-y-2 text-sm text-slate-600 font-medium">
-            <li class="flex items-start gap-2">
-              <i data-lucide="check" class="w-4 h-4 text-purple-500 shrink-0 mt-1"></i>
-              <span>Đặt dòng chữ <code
-                  class="px-2 py-0.5 rounded bg-purple-100 text-purple-800 font-bold">ANSWER KEYS</code> ở dưới cùng của
-                đề thi.</span>
-            </li>
-            <li class="flex items-start gap-2">
-              <i data-lucide="check" class="w-4 h-4 text-purple-500 shrink-0 mt-1"></i>
-              <span>Mỗi dòng bên dưới ghi theo cú pháp: <code
-                  class="px-1.5 py-0.5 rounded bg-slate-100 font-bold">[Số thứ tự].[Đáp án]</code> (VD: <code
-                  class="px-1.5 py-0.5 rounded bg-purple-50 text-purple-800 font-bold">1.123</code>, <code
-                  class="px-1.5 py-0.5 rounded bg-purple-50 text-purple-800 font-bold">2.234</code>, <code
-                  class="px-1.5 py-0.5 rounded bg-purple-50 text-purple-800 font-bold">3.345</code>).</span>
-            </li>
-            <li class="flex items-start gap-2">
-              <i data-lucide="sparkles" class="w-4 h-4 text-pink-500 shrink-0 mt-1"></i>
-              <span>Hỗ trợ linh hoạt cả đánh số từ <code class="font-bold">1, 2, 3...</code> (theo thứ tự câu ở Phần 3)
-                lẫn đánh số nối tiếp (<code class="font-bold">5.123</code>, <code
-                  class="font-bold">6.234</code>...).</span>
-            </li>
-          </ul>
-          <div
-            class="bg-purple-50/70 rounded-2xl p-4 border border-purple-200 font-mono text-xs sm:text-sm text-slate-700 whitespace-pre-line">
-            ANSWER KEYS
-            1.123
-            2.234
-            3.345</div>
-        </div>
-
-      </div>
-
-      <!-- Full Complete Sample Box -->
-      <div class="bg-white rounded-3xl border-2 border-pink-200 p-6 sm:p-8 shadow-cute space-y-4">
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div>
-            <h3 class="text-xl font-bold text-slate-800 flex items-center gap-2">
-              <i data-lucide="file-code-2" class="w-6 h-6 text-pink-500"></i>
-              <span>Đề Mẫu Hoàn Chỉnh Theo Định Dạng Chuẩn (Có thể Sao chép hoặc Nạp thử ngay)</span>
-            </h3>
-            <p class="text-xs sm:text-sm text-slate-500 font-medium">Mẫu đề bao gồm đầy đủ Phần 1 (4 lựa chọn), Phần 2
-              (Đúng/Sai), Phần 3 (Trả lời ngắn) và ANSWER KEYS kèm công thức LaTeX.</p>
-          </div>
-          <div class="flex items-center gap-2.5">
-            <button onclick="copySampleAzota()"
-              class="px-4 py-2.5 rounded-xl bg-pink-100 hover:bg-pink-200 text-pink-700 font-bold text-xs sm:text-sm transition-all flex items-center gap-1.5">
-              <i data-lucide="copy" class="w-4 h-4"></i> Sao chép mẫu
-            </button>
-            <button onclick="loadSampleIntoCreator()"
-              class="px-4 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-xs sm:text-sm transition-all flex items-center gap-1.5">
-              <i data-lucide="arrow-right-circle" class="w-4 h-4"></i> Đưa vào Trình Tạo Đề
+          <div class="pt-1">
+            <button type="button" onclick="eraseAllPersonalLocalData()"
+              class="cursor-pointer w-full sm:w-auto px-4 py-2.5 rounded-2xl bg-rose-500 hover:bg-rose-600 text-white font-extrabold text-xs sm:text-sm transition-all inline-flex items-center justify-center gap-2 shadow-sm">
+              <i data-lucide="trash-2" class="w-4 h-4"></i>
+              <span>Xóa phiên làm việc</span>
             </button>
           </div>
         </div>
+      </div>
 
-        <pre id="azota-sample-code"
-          class="bg-slate-50 rounded-2xl p-5 border-2 border-pink-100 text-xs sm:text-sm font-mono text-slate-700 overflow-x-auto leading-relaxed">Câu 1. Cho hàm số $y = x^3 - 3x + 2$. Giá trị cực đại của hàm số đã cho bằng:
+      <!-- Step 5: Collapsible Sub-Section (CLOSED by default) -->
+      <details id="guide-format-details" class="guide-solid-card guide-accordion rounded-3xl border-2 border-purple-200 shadow-cute overflow-hidden">
+        <summary id="guide-format-summary" class="p-5 sm:p-6 flex items-center justify-between gap-4 select-none">
+          <div class="flex items-center gap-3 min-w-0">
+            <div class="w-10 h-10 rounded-2xl bg-purple-500 text-white flex items-center justify-center font-black text-base shrink-0">5</div>
+            <div class="min-w-0">
+              <div class="flex flex-wrap items-center gap-2">
+                <h3 class="text-base sm:text-lg font-extrabold text-slate-800">Hướng dẫn định dạng chuẩn (3 phần thi 2026)</h3>
+                <span class="px-2.5 py-0.5 rounded-full bg-purple-100 text-purple-800 text-[11px] font-extrabold">Bấm để mở rộng</span>
+              </div>
+              <p class="text-xs sm:text-sm text-slate-500 font-medium mt-0.5">
+                Quy ước soạn văn bản thô Phần I, II, III, khối ANSWER KEYS, định dạng công thức &amp; mẹo đổi MathType bằng <code class="font-bold">Alt + \</code>
+              </p>
+            </div>
+          </div>
+          <span class="w-9 h-9 rounded-full bg-purple-50 text-purple-700 border border-purple-200 flex items-center justify-center shrink-0">
+            <i data-lucide="chevron-down" class="w-5 h-5 guide-chevron"></i>
+          </span>
+        </summary>
+
+        <div class="px-5 sm:px-6 pb-6 pt-2 border-t border-purple-100 space-y-5">
+          <!-- 4 Format Rule Boxes -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="guide-sub-box rounded-2xl p-4 space-y-2.5">
+              <div class="font-extrabold text-pink-700 text-sm">Phần I • Trắc nghiệm 4 lựa chọn (A, B, C, D)</div>
+              <ul class="space-y-1 text-xs font-medium leading-relaxed">
+                <li>• Bắt đầu câu bằng <code class="font-bold">Câu 1.</code> hoặc <code class="font-bold">Câu 1:</code>.</li>
+                <li>• Phương án viết IN HOA: <code class="font-bold">A.</code>, <code class="font-bold">B.</code>, <code class="font-bold">C.</code>, <code class="font-bold">D.</code>.</li>
+                <li>• Đặt dấu sao <code class="font-bold">*</code> dính liền trước đáp án đúng (VD: <code class="font-bold">*A.</code>).</li>
+              </ul>
+              <pre class="guide-solid-card rounded-xl p-3 border border-pink-200 font-mono text-xs overflow-x-auto">Câu 1. Đạo hàm của hàm số $y = x^2 + 2x$ là:
+*A. $y' = 2x + 2$
+B. $y' = x + 2$
+C. $y' = 2x$
+D. $y' = x^2$</pre>
+            </div>
+
+            <div class="guide-sub-box rounded-2xl p-4 space-y-2.5">
+              <div class="font-extrabold text-emerald-700 text-sm">Phần II • Trắc nghiệm Đúng / Sai (a, b, c, d)</div>
+              <ul class="space-y-1 text-xs font-medium leading-relaxed">
+                <li>• Các mệnh đề viết chữ thường kèm dấu ngoặc: <code class="font-bold">a)</code>, <code class="font-bold">b)</code>, <code class="font-bold">c)</code>, <code class="font-bold">d)</code>.</li>
+                <li>• Mệnh đề <strong>ĐÚNG</strong> gắn dấu <code class="font-bold">*</code> phía trước (<code class="font-bold">*a)</code>, <code class="font-bold">*c)</code>); mệnh đề <strong>SAI</strong> giữ nguyên (<code class="font-bold">b)</code>, <code class="font-bold">d)</code>).</li>
+              </ul>
+              <pre class="guide-solid-card rounded-xl p-3 border border-emerald-200 font-mono text-xs overflow-x-auto">Câu 2. Cho hàm số $f(x) = 2x - 4$. Xét tính đúng sai:
+*a) Hệ số góc của đường thẳng là $k = 2$.
+b) Đồ thị đi qua gốc tọa độ $O(0;0)$.
+*c) Nghiệm của $f(x) = 0$ là $x = 2$.
+d) Hàm số nghịch biến trên $\mathbb{R}$.</pre>
+            </div>
+
+            <div class="guide-sub-box rounded-2xl p-4 space-y-2.5">
+              <div class="font-extrabold text-amber-700 text-sm">Phần III • Trả lời ngắn &amp; Khối ANSWER KEYS</div>
+              <ul class="space-y-1 text-xs font-medium leading-relaxed">
+                <li>• Chỉ ghi nội dung câu hỏi (không kèm A/B/C/D hay a/b/c/d).</li>
+                <li>• Đặt khối <code class="font-bold">ANSWER KEYS</code> ở cuối đề theo dạng <code class="font-bold">[STT].[Đáp án]</code> (hỗ trợ cả dấu phẩy <code class="font-bold">0,5</code>, dấu chấm <code class="font-bold">0.5</code> và phân số <code class="font-bold">1/2</code>).</li>
+              </ul>
+              <pre class="guide-solid-card rounded-xl p-3 border border-amber-200 font-mono text-xs overflow-x-auto">ANSWER KEYS
+1.123
+2.234
+3.345</pre>
+            </div>
+
+            <div class="guide-sub-box rounded-2xl p-4 space-y-2.5">
+              <div class="font-extrabold text-purple-700 text-sm">Công thức Toán/Lý/Hóa &amp; Mẹo MathType (<code class="font-bold">Alt + \</code>)</div>
+              <ul class="space-y-1.5 text-xs font-medium leading-relaxed">
+                <li>• Hỗ trợ đầy đủ công thức LaTeX đặt trong <code class="font-bold">$...$</code> (cùng dòng) hoặc <code class="font-bold">$$...$$</code> (riêng dòng).</li>
+                <li>• Công thức gõ bằng <strong>Word Equation</strong> mặc định trong file <code class="font-bold">.docx</code> sẽ được tự động chuyển sang LaTeX.</li>
+                <li>• <strong>Mẹo cho file gõ bằng MathType:</strong> Mở Word, nhấn <code class="font-bold">Ctrl + A</code> chọn toàn bộ rồi bấm tổ hợp phím <code class="px-1.5 py-0.5 rounded bg-purple-100 text-purple-800 font-extrabold">Alt + \</code> (Toggle TeX) để đổi nhanh toàn bộ công thức MathType sang mã LaTeX <code class="font-bold">$...$</code> trước khi tải lên web.</li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- Full Complete Sample Box -->
+          <div class="guide-sub-box rounded-2xl p-4 sm:p-5 space-y-3">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div>
+                <h4 class="text-sm sm:text-base font-extrabold text-slate-800">Đề mẫu hoàn chỉnh theo định dạng chuẩn (3 phần)</h4>
+                <p class="text-xs text-slate-500 font-medium">Dùng để đối chiếu cấu trúc hoặc nạp thử ngay vào Trình Tạo Đề.</p>
+              </div>
+              <div class="flex flex-wrap items-center gap-2">
+                <button type="button" onclick="copySampleAzota()"
+                  class="cursor-pointer px-3.5 py-2 rounded-xl bg-pink-100 hover:bg-pink-200 text-pink-700 font-bold text-xs transition-all flex items-center gap-1.5">
+                  <i data-lucide="copy" class="w-3.5 h-3.5"></i> Sao chép đề mẫu chuẩn
+                </button>
+                <button type="button" onclick="downloadSampleAzotaFile()"
+                  class="cursor-pointer px-3.5 py-2 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs transition-all flex items-center gap-1.5">
+                  <i data-lucide="download" class="w-3.5 h-3.5"></i> Tải file đề mẫu (.txt)
+                </button>
+                <button type="button" onclick="loadSampleIntoCreator()"
+                  class="cursor-pointer px-3.5 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-xs transition-all flex items-center gap-1.5">
+                  <i data-lucide="arrow-right-circle" class="w-3.5 h-3.5"></i> Đưa vào Trình Tạo Đề
+                </button>
+              </div>
+            </div>
+
+            <pre id="azota-sample-code"
+              class="guide-solid-card rounded-2xl p-4 border border-pink-200 text-xs font-mono overflow-x-auto leading-relaxed">Câu 1. Cho hàm số $y = x^3 - 3x + 2$. Giá trị cực đại của hàm số đã cho bằng:
 *A. $4$
 B. $0$
 C. $2$
@@ -3030,7 +2990,9 @@ ANSWER KEYS
 1.123
 2.234
 3.345</pre>
-      </div>
+          </div>
+        </div>
+      </details>
     </section>
 
     <!-- ===================================================================== -->
@@ -3058,15 +3020,20 @@ ANSWER KEYS
             <i data-lucide="wand-2" class="w-4 h-4 text-amber-600"></i>
             <span>Nạp đề mẫu 3 phần</span>
           </button>
+          <button type="button" onclick="downloadCurrentCreatorNormalizedTxt()"
+            class="cursor-pointer px-4 py-2.5 rounded-2xl bg-sky-50 hover:bg-sky-100 text-sky-700 border-2 border-sky-200 font-bold text-xs sm:text-sm flex items-center gap-1.5">
+            <i data-lucide="download" class="w-4 h-4"></i>
+            <span>Tải bản đề đã chuẩn hóa</span>
+          </button>
           <button type="button" onclick="saveCreatedExam(false)"
             class="btn-3d btn-3d-emerald cursor-pointer px-5 py-2.5 rounded-2xl bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-xs sm:text-sm flex items-center gap-1.5">
             <i data-lucide="save" class="w-4 h-4"></i>
-            <span class="btn-save-exam-label">Lưu vào kho đề</span>
+            <span class="btn-save-exam-label">Lưu vào kho máy này</span>
           </button>
           <button type="button" onclick="saveCreatedExam(true)"
             class="btn-3d btn-3d-pink cursor-pointer px-5 py-2.5 rounded-2xl bg-pink-500 hover:bg-pink-600 text-white font-bold text-xs sm:text-sm flex items-center gap-1.5">
             <i data-lucide="play-circle" class="w-4 h-4"></i>
-            <span>Lưu & Thi thử ngay</span>
+            <span>Vào làm bài ngay</span>
           </button>
         </div>
       </div>
@@ -3358,6 +3325,10 @@ ANSWER KEYS
                   <span>Nội dung văn bản đề thi (Định dạng chuẩn 3 phần):</span>
                 </label>
                 <div class="flex flex-wrap items-center gap-1.5">
+                  <button id="btn-auto-format-raw" type="button" onclick="window.ExamAutoFormatter && window.ExamAutoFormatter.formatFromTextarea(true)"
+                    class="cursor-pointer px-2.5 py-1 rounded-lg bg-pink-50 hover:bg-pink-100 text-pink-700 border border-pink-200 text-xs font-bold flex items-center gap-1">
+                    <i data-lucide="sparkles" class="w-3.5 h-3.5"></i> Tự chuẩn hóa đề thô
+                  </button>
                   <button type="button" onclick="insertLatexSnippet()"
                     class="px-2.5 py-1 rounded-lg bg-purple-50 hover:bg-purple-100 text-purple-700 border border-purple-200 text-xs font-bold flex items-center gap-1">
                     <i data-lucide="sigma" class="w-3.5 h-3.5"></i> + Công thức LaTeX
@@ -3421,15 +3392,20 @@ ANSWER KEYS
 
             <!-- Bottom Action Buttons for Quick Save & Start -->
             <div class="pt-4 border-t border-emerald-100 flex flex-wrap items-center justify-end gap-3 relative z-10">
+              <button type="button" onclick="downloadCurrentCreatorNormalizedTxt()"
+                class="cursor-pointer px-4 py-3 rounded-2xl bg-sky-50 hover:bg-sky-100 text-sky-700 border-2 border-sky-200 font-bold text-xs sm:text-sm flex items-center gap-2">
+                <i data-lucide="download" class="w-4 h-4"></i>
+                <span>Tải bản đề đã chuẩn hóa</span>
+              </button>
               <button type="button" onclick="saveCreatedExam(false)"
                 class="btn-3d btn-3d-emerald cursor-pointer px-5 py-3 rounded-2xl bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-xs sm:text-sm flex items-center gap-2">
                 <i data-lucide="save" class="w-4 h-4"></i>
-                <span class="btn-save-exam-label">Lưu vào kho đề</span>
+                <span class="btn-save-exam-label">Lưu vào kho máy này</span>
               </button>
               <button type="button" onclick="saveCreatedExam(true)"
                 class="btn-3d btn-3d-pink cursor-pointer px-6 py-3 rounded-2xl bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white font-bold text-xs sm:text-sm flex items-center gap-2">
                 <i data-lucide="play-circle" class="w-5 h-5"></i>
-                <span>Lưu &amp; Vào Thi Ngay ✨</span>
+                <span>Vào làm bài ngay ✨</span>
               </button>
             </div>
           </div>
@@ -3439,7 +3415,7 @@ ANSWER KEYS
     </section>
 
     <!-- ===================================================================== -->
-    <!-- 7. MỤC "LƯU TRỮ BÀI THI" & "BẢNG XẾP HẠNG" (ARCHIVE & LEADERBOARD)   -->
+    <!-- 7. MỤC "KHO LƯU TRỮ BÀI THI" (LOCAL ARCHIVE)                         -->
     <!-- ===================================================================== -->
     <section id="tab-archive" class="tab-section hidden space-y-8">
 
@@ -3450,12 +3426,11 @@ ANSWER KEYS
           <div>
             <span
               class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white text-emerald-700 border border-emerald-300 text-xs font-bold mb-2">
-              <i data-lucide="globe" class="w-3.5 h-3.5"></i> Cloudflare Pages • onthithptanninh.pages.dev
+              <i data-lucide="hard-drive" class="w-3.5 h-3.5"></i> Web Tĩnh 100% • Lưu trữ cục bộ trên máy
             </span>
-            <h2 class="text-2xl sm:text-3xl font-bold text-slate-800">Kho Lưu Trữ Bài Thi &amp; Bảng Xếp Hạng</h2>
+            <h2 class="text-2xl sm:text-3xl font-bold text-slate-800">Kho Lưu Trữ Bài Thi Trên Máy</h2>
             <p class="text-sm text-slate-600 font-medium">
-              Vận hành trên hạ tầng Cloudflare Pages (không giới hạn băng thông &amp; lượt truy cập). Toàn bộ đề thi,
-              sửa đề và kết quả được quản lý trực tiếp &amp; sao lưu linh hoạt qua .JSON / Link chia sẻ.
+              Hoạt động 100% trên trình duyệt, không cần máy chủ. Toàn bộ đề thi, lịch sử ôn luyện và tiến độ học tập được lưu cục bộ an toàn &amp; sao lưu linh hoạt qua tệp .JSON.
             </p>
           </div>
           <div class="flex flex-wrap items-center gap-2.5">
@@ -3471,10 +3446,10 @@ ANSWER KEYS
               <i data-lucide="download-cloud" class="w-4 h-4"></i>
               <span>Xuất dữ liệu học tập (.json)</span>
             </button>
-            <button type="button" onclick="resetDefaultSampleData()"
-              class="cursor-pointer px-4 py-2.5 rounded-2xl bg-amber-100 hover:bg-amber-200 text-amber-900 border-2 border-amber-300 font-bold text-xs sm:text-sm transition-all flex items-center gap-1.5">
-              <i data-lucide="rotate-ccw" class="w-4 h-4"></i>
-              <span>Khôi phục đề mẫu</span>
+            <button type="button" onclick="eraseAllPersonalLocalData()"
+              class="cursor-pointer px-4 py-2.5 rounded-2xl bg-rose-50 hover:bg-rose-100 text-rose-700 border-2 border-rose-200 font-bold text-xs sm:text-sm transition-all flex items-center gap-1.5">
+              <i data-lucide="trash-2" class="w-4 h-4"></i>
+              <span>Xóa phiên làm việc</span>
             </button>
           </div>
         </div>
@@ -3483,12 +3458,12 @@ ANSWER KEYS
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 pt-2">
           <div class="relative">
             <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2"></i>
-            <input id="filter-search" type="text" oninput="renderArchiveAndLeaderboard()"
+            <input id="filter-search" type="text" oninput="renderArchiveExams()"
               placeholder="Tìm tên đề thi, môn học..."
               class="w-full pl-10 pr-4 py-2.5 rounded-2xl bg-white border-2 border-pink-200 focus:border-pink-400 focus:outline-none text-xs sm:text-sm font-semibold" />
           </div>
 
-          <select id="filter-grade" onchange="renderArchiveAndLeaderboard()"
+          <select id="filter-grade" onchange="renderArchiveExams()"
             class="px-4 py-2.5 rounded-2xl bg-white border-2 border-emerald-200 focus:border-emerald-400 focus:outline-none text-xs sm:text-sm font-bold text-slate-700">
             <option value="ALL">Tất cả Khối lớp (10, 11, 12)</option>
             <option value="10">Khối 10</option>
@@ -3496,7 +3471,7 @@ ANSWER KEYS
             <option value="12">Khối 12</option>
           </select>
 
-          <select id="filter-subject" onchange="renderArchiveAndLeaderboard()"
+          <select id="filter-subject" onchange="renderArchiveExams()"
             class="px-4 py-2.5 rounded-2xl bg-white border-2 border-amber-200 focus:border-amber-400 focus:outline-none text-xs sm:text-sm font-bold text-slate-700">
             <option value="ALL">Tất cả Môn học</option>
             <option value="Toán học">Toán học</option>
@@ -3511,7 +3486,7 @@ ANSWER KEYS
             <option value="GDKT & PL">GDKT & PL</option>
           </select>
 
-          <select id="filter-mode" onchange="renderArchiveAndLeaderboard()"
+          <select id="filter-mode" onchange="renderArchiveExams()"
             class="px-4 py-2.5 rounded-2xl bg-white border-2 border-purple-200 focus:border-purple-400 focus:outline-none text-xs sm:text-sm font-bold text-slate-700">
             <option value="ALL">Tất cả Chế độ (Kiểm tra & Luyện tập)</option>
             <option value="exam">Chế độ Kiểm tra (1 lần)</option>
@@ -3531,80 +3506,6 @@ ANSWER KEYS
         </div>
       </div>
 
-      <!-- BẢNG XẾP HẠNG (LEADERBOARD) -->
-      <div id="leaderboard-section"
-        class="bg-white rounded-3xl border-2 border-amber-200 p-6 sm:p-8 shadow-cute space-y-6">
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-amber-100 pb-4">
-          <div class="flex items-center gap-3">
-            <div
-              class="w-12 h-12 rounded-2xl bg-amber-100 text-amber-600 border-2 border-amber-300 flex items-center justify-center shadow-sm">
-              <i data-lucide="crown" class="w-6 h-6"></i>
-            </div>
-            <div>
-              <div class="flex items-center gap-2 flex-wrap">
-                <h3 class="text-xl sm:text-2xl font-bold text-slate-800">Bảng Vinh Danh Kỷ Lục Phòng Thi (BXH)</h3>
-                <span id="leaderboard-count-badge"
-                  class="px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-800 border border-amber-200 text-xs font-extrabold">0
-                  lượt thi</span>
-              </div>
-              <p class="text-xs sm:text-sm text-slate-500 font-medium">Xếp hạng theo Điểm số cao nhất và Thời gian nộp
-                bài nhanh nhất</p>
-            </div>
-          </div>
-
-          <div class="flex flex-wrap items-center gap-2">
-            <input id="leaderboard-student-search" type="text" oninput="renderLeaderboardTable()"
-              placeholder="Tìm học sinh..."
-              class="px-3 py-2 rounded-xl border-2 border-pink-200 bg-white text-xs font-semibold text-slate-700 focus:border-pink-400 focus:outline-none w-36 sm:w-44" />
-            <select id="leaderboard-class-select" onchange="renderLeaderboardTable()"
-              class="px-3 py-2 rounded-xl border-2 border-emerald-200 bg-emerald-50/40 text-xs font-bold text-slate-700 focus:outline-none">
-              <option value="ALL">Tất cả Lớp</option>
-            </select>
-            <select id="leaderboard-exam-select" onchange="renderLeaderboardTable()"
-              class="px-3 py-2 rounded-xl border-2 border-amber-200 bg-amber-50/50 text-xs font-bold text-slate-800 focus:outline-none max-w-[200px] sm:max-w-[260px]">
-              <option value="ALL">🌟 Tất cả đề thi</option>
-            </select>
-            <button id="btn-leaderboard-privacy-mask" type="button" onclick="toggleLeaderboardPrivacyMask()"
-              aria-pressed="false" title="Ẩn danh tên học sinh theo Luật 91/2025/QH15"
-              class="cursor-pointer px-3 py-2 rounded-xl bg-sky-50 hover:bg-sky-100 text-sky-700 border border-sky-200 text-xs font-bold flex items-center gap-1.5 transition-colors">
-              <i data-lucide="eye-off" class="w-3.5 h-3.5"></i>
-              <span id="leaderboard-privacy-label">Ẩn tên HS</span>
-            </button>
-            <button type="button" onclick="exportLeaderboardCSV()"
-              class="btn-3d btn-3d-emerald cursor-pointer px-3.5 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-bold flex items-center gap-1.5">
-              <i data-lucide="file-spreadsheet" class="w-4 h-4"></i>
-              <span>Xuất Bảng Điểm (.CSV)</span>
-            </button>
-          </div>
-        </div>
-
-        <!-- Top 3 Podium Cards -->
-        <div id="leaderboard-podium" class="grid grid-cols-1 md:grid-cols-3 gap-5">
-          <!-- Populated by JS -->
-        </div>
-
-        <!-- Full Leaderboard Table -->
-        <div id="leaderboard-table-wrap" class="overflow-x-auto rounded-2xl border-2 border-pink-100">
-          <table class="w-full text-left border-collapse">
-            <thead>
-              <tr class="bg-pink-50/90 text-pink-900 text-xs font-bold uppercase">
-                <th class="py-3.5 px-4">Hạng</th>
-                <th class="py-3.5 px-4">Họ và Tên Học Sinh</th>
-                <th class="py-3.5 px-4">Lớp</th>
-                <th class="py-3.5 px-4">Đề Thi</th>
-                <th class="py-3.5 px-4 text-center">Điểm Số</th>
-                <th class="py-3.5 px-4 text-center">Thời Gian Làm</th>
-                <th class="py-3.5 px-4 text-center">Cảnh Báo Tab</th>
-                <th class="py-3.5 px-4 text-right">Thao Tác</th>
-              </tr>
-            </thead>
-            <tbody id="leaderboard-tbody"
-              class="divide-y divide-pink-100 text-xs sm:text-sm font-semibold text-slate-700">
-              <!-- Populated by JS -->
-            </tbody>
-          </table>
-        </div>
-      </div>
     </section>
 
     <!-- ===================================================================== -->
@@ -3994,7 +3895,7 @@ ANSWER KEYS
           </div>
         </div>
 
-        <!-- Action Buttons: Download PNG, Print PDF, Export CSV, Retry, Leaderboard -->
+        <!-- Action Buttons: Download PNG, Print PDF, Export CSV, Retry, Archive -->
         <div class="flex flex-wrap items-center justify-between gap-3 pt-2 no-print">
           <div class="flex flex-wrap items-center gap-2.5">
             <button id="btn-download-result-png" type="button" onclick="downloadResultReportPNG()"
@@ -4027,8 +3928,8 @@ ANSWER KEYS
             </button>
             <button onclick="switchTab('archive')"
               class="btn-3d btn-3d-pink px-5 py-2.5 rounded-2xl bg-pink-500 hover:bg-pink-600 text-white font-bold text-xs sm:text-sm flex items-center gap-2 cursor-pointer">
-              <i data-lucide="trophy" class="w-4 h-4"></i>
-              <span>Xem Bảng Xếp Hạng</span>
+              <i data-lucide="folder-open" class="w-4 h-4"></i>
+              <span>Về kho đề lưu trữ</span>
             </button>
           </div>
         </div>
@@ -4772,8 +4673,16 @@ ANSWER KEYS
         </button>
       </div>
 
-      <div id="modal-exam-summary-badges" class="flex flex-wrap gap-2 text-xs font-bold">
-        <!-- Populated by JS -->
+      <div class="flex items-center justify-between gap-2 flex-wrap">
+        <div id="modal-exam-summary-badges" class="flex flex-wrap gap-1.5 text-xs font-bold flex-1 min-w-0">
+          <!-- Populated by JS -->
+        </div>
+        <button id="btn-start-modal-edit-config" type="button"
+          onclick="if(window.ExamConfigEditor && window.getPendingStartExamId && window.getPendingStartExamId()) window.ExamConfigEditor.open(window.getPendingStartExamId())"
+          class="cursor-pointer shrink-0 px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-pink-50 text-slate-700 hover:text-pink-700 border border-slate-200 text-xs font-bold inline-flex items-center gap-1.5 transition-all">
+          <i data-lucide="sliders-horizontal" class="w-3.5 h-3.5"></i>
+          <span>Sửa cấu hình</span>
+        </button>
       </div>
 
       <div id="modal-preview-badge"
@@ -4862,84 +4771,6 @@ ANSWER KEYS
           <i data-lucide="sparkles" class="w-4 h-4"></i>
           <span>Bắt đầu làm bài</span>
         </button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Modal 3: Chia Sẻ Link Làm Bài Trực Tuyến & QR Code -->
-  <div id="modal-share-exam" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="share-modal-title"
-    onclick="if(event.target===this) closeShareExamModal()"
-    class="fixed inset-0 z-[65] hidden glass-modal-backdrop items-center justify-center p-3 sm:p-4 overflow-y-auto overscroll-contain">
-    <div
-      class="glass-modal-card modal-spring-pop rounded-3xl bg-white max-w-[calc(100vw-1.5rem)] sm:max-w-lg w-full mx-auto my-auto max-h-[88dvh] overflow-y-auto p-5 sm:p-8 space-y-5">
-      <div class="flex items-center justify-between border-b border-emerald-100 pb-3">
-        <div class="flex items-center gap-3 min-w-0">
-          <div
-            class="w-11 h-11 rounded-2xl bg-emerald-100 text-emerald-600 flex items-center justify-center text-xl shrink-0">
-            🌐
-          </div>
-          <div class="min-w-0">
-            <span id="share-modal-kicker" class="text-xs font-bold text-emerald-600 uppercase">Phát hành bài thi trực
-              tuyến</span>
-            <h3 id="share-modal-title" class="text-base sm:text-lg font-bold text-slate-800 line-clamp-1">Chia sẻ đề thi
-            </h3>
-          </div>
-        </div>
-        <button type="button" onclick="closeShareExamModal()"
-          class="cursor-pointer w-9 h-9 rounded-full bg-slate-100 hover:bg-rose-100 text-slate-500 hover:text-rose-600 flex items-center justify-center shrink-0">
-          <i data-lucide="x" class="w-4 h-4"></i>
-        </button>
-      </div>
-
-      <div id="share-modal-status"
-        class="p-3.5 rounded-2xl bg-emerald-50 border border-emerald-200 text-xs font-semibold text-emerald-900 leading-relaxed">
-        <!-- Dynamic status -->
-      </div>
-
-      <div class="space-y-2">
-        <label class="block text-xs font-bold text-slate-700">🔗 Link vào làm bài trực tuyến (Gửi qua Zalo /
-          Messenger):</label>
-        <div class="flex items-center gap-2">
-          <input id="share-link-input" type="text" readonly onclick="this.select()"
-            class="flex-1 min-w-0 px-3.5 py-2.5 rounded-xl border-2 border-pink-200 bg-slate-50 text-xs font-mono text-slate-700 focus:outline-none" />
-          <button type="button" onclick="copyShareExamLink()"
-            class="cursor-pointer px-4 py-2.5 rounded-xl bg-pink-500 hover:bg-pink-600 text-white font-bold text-xs shrink-0 shadow-sm flex items-center gap-1.5">
-            <i data-lucide="copy" class="w-4 h-4"></i>
-            <span>Sao chép link</span>
-          </button>
-        </div>
-        <div id="share-link-warning"
-          class="hidden text-[11px] font-bold text-amber-800 bg-amber-50 border border-amber-200 rounded-xl p-2.5 space-y-1.5">
-          <p id="share-link-warning-text"></p>
-        </div>
-      </div>
-
-      <div id="share-qr-wrap"
-        class="flex flex-col items-center justify-center p-4 rounded-2xl bg-pink-50/40 border border-pink-100 space-y-2">
-        <canvas id="share-qr-canvas" class="rounded-xl bg-white p-2 border border-pink-200 shadow-sm"></canvas>
-        <p id="share-qr-fallback" class="hidden text-xs font-bold text-slate-500 text-center"></p>
-        <button id="btn-download-qr" type="button" onclick="downloadShareQR()"
-          class="cursor-pointer px-3 py-1.5 rounded-xl bg-white hover:bg-pink-50 text-pink-600 border border-pink-200 text-xs font-bold flex items-center gap-1.5">
-          <i data-lucide="download" class="w-3.5 h-3.5"></i> Tải mã QR
-        </button>
-      </div>
-
-      <div class="flex flex-wrap items-center justify-between gap-2.5 pt-2 border-t border-slate-100">
-        <button type="button" onclick="exportSingleExamPackageJSON()"
-          class="cursor-pointer px-3.5 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs flex items-center gap-1.5">
-          <i data-lucide="file-json" class="w-4 h-4"></i> Xuất file đề (.JSON)
-        </button>
-        <div class="flex items-center gap-2">
-          <button type="button" onclick="closeShareExamModal()"
-            class="cursor-pointer px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs sm:text-sm">
-            Đóng
-          </button>
-          <button id="btn-share-modal-start" type="button" onclick="startExamFromShareModal()"
-            class="btn-3d btn-3d-pink cursor-pointer px-5 py-2.5 rounded-xl bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white font-bold text-xs sm:text-sm flex items-center gap-1.5">
-            <i data-lucide="play" class="w-4 h-4"></i>
-            <span>Vào làm bài ngay</span>
-          </button>
-        </div>
       </div>
     </div>
   </div>
@@ -5100,7 +4931,7 @@ ANSWER KEYS
               trên trình duyệt của người học; hệ thống không dùng cookie theo dõi hay máy chủ thu thập dữ liệu học sinh.
             </li>
             <li><strong>Bảo vệ mật mã Web Crypto (SHA-256 + Salt):</strong> Mật khẩu đề thi được băm một chiều SHA-256
-              kèm muối ngẫu nhiên trước khi lưu hoặc nén vào link chia sẻ; mỗi phiếu kết quả có mã niêm phong toàn vẹn
+              kèm muối ngẫu nhiên trước khi lưu cục bộ; mỗi phiếu kết quả có mã niêm phong toàn vẹn
               <strong>SHA-256</strong> chống sửa điểm.
             </li>
             <li><strong>Phòng vệ trình duyệt đa lớp:</strong> Chính sách bảo mật nội dung <strong>CSP</strong>,
@@ -5114,11 +4945,11 @@ ANSWER KEYS
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div class="p-4 rounded-2xl bg-white border-2 border-sky-100 space-y-2.5 flex flex-col justify-between">
             <div>
-              <div class="font-extrabold text-slate-800 text-xs sm:text-sm">🙈 Chế độ Ẩn danh BXH khi trình chiếu</div>
-              <p class="text-xs text-slate-500 mt-1">Che bớt ký tự họ tên học sinh trên Bảng Xếp Hạng (VD: <em>Võ T***
-                  A**</em>) để bảo vệ danh tính khi trình bày trước Hội đồng.</p>
+              <div class="font-extrabold text-slate-800 text-xs sm:text-sm">🙈 Chế độ Ẩn danh tên học sinh</div>
+              <p class="text-xs text-slate-500 mt-1">Che bớt ký tự họ tên học sinh trên Phiếu kết quả &amp; file CSV (VD: <em>Võ T***
+                  A**</em>) để bảo vệ danh tính khi trình chiếu.</p>
             </div>
-            <button id="btn-modal-toggle-privacy-mask" type="button" onclick="toggleLeaderboardPrivacyMask()"
+            <button id="btn-modal-toggle-privacy-mask" type="button" onclick="toggleStudentPrivacyMask()"
               class="cursor-pointer w-full py-2.5 px-3 rounded-xl bg-sky-50 hover:bg-sky-100 text-sky-800 border border-sky-200 font-extrabold text-xs">
               Bật / Tắt Ẩn danh tên HS
             </button>
@@ -5223,16 +5054,15 @@ ANSWER KEYS
                       class="px-2 py-0.5 rounded bg-amber-50 text-amber-800 font-bold">Apache-2.0</span></td>
                 </tr>
                 <tr>
-                  <td class="py-1.5 px-3 font-bold text-slate-800">LZ-String (v1.5.0)</td>
-                  <td class="py-1.5 px-3">Nén đề thi qua link URL chia sẻ</td>
+                  <td class="py-1.5 px-3 font-bold text-slate-800">JSZip (v3.10.1)</td>
+                  <td class="py-1.5 px-3">Tiền xử lý XML file Word (.docx)</td>
                   <td class="py-1.5 px-3"><span class="px-2 py-0.5 rounded bg-emerald-50 text-emerald-700 font-bold">MIT
                       License</span></td>
                 </tr>
                 <tr>
-                  <td class="py-1.5 px-3 font-bold text-slate-800">node-qrcode (v1.5.1)</td>
-                  <td class="py-1.5 px-3">Sinh mã QR vào phòng thi</td>
-                  <td class="py-1.5 px-3"><span class="px-2 py-0.5 rounded bg-emerald-50 text-emerald-700 font-bold">MIT
-                      License</span></td>
+                  <td class="py-1.5 px-3 font-bold text-slate-800">DOMPurify (v3.1.6)</td>
+                  <td class="py-1.5 px-3">Làm sạch HTML đề thi chống XSS</td>
+                  <td class="py-1.5 px-3"><span class="px-2 py-0.5 rounded bg-amber-50 text-amber-800 font-bold">Apache-2.0</span></td>
                 </tr>
                 <tr>
                   <td class="py-1.5 px-3 font-bold text-slate-800">Chart.js (v4.4.1)</td>
@@ -5576,15 +5406,6 @@ ANSWER KEYS
     }
 
     function updatePrivacyMaskUI() {
-      const btn = document.getElementById('btn-leaderboard-privacy-mask');
-      const lbl = document.getElementById('leaderboard-privacy-label');
-      if (btn) {
-        btn.setAttribute('aria-pressed', privacyMaskEnabled ? 'true' : 'false');
-        btn.className = privacyMaskEnabled
-          ? 'cursor-pointer px-3 py-2 rounded-xl bg-sky-500 hover:bg-sky-600 text-white border border-sky-600 text-xs font-bold flex items-center gap-1.5 transition-colors shadow-sm'
-          : 'cursor-pointer px-3 py-2 rounded-xl bg-sky-50 hover:bg-sky-100 text-sky-700 border border-sky-200 text-xs font-bold flex items-center gap-1.5 transition-colors';
-      }
-      if (lbl) lbl.textContent = privacyMaskEnabled ? 'Đang ẩn tên HS' : 'Ẩn tên HS';
       const modalBtn = document.getElementById('btn-modal-toggle-privacy-mask');
       if (modalBtn) {
         modalBtn.textContent = privacyMaskEnabled
@@ -5598,11 +5419,10 @@ ANSWER KEYS
       updatePrivacyMaskUI();
     }
 
-    function toggleLeaderboardPrivacyMask(forceState) {
+    function toggleStudentPrivacyMask(forceState) {
       privacyMaskEnabled = typeof forceState === 'boolean' ? forceState : !privacyMaskEnabled;
       safeSetLocalStorage(STORAGE_PRIVACY_MASK_KEY, privacyMaskEnabled ? '1' : '0');
       updatePrivacyMaskUI();
-      if (typeof renderLeaderboardTable === 'function') renderLeaderboardTable();
       if (typeof lastViewedResult === 'object' && lastViewedResult && typeof renderResultView === 'function') {
         const resTab = document.getElementById('tab-result');
         if (resTab && !resTab.classList.contains('hidden')) {
@@ -5611,7 +5431,7 @@ ANSWER KEYS
       }
       showCuteToast(
         privacyMaskEnabled
-          ? '🙈 Đã bật chế độ Ẩn danh tên học sinh trên BXH (Luật 91/2025/QH15).'
+          ? '🙈 Đã bật chế độ Ẩn danh tên học sinh trên Phiếu kết quả & CSV (Luật 91/2025/QH15).'
           : '👁️ Đã tắt chế độ Ẩn danh tên học sinh.',
         privacyMaskEnabled ? '🛡️' : '✨',
         'info'
@@ -5789,12 +5609,14 @@ ANSWER KEYS
 
     function eraseAllPersonalLocalData() {
       const confirmed = window.confirm(
-        'Bạn có chắc muốn XÓA SẠCH toàn bộ dữ liệu cá nhân khỏi trình duyệt này?\n' +
-        '(Bao gồm: họ tên học sinh đã lưu, lịch sử điểm, Study Streak, Kho câu hay sai, tiến độ Flashcard/Speedrun và bản nháp bài làm — theo Luật 91/2025/QH15).'
+        'Bạn có chắc muốn XÓA PHIÊN LÀM VIỆC & toàn bộ dữ liệu khỏi trình duyệt này?\n' +
+        '(Bao gồm: danh sách đề đã nạp, họ tên học sinh, lịch sử điểm, Study Streak, Kho câu hay sai, tiến độ Flashcard/Speedrun và bản nháp bài làm).'
       );
       if (!confirmed) return;
 
       const personalKeys = [
+        STORAGE_EXAMS_KEY,
+        STORAGE_MY_EXAMS_KEY,
         STORAGE_RESULTS_KEY,
         STORAGE_ACTIVE_SESSION_KEY,
         STORAGE_EXAM_DRAFTS_MAP_KEY,
@@ -5818,8 +5640,13 @@ ANSWER KEYS
       }
       activeExamSession = null;
       lastViewedResult = null;
+      examsList = [];
+      myCreatedExamIds.clear();
+      if (typeof syncExamMemoryIndex === 'function') syncExamMemoryIndex();
       resultsList = [];
       wrongVaultList = [];
+      const taEl = document.getElementById('azota-textarea');
+      if (taEl) taEl.value = '';
       studyStreakState = { count: 0, lastDate: '', historyDates: [], userCheckedIn: false };
       flashcardStatuses = {};
       flashcardDeck = [];
@@ -5851,7 +5678,7 @@ ANSWER KEYS
       if (typeof resetMotivationAlertsAfterErase === 'function') resetMotivationAlertsAfterErase();
       if (typeof renderExamWatermark === 'function') renderExamWatermark(null);
       if (typeof renderHomeStatsAndExams === 'function') renderHomeStatsAndExams();
-      if (typeof renderArchiveAndLeaderboard === 'function') renderArchiveAndLeaderboard();
+      if (typeof renderArchiveExams === 'function') renderArchiveExams();
       if (typeof renderVaultTab === 'function') renderVaultTab();
       if (typeof initFlashcardTab === 'function') initFlashcardTab();
       if (typeof initSpeedrunTab === 'function') initSpeedrunTab();
@@ -5866,7 +5693,7 @@ ANSWER KEYS
       }
 
       closeLegalPrivacyModal();
-      showCuteToast('🗑️ Đã xóa sạch toàn bộ dữ liệu cá nhân khỏi trình duyệt (Zero-Server)!', '🛡️', 'success');
+      showCuteToast('🗑️ Đã xóa sạch phiên làm việc & dữ liệu khỏi trình duyệt này!', '🛡️', 'success');
     }
 
     // ---------------------------------------------------------------------
@@ -6761,7 +6588,6 @@ ANSWER KEYS
     // Active Exam Session State
     let pendingStartExam = null;
     let pendingStartIsPreview = false;
-    let currentShareExam = null;
     let activeExamSession = null;
     let examTimerInterval = null;
     let lastViolationTimestamp = 0;
@@ -6946,23 +6772,28 @@ ANSWER KEYS
         }
       }
 
-      if (!Array.isArray(examsList) || examsList.length === 0) {
-        seedDefaultExams();
-      } else {
-        let healedExams = false;
-        examsList.forEach(ex => {
-          if (!ex || typeof ex !== 'object') return;
-          if (!ex.subject && typeof inferExamSubjectFromNameAndText === 'function') {
-            const inferred = inferExamSubjectFromNameAndText(ex.title || '', ex.rawAzota || '');
-            if (inferred) {
-              ex.subject = inferred;
-              healedExams = true;
-            }
-          }
-        });
-        syncExamMemoryIndex();
-        if (healedExams) persistExamsToLocal();
+      if (!Array.isArray(examsList)) {
+        examsList = [];
       }
+      const beforeFilterLen = examsList.length;
+      examsList = examsList.filter(ex => {
+        if (!ex || typeof ex !== 'object' || !Array.isArray(ex.questions) || ex.questions.length === 0) return false;
+        const idStr = String(ex.id || '');
+        if (/^exam_default_[123]$/.test(idStr) && !myCreatedExamIds.has(idStr)) return false;
+        return true;
+      });
+      let healedExams = examsList.length !== beforeFilterLen;
+      examsList.forEach(ex => {
+        if (!ex.subject && typeof inferExamSubjectFromNameAndText === 'function') {
+          const inferred = inferExamSubjectFromNameAndText(ex.title || '', ex.rawAzota || '');
+          if (inferred) {
+            ex.subject = inferred;
+            healedExams = true;
+          }
+        }
+      });
+      syncExamMemoryIndex();
+      if (healedExams) persistExamsToLocal();
 
       const savedResults = safeGetLocalStorage(STORAGE_RESULTS_KEY);
       if (savedResults) {
@@ -7304,66 +7135,8 @@ ANSWER KEYS
     ];
 
     function seedDefaultExams() {
-      examsList = [
-        {
-          id: 'exam_default_1',
-          title: 'Đề Thi Thử THPT Quốc Gia 2026 - Tổ Hợp Toán Lý Hóa (Định Dạng Chuẩn)',
-          grade: '12',
-          subject: 'Toán học',
-          duration: 45,
-          mode: 'exam',
-          maxAttempts: 1,
-          password: '',
-          antiCheat: true,
-          requireInfo: true,
-          shuffle: true,
-          subExamCount: 4,
-          subExamLimit: 0,
-          createdAt: '20/10/2026',
-          createdTimestamp: 1792483200000,
-          rawAzota: DEFAULT_AZOTA_SAMPLE,
-          questions: parseAzotaText(DEFAULT_AZOTA_SAMPLE)
-        },
-        {
-          id: 'exam_default_2',
-          title: 'Đề Luyện Tập Vật Lý 11 - Sóng Cơ & Dòng Điện Xoay Chiều',
-          grade: '11',
-          subject: 'Vật lý',
-          duration: 30,
-          mode: 'practice',
-          maxAttempts: 0,
-          password: '',
-          antiCheat: true,
-          requireInfo: true,
-          shuffle: true,
-          subExamCount: 2,
-          subExamLimit: 0,
-          createdAt: '20/10/2026',
-          createdTimestamp: 1792483100000,
-          rawAzota: SAMPLE_PHYSICS_AZOTA,
-          questions: parseAzotaText(SAMPLE_PHYSICS_AZOTA)
-        },
-        {
-          id: 'exam_default_3',
-          title: 'Đề Ôn Tập Hóa Học 10 & 11 - Đại Cương Kim Loại & Ester',
-          grade: '10',
-          subject: 'Hóa học',
-          duration: 25,
-          mode: 'practice',
-          maxAttempts: 0,
-          password: '',
-          antiCheat: true,
-          requireInfo: true,
-          shuffle: false,
-          subExamCount: 2,
-          subExamLimit: 0,
-          createdAt: '20/10/2026',
-          createdTimestamp: 1792483000000,
-          rawAzota: SAMPLE_CHEM_AZOTA,
-          questions: parseAzotaText(SAMPLE_CHEM_AZOTA)
-        }
-      ];
-      persistExamsToLocal();
+      examsList = [];
+      if (typeof syncExamMemoryIndex === 'function') syncExamMemoryIndex();
     }
 
     Object.assign(window, {
@@ -7639,11 +7412,15 @@ ANSWER KEYS
         if (savedDraft && Array.isArray(savedDraft.questions) && savedDraft.questions.length > 0) {
           const doneCnt = savedDraft.questions.filter(q => isQuestionAnswered(q, savedDraft)).length;
           const totalCnt = savedDraft.questions.length;
-          const remSec = Math.max(1, Number(savedDraft.remainingSeconds) || Math.round(((savedDraft.endAtMs || Date.now()) - Date.now()) / 1000));
-          const remMin = String(Math.floor(remSec / 60)).padStart(2, '0');
-          const remS = String(remSec % 60).padStart(2, '0');
           if (draftInfo) {
-            draftInfo.textContent = `Đã lưu ${doneCnt}/${totalCnt} câu • Thời gian còn lại: ${remMin}:${remS}`;
+            if (savedDraft.isUnlimitedTime) {
+              draftInfo.textContent = `Đã lưu ${doneCnt}/${totalCnt} câu • Thời gian: Không giới hạn`;
+            } else {
+              const remSec = Math.max(1, Number(savedDraft.remainingSeconds) || Math.round(((savedDraft.endAtMs || Date.now()) - Date.now()) / 1000));
+              const remMin = String(Math.floor(remSec / 60)).padStart(2, '0');
+              const remS = String(remSec % 60).padStart(2, '0');
+              draftInfo.textContent = `Đã lưu ${doneCnt}/${totalCnt} câu • Thời gian còn lại: ${remMin}:${remS}`;
+            }
           }
           draftBanner.classList.remove('hidden');
         } else {
@@ -7702,13 +7479,19 @@ ANSWER KEYS
 
       // Summary badges
       const modeText = exam.mode === 'practice' ? '🌱 Luyện tập (Xem đáp án ngay)' : '🎯 Kiểm tra (1 lượt duy nhất)';
-      const durVal = Math.max(1, parseInt(exam.duration, 10) || 45);
+      const isUnlimitedDur = exam.mode === 'practice' && Number(exam.duration) === 0;
+      const durVal = isUnlimitedDur ? 0 : Math.max(1, parseInt(exam.duration, 10) || 45);
+      const durLabel = isUnlimitedDur ? '⏱️ Không giới hạn' : `⏱️ ${durVal} phút`;
+      const hasShuffle = (exam.shuffleQuestions !== undefined || exam.shuffleOptions !== undefined)
+        ? Boolean(exam.shuffleQuestions || exam.shuffleOptions)
+        : Boolean(exam.shuffle);
       const summaryBadges = document.getElementById('modal-exam-summary-badges');
       if (summaryBadges) {
         summaryBadges.innerHTML = `
           <span class="px-3 py-1 rounded-full bg-pink-100 text-pink-700">${modeText}</span>
-          <span class="px-3 py-1 rounded-full bg-emerald-100 text-emerald-800">⏱️ ${durVal} phút</span>
+          <span class="px-3 py-1 rounded-full bg-emerald-100 text-emerald-800">${durLabel}</span>
           <span class="px-3 py-1 rounded-full bg-amber-100 text-amber-800">📝 ${exam.questions.length} câu</span>
+          ${hasShuffle ? '<span class="px-3 py-1 rounded-full bg-purple-100 text-purple-800">🔀 Có đảo đề</span>' : ''}
         `;
       }
 
@@ -8034,6 +7817,9 @@ ANSWER KEYS
     function startExamCountdownTimer() {
       if (examTimerInterval) clearInterval(examTimerInterval);
       updateTimerUI();
+      if (activeExamSession && activeExamSession.isUnlimitedTime) {
+        return;
+      }
       let tickCounter = 0;
       examTimerInterval = setInterval(() => {
         if (!activeExamSession) {
@@ -8059,19 +7845,21 @@ ANSWER KEYS
       if (!draft || !draft.exam || !Array.isArray(draft.questions) || draft.questions.length === 0) {
         return false;
       }
-      const rem = Math.max(1, Number(draft.remainingSeconds) > 0
+      const isUnlimited = Boolean(draft.isUnlimitedTime);
+      const rem = isUnlimited ? 0 : Math.max(1, Number(draft.remainingSeconds) > 0
         ? Number(draft.remainingSeconds)
         : Math.round(((draft.endAtMs || Date.now()) - Date.now()) / 1000));
       const nowMs = Date.now();
       activeExamSession = {
         ...draft,
+        isUnlimitedTime: isUnlimited,
         answers: draft.answers || {},
         flagged: draft.flagged || {},
         revealedPractice: draft.revealedPractice || {},
         violations: draft.violations || 0,
         violationLog: Array.isArray(draft.violationLog) ? draft.violationLog : [],
         remainingSeconds: rem,
-        endAtMs: nowMs + rem * 1000,
+        endAtMs: isUnlimited ? 0 : (nowMs + rem * 1000),
         startedAtMs: draft.startedAtMs || (nowMs - Math.max(0, ((draft.totalSeconds || rem) - rem)) * 1000)
       };
       updateExamRoomTopbarUI(activeExamSession);
@@ -8089,7 +7877,7 @@ ANSWER KEYS
       if (!raw) return false;
       try {
         const draft = JSON.parse(raw);
-        if (!draft || !draft.exam || !Array.isArray(draft.questions) || draft.questions.length === 0 || !draft.endAtMs) {
+        if (!draft || !draft.exam || !Array.isArray(draft.questions) || draft.questions.length === 0 || (!draft.endAtMs && !draft.isUnlimitedTime)) {
           clearActiveExamDraft(draft?.exam?.id);
           return false;
         }
@@ -8145,15 +7933,21 @@ ANSWER KEYS
 
       const getOptionLabelByIndex = (idx) => (idx < 26 ? String.fromCharCode(65 + idx) : String(idx + 1));
 
-      if (exam.shuffle) {
-        part1 = shuffleArray(part1).map(q => {
+      const doShuffleQuestions = exam.shuffleQuestions !== undefined ? Boolean(exam.shuffleQuestions) : Boolean(exam.shuffle);
+      const doShuffleOptions = exam.shuffleOptions !== undefined ? Boolean(exam.shuffleOptions) : Boolean(exam.shuffle);
+
+      if (doShuffleQuestions) {
+        part1 = shuffleArray(part1);
+        part2 = shuffleArray(part2);
+        part3 = shuffleArray(part3);
+      }
+      if (doShuffleOptions) {
+        part1 = part1.map(q => {
           const shuffledOpts = shuffleArray(q.options);
           shuffledOpts.forEach((o, idx) => { o.displayLabel = getOptionLabelByIndex(idx); });
           q.options = shuffledOpts;
           return q;
         });
-        part2 = shuffleArray(part2);
-        part3 = shuffleArray(part3);
       } else {
         part1.forEach(q => q.options.forEach((o, idx) => { o.displayLabel = o.label || getOptionLabelByIndex(idx); }));
       }
@@ -8196,12 +7990,14 @@ ANSWER KEYS
         q.displayNumber = i + 1;
       });
 
-      const durationMins = Math.max(1, parseInt(exam.duration, 10) || 45);
+      const isUnlimitedTime = exam.mode === 'practice' && Number(exam.duration) === 0;
+      const durationMins = isUnlimitedTime ? 0 : Math.max(1, parseInt(exam.duration, 10) || 45);
       const nowMs = Date.now();
       activeExamSession = {
         exam,
         isPreview: Boolean(isPreview),
         isVaultPractice: Boolean(exam.isVaultPractice),
+        isUnlimitedTime,
         studentName,
         studentClass,
         subCode,
@@ -8214,7 +8010,7 @@ ANSWER KEYS
         totalSeconds: durationMins * 60,
         remainingSeconds: durationMins * 60,
         startedAtMs: nowMs,
-        endAtMs: nowMs + durationMins * 60000
+        endAtMs: isUnlimitedTime ? 0 : (nowMs + durationMins * 60000)
       };
 
       updateExamRoomTopbarUI(activeExamSession);
@@ -8234,11 +8030,16 @@ ANSWER KEYS
 
     function updateTimerUI() {
       if (!activeExamSession) return;
+      const el = document.getElementById('exam-timer-display');
+      if (!el) return;
+      if (activeExamSession.isUnlimitedTime) {
+        el.textContent = '∞ Tự do';
+        el.classList.remove('text-rose-600');
+        return;
+      }
       const rem = Math.max(0, activeExamSession.remainingSeconds);
       const mins = String(Math.floor(rem / 60)).padStart(2, '0');
       const secs = String(rem % 60).padStart(2, '0');
-      const el = document.getElementById('exam-timer-display');
-      if (!el) return;
       el.textContent = `${mins}:${secs}`;
       if (rem <= 60) {
         el.classList.add('text-rose-600');
@@ -9013,7 +8814,7 @@ ANSWER KEYS
       }
 
       renderHomeStatsAndExams();
-      renderArchiveAndLeaderboard();
+      renderArchiveExams();
       renderResultView(resultRecord);
       switchTab('result');
       if (isVaultPractice) {
@@ -9058,7 +8859,7 @@ ANSWER KEYS
       const listEl = document.getElementById('res-detailed-review-list');
       if (!listEl) return;
       if (!res.reviewItems || res.reviewItems.length === 0) {
-        listEl.innerHTML = `<div class="p-6 rounded-2xl bg-white border border-pink-200 text-center text-sm font-bold text-slate-500">Bản ghi tóm tắt trên Bảng xếp hạng (chưa có dữ liệu chi tiết câu hỏi).</div>`;
+        listEl.innerHTML = `<div class="p-6 rounded-2xl bg-white border border-pink-200 text-center text-sm font-bold text-slate-500">Bản ghi tóm tắt kết quả (chưa có dữ liệu chi tiết câu hỏi).</div>`;
         return;
       }
 
@@ -9166,10 +8967,12 @@ ANSWER KEYS
       if (!lastViewedResult) return;
       const r = lastViewedResult;
       const sealCode = r.integritySeal || computeResultIntegritySeal(r);
+      const exportName = (anonShowcaseEnabled || privacyMaskEnabled) ? formatStudentDisplayName(r.studentName) : r.studentName;
+      const exportClass = anonShowcaseEnabled ? 'Ẩn danh' : r.studentClass;
       let csv = '\uFEFFHọ và Tên,Lớp,Đề Thi,Mã Đề,Điểm Số,Số Câu/Ý Đúng,Tổng Câu/Ý,Thời Gian (Giây),Số Lần Vi Phạm Tab,Thời Điểm Nộp,Mã Niêm Phong SHA-256\n';
       const row = [
-        r.studentName,
-        r.studentClass,
+        exportName,
+        exportClass,
         r.examTitle,
         r.subCode,
         r.score,
@@ -9181,7 +8984,8 @@ ANSWER KEYS
         sealCode
       ].map(toCsvCell).join(',');
       csv += row + '\n';
-      downloadTextFile(`KetQua_${r.studentName}_${r.studentClass}.csv`, csv, 'text/csv;charset=utf-8;');
+      const fileLabel = anonShowcaseEnabled ? 'AnDanh' : `${exportName}_${exportClass}`;
+      downloadTextFile(`KetQua_${fileLabel}.csv`, csv, 'text/csv;charset=utf-8;');
       showCuteToast('📊 Đã xuất file báo cáo điểm (.CSV / Excel) thành công!', '🎉', 'success');
     }
 
@@ -9413,6 +9217,12 @@ ANSWER KEYS
 
       let preprocessed = normalized.replace(/<img\b[^>]*\bsrc\s*=\s*(?:"([^"]*)"|'([^']*)')[^>]*>/gi, (full, dqSrc, sqSrc) => {
         return tokenizeInlineImg(dqSrc || sqSrc || '', /\bexam-illustration\b/i.test(full));
+      });
+      preprocessed = preprocessed.replace(/<table\b[^>]*>[\s\S]*?<\/table>/gi, (tblHtml) => {
+        if (/Câu\s*\d+/i.test(tblHtml)) return tblHtml;
+        const idx = inlineImgTokens.length;
+        inlineImgTokens.push(sanitizeExamStringWithDOMPurify(tblHtml));
+        return `@@AZOTA_IMG_${idx}@@`;
       });
       // Also convert HTML line/block/table/formatting tags (e.g. <strong>*A.</strong>, <p>, <br>) while keeping <sup>, <sub>
       preprocessed = preprocessed
@@ -9837,78 +9647,6 @@ ANSWER KEYS
       persistResultsToLocal();
     }
 
-    function getShareBaseUrl() {
-      if (window.location.protocol.startsWith('http')) {
-        return window.location.href.split('#')[0].split('?')[0];
-      }
-      return OFFICIAL_SITE_URL;
-    }
-
-    function compressSharePayload(obj) {
-      const jsonStr = JSON.stringify(obj);
-      if (window.LZString && typeof LZString.compressToEncodedURIComponent === 'function') {
-        return 'lz:' + LZString.compressToEncodedURIComponent(jsonStr);
-      }
-      const bytes = new TextEncoder().encode(jsonStr);
-      let bin = '';
-      bytes.forEach(b => { bin += String.fromCharCode(b); });
-      return 'b64:' + btoa(bin).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
-    }
-
-    function decompressSharePayload(encoded) {
-      if (!encoded) return null;
-      try {
-        if (encoded.startsWith('lz:') && window.LZString) {
-          const jsonStr = LZString.decompressFromEncodedURIComponent(encoded.slice(3));
-          return jsonStr ? JSON.parse(jsonStr) : null;
-        }
-        if (encoded.startsWith('b64:')) {
-          const b64 = encoded.slice(4).replace(/-/g, '+').replace(/_/g, '/');
-          const bin = atob(b64);
-          const bytes = new Uint8Array(bin.length);
-          for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
-          return JSON.parse(new TextDecoder().decode(bytes));
-        }
-        if (window.LZString) {
-          const jsonStr = LZString.decompressFromEncodedURIComponent(encoded);
-          return jsonStr ? JSON.parse(jsonStr) : null;
-        }
-      } catch (e) {
-        return null;
-      }
-      return null;
-    }
-
-    function buildExamShareUrl(exam, stripImages = false) {
-      const base = getShareBaseUrl();
-      const compactQuestions = (exam.questions || []).map(q =>
-        stripImages ? stripAllImagesFromQuestion(q) : { ...q, image: q.image || null }
-      );
-      const shareObj = {
-        id: exam.id,
-        title: exam.title,
-        grade: exam.grade,
-        subject: exam.subject,
-        duration: exam.duration,
-        mode: exam.mode,
-        maxAttempts: exam.maxAttempts,
-        password: '',
-        passwordHash: exam.passwordHash || '',
-        passwordSalt: exam.passwordSalt || '',
-        scoringMode: exam.scoringMode || 'moet',
-        antiCheat: !!exam.antiCheat,
-        requireInfo: !!exam.requireInfo,
-        shuffle: !!exam.shuffle,
-        subExamCount: exam.subExamCount || 1,
-        subExamLimit: exam.subExamLimit || 0,
-        createdAt: exam.createdAt || new Date().toLocaleDateString('vi-VN'),
-        createdTimestamp: exam.createdTimestamp || Date.now(),
-        questions: compactQuestions
-      };
-      const compressed = compressSharePayload(shareObj);
-      return `${base}#de=${compressed}`;
-    }
-
     function countExamImages(exam) {
       let count = 0;
       const countInStr = (s) => {
@@ -10007,38 +9745,6 @@ ANSWER KEYS
       };
     }
 
-    async function handleIncomingExamFromUrl() {
-      const params = new URLSearchParams(window.location.search);
-      const queryExamId = params.get('exam');
-      const hash = window.location.hash || '';
-
-      if (hash.startsWith('#de=')) {
-        const encoded = hash.slice(4);
-        const decodedExam = decompressSharePayload(encoded);
-        const sanitizedDecoded = sanitizeIncomingExamWithDOMPurify(decodedExam);
-        if (sanitizedDecoded && sanitizedDecoded.id && Array.isArray(sanitizedDecoded.questions) && sanitizedDecoded.questions.length > 0) {
-          mergeExamsById([sanitizedDecoded]);
-          renderHomeStatsAndExams();
-          renderArchiveAndLeaderboard();
-          refreshIconsAndMath(document.body);
-          showCuteToast(`📩 Đã nhận đề "${sanitizedDecoded.title}" từ link chia sẻ!`, '🎉');
-          openStartExamModal(sanitizedDecoded.id, false);
-          return;
-        } else {
-          showCuteToast('⚠️ Link đề thi không hợp lệ hoặc bị cắt ngắn khi sao chép!', '❌');
-          return;
-        }
-      }
-
-      if (queryExamId) {
-        const target = findExamById(queryExamId);
-        if (target) {
-          openStartExamModal(target.id, false);
-        } else {
-          showCuteToast('⚠️ Không tìm thấy bài thi theo mã ID này trên thiết bị.', '🔗');
-        }
-      }
-    }
 
     function buildExamCardHTML(ex, showManageActions) {
       const safeExamId = escapeHTML(String(ex.id || ''));
@@ -10057,6 +9763,12 @@ ANSWER KEYS
       const lockBadge = (ex.passwordHash || ex.password)
         ? `<span class="px-2.5 py-0.5 rounded-full bg-rose-100 text-rose-700 text-[11px] font-bold">🔒 Có mật khẩu</span>`
         : `<span class="px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-800 text-[11px] font-bold">🔓 Mở tự do</span>`;
+      const isUnlimitedDur = isPractice && Number(ex.duration) === 0;
+      const durBadgeText = isUnlimitedDur ? '⏱️ Không giới hạn' : `⏱️ ${Number(ex.duration) || 45} phút`;
+      const hasShuffle = (ex.shuffleQuestions !== undefined || ex.shuffleOptions !== undefined)
+        ? Boolean(ex.shuffleQuestions || ex.shuffleOptions)
+        : Boolean(ex.shuffle);
+      const noteText = ex.note ? String(ex.note).trim() : '';
 
       return `
         <div class="relative bg-gradient-to-br from-white via-pink-50/20 to-emerald-50/20 rounded-3xl border-2 border-pink-200/80 p-6 shadow-sm hover:shadow-cute hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between gap-4">
@@ -10070,42 +9782,42 @@ ANSWER KEYS
             </div>
 
             <h4 class="text-lg font-bold text-slate-800 leading-snug line-clamp-2">${escapeHTML(ex.title)}</h4>
+            ${noteText ? `<p class="text-xs font-semibold text-slate-500 line-clamp-1">${escapeHTML(noteText)}</p>` : ''}
 
             <div class="flex flex-wrap items-center gap-2 text-xs font-bold text-slate-600">
-              <span class="px-2.5 py-1 rounded-xl bg-white border border-pink-100">⏱️ ${Number(ex.duration) || 45} phút</span>
+              <span class="px-2.5 py-1 rounded-xl bg-white border border-pink-100">${durBadgeText}</span>
               <span class="px-2.5 py-1 rounded-xl bg-white border border-emerald-100">📝 ${qList.length} câu (${p1Count}/${p2Count}/${p3Count})</span>
               <span class="px-2.5 py-1 rounded-xl bg-white border border-amber-100">👥 ${attemptCount} lượt thi</span>
+              ${hasShuffle ? '<span class="px-2.5 py-1 rounded-xl bg-purple-50 text-purple-700 border border-purple-100">🔀 Có đảo đề</span>' : ''}
               ${lockBadge}
             </div>
           </div>
 
           <div class="relative z-10 pt-3 border-t border-pink-100 flex items-center justify-between gap-2 flex-wrap">
-            <button type="button" data-exam-id="${safeExamId}" onclick="openStartExamModal(this.getAttribute('data-exam-id'))" class="btn-action btn-3d btn-3d-pink cursor-pointer flex-1 min-w-[130px] py-2.5 px-4 rounded-2xl bg-gradient-to-r from-pink-500 to-rose-500 text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-1.5">
+            <button type="button" data-exam-id="${safeExamId}" onclick="openStartExamModal(this.getAttribute('data-exam-id'))" class="btn-action btn-3d btn-3d-pink cursor-pointer flex-1 min-w-[140px] py-2.5 px-4 rounded-2xl bg-gradient-to-r from-pink-500 to-rose-500 text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-1.5">
               <i data-lucide="play" class="w-4 h-4"></i>
-              <span>Vào thi ngay</span>
+              <span>Vào làm bài ngay</span>
             </button>
 
-            <button type="button" data-exam-id="${safeExamId}" onclick="openShareExamModal(this.getAttribute('data-exam-id'))" title="Chia sẻ Link & QR làm bài trực tuyến" class="cursor-pointer p-2.5 rounded-xl bg-sky-100 hover:bg-sky-200 text-sky-700 border border-sky-200 transition-all flex items-center gap-1 text-xs font-bold">
-              <i data-lucide="share-2" class="w-4 h-4"></i>
-              ${showManageActions ? '' : '<span>Chia sẻ</span>'}
+            <button type="button" data-exam-id="${safeExamId}" onclick="window.ExamConfigEditor && window.ExamConfigEditor.open(this.getAttribute('data-exam-id'))" title="Chỉnh sửa thông tin, chế độ & cấu hình bài thi" class="btn-edit-exam-config cursor-pointer px-3 py-2.5 rounded-2xl bg-indigo-50 hover:bg-indigo-100 text-indigo-800 border border-indigo-200 font-bold text-xs transition-all inline-flex items-center justify-center gap-1.5">
+              <i data-lucide="sliders-horizontal" class="w-4 h-4"></i>
+              <span>Sửa cấu hình</span>
             </button>
 
             ${showManageActions ? `
-              <button type="button" data-exam-id="${safeExamId}" onclick="editExamById(this.getAttribute('data-exam-id'))" title="Sửa đề thi" class="cursor-pointer p-2.5 rounded-xl bg-purple-100 hover:bg-purple-200 text-purple-800 border border-purple-200 transition-all">
+              <button type="button" data-exam-id="${safeExamId}" onclick="editExamById(this.getAttribute('data-exam-id'))" title="Sửa nội dung câu hỏi" class="cursor-pointer p-2.5 rounded-xl bg-purple-100 hover:bg-purple-200 text-purple-800 border border-purple-200 transition-all">
                 <i data-lucide="pencil" class="w-4 h-4"></i>
               </button>
-              <button type="button" data-exam-id="${safeExamId}" onclick="filterLeaderboardByExam(this.getAttribute('data-exam-id'))" title="Xem BXH đề này" class="cursor-pointer p-2.5 rounded-xl bg-amber-100 hover:bg-amber-200 text-amber-800 border border-amber-200 transition-all">
-                <i data-lucide="trophy" class="w-4 h-4"></i>
-              </button>
-              <button type="button" data-exam-id="${safeExamId}" onclick="downloadExamAzotaTxt(this.getAttribute('data-exam-id'))" title="Tải file đề chuẩn (.txt)" class="cursor-pointer p-2.5 rounded-xl bg-emerald-100 hover:bg-emerald-200 text-emerald-800 border border-emerald-200 transition-all">
+              <button type="button" data-exam-id="${safeExamId}" onclick="downloadExamAzotaTxt(this.getAttribute('data-exam-id'))" title="Tải bản đề đã chuẩn hóa (.txt)" class="cursor-pointer p-2.5 rounded-xl bg-emerald-100 hover:bg-emerald-200 text-emerald-800 border border-emerald-200 transition-all">
                 <i data-lucide="download" class="w-4 h-4"></i>
               </button>
               <button type="button" data-exam-id="${safeExamId}" onclick="deleteExamById(this.getAttribute('data-exam-id'))" title="Xóa đề thi" class="cursor-pointer p-2.5 rounded-xl bg-rose-100 hover:bg-rose-200 text-rose-700 border border-rose-200 transition-all">
                 <i data-lucide="trash-2" class="w-4 h-4"></i>
               </button>
             ` : `
-              <button type="button" data-exam-id="${safeExamId}" onclick="filterLeaderboardByExam(this.getAttribute('data-exam-id'))" class="cursor-pointer px-3.5 py-2.5 rounded-2xl bg-amber-100 hover:bg-amber-200 text-amber-900 font-bold text-xs transition-all flex items-center gap-1">
-                <i data-lucide="crown" class="w-4 h-4 text-amber-600"></i> BXH
+              <button type="button" data-exam-id="${safeExamId}" onclick="downloadExamAzotaTxt(this.getAttribute('data-exam-id'))" title="Tải bản đề đã chuẩn hóa (.txt)" class="cursor-pointer px-3 py-2.5 rounded-2xl bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 font-bold text-xs transition-all flex items-center gap-1">
+                <i data-lucide="download" class="w-4 h-4"></i>
+                <span>Tải đề (.txt)</span>
               </button>
             `}
           </div>
@@ -10542,52 +10254,16 @@ ANSWER KEYS
       return inner;
     }
 
-    async function extractDocxAzotaText(arrayBuffer) {
+    async function extractDocxAzotaText(arrayBuffer, fileName = '') {
+      if (window.ExamAutoFormatter && typeof window.ExamAutoFormatter.processDocxArrayBuffer === 'function') {
+        const res = await window.ExamAutoFormatter.processDocxArrayBuffer(arrayBuffer, { fileName });
+        return res;
+      }
       if (!window.mammoth) {
         throw new Error('Thư viện đọc Word (.docx) chưa sẵn sàng.');
       }
-      try {
-        const htmlRes = await mammoth.convertToHtml(
-          { arrayBuffer },
-          { styleMap: ['u => u'] }
-        );
-        const rawHtml = (htmlRes && htmlRes.value) || '';
-        if (rawHtml.trim()) {
-          const doc = new DOMParser().parseFromString(rawHtml, 'text/html');
-          // Convert embedded Word images: keep small formulas (<400px) crisp original PNG; optimize large illustrations (>1280px)
-          const imgs = Array.from(doc.querySelectorAll('img'));
-          for (const imgEl of imgs) {
-            const src = imgEl.getAttribute('src') || '';
-            if (src.startsWith('data:image/')) {
-              const origDims = await getImageDataUrlDimensions(src);
-              const isIllustration = origDims.height > 90 || origDims.width > 280;
-              const isSmallFormula = !isIllustration || (origDims.width > 0 && origDims.width < 400 && origDims.height > 0 && origDims.height < 400);
-              const optimizedSrc = await smartOptimizeExamImage(src, {
-                isFormula: isSmallFormula,
-                maxWidth: 1280,
-                quality: 0.85
-              });
-              imgEl.setAttribute('src', optimizedSrc);
-              imgEl.setAttribute('class', isIllustration ? 'exam-illustration' : 'inline-formula');
-            } else {
-              imgEl.remove();
-            }
-          }
-
-          let text = doc.body ? serializeDocxNodeToAzotaMarkup(doc.body, false) : '';
-          // Convert underlined Azota answer markers ONLY at line start, after tab, or after 2+ spaces
-          text = text.replace(/(^|\n[ \t]*|\t| {2,})\[\[U_START\]\]\s*\*?([A-Da-d])\s*\[\[U_END\]\]\s*([\.\)])/g, '$1*$2$3');
-          text = text.replace(/(^|\n[ \t]*|\t| {2,})\[\[U_START\]\]\s*\*?([A-Da-d][\.\)])/g, '$1*$2');
-          text = text.replace(/\[\[U_START\]\]|\[\[U_END\]\]/g, '');
-          text = text.replace(/\*{2,}([A-Da-d][\.\)])/g, '*$1');
-          text = text.replace(/\t+/g, '   ').replace(/\n{3,}/g, '\n\n').trim();
-          if (text) return text;
-        }
-      } catch (htmlErr) { }
-
-      // Emergency fallback only if convertToHtml yielded empty/error
       const rawRes = await mammoth.extractRawText({ arrayBuffer });
-      return (rawRes && rawRes.value ? rawRes.value : '').trim();
+      return { normalizedText: (rawRes && rawRes.value ? rawRes.value : '').trim(), stats: null };
     }
 
     function readLatexBracedArgs(src, startIdx, maxGroups = 4) {
@@ -10829,6 +10505,7 @@ ANSWER KEYS
       const textChunks = [];
       const imgChunks = [];
       const loadedNames = [];
+      let lastAutoFormatResult = null;
 
       for (const file of fileList) {
         badge.textContent = `Đang đọc: ${file.name}...`;
@@ -10836,7 +10513,14 @@ ANSWER KEYS
 
         if (['txt', 'azt', 'tex'].includes(ext)) {
           const rawTxt = await file.text();
-          const finalTxt = ext === 'tex' ? convertLatexExTestToAzota(rawTxt) : rawTxt;
+          let finalTxt = ext === 'tex' ? convertLatexExTestToAzota(rawTxt) : rawTxt;
+          if (finalTxt.trim() && ext !== 'tex' && window.ExamAutoFormatter && typeof window.ExamAutoFormatter.formatRawText === 'function') {
+            const fmtRes = window.ExamAutoFormatter.formatRawText(finalTxt, { fileName: file.name });
+            if (fmtRes && fmtRes.normalizedText) {
+              finalTxt = fmtRes.normalizedText;
+              lastAutoFormatResult = fmtRes;
+            }
+          }
           if (finalTxt.trim()) {
             textChunks.push(finalTxt.trim());
             loadedNames.push(file.name);
@@ -10844,10 +10528,14 @@ ANSWER KEYS
         } else if (ext === 'docx') {
           try {
             const buf = await file.arrayBuffer();
-            const extracted = await extractDocxAzotaText(buf);
+            const docxRes = await extractDocxAzotaText(buf, file.name);
+            const extracted = typeof docxRes === 'string' ? docxRes : (docxRes && docxRes.normalizedText ? docxRes.normalizedText : '');
             if (!extracted) {
               showCreateExamError(`File Word "${file.name}" không chứa nội dung văn bản (có thể chỉ chứa ảnh chụp). Hãy xuất sang văn bản hoặc dán nội dung trực tiếp!`);
               continue;
+            }
+            if (docxRes && typeof docxRes === 'object' && docxRes.stats) {
+              lastAutoFormatResult = docxRes;
             }
             textChunks.push(extracted);
             loadedNames.push(file.name);
@@ -10927,6 +10615,9 @@ ANSWER KEYS
         const labelText = loadedNames.length === 1 ? loadedNames[0] : `${loadedNames.length} tệp`;
         badge.textContent = `✅ Đã nạp ${labelText} (${currentParsedQuestions.length} câu)`;
         showCuteToast(`📄 Đã đọc thành công ${labelText} (${currentParsedQuestions.length} câu)!`, '🎉');
+        if (lastAutoFormatResult && window.ExamAutoFormatter && typeof window.ExamAutoFormatter.openSummaryModal === 'function') {
+          window.ExamAutoFormatter.openSummaryModal(lastAutoFormatResult);
+        }
       } else {
         badge.textContent = '⚠️ Chưa nạp được tệp nào';
       }
@@ -11042,30 +10733,45 @@ ANSWER KEYS
         if (hSearch) hSearch.value = '';
 
         renderHomeStatsAndExams();
-        renderArchiveAndLeaderboard();
+        renderArchiveExams();
 
         if (savedOk) {
           showCuteToast(
             wasEditing
               ? `✏️ Đã cập nhật đề "${title}" (${parsed.length} câu)!`
-              : `🎉 Đã lưu đề "${title}" (${parsed.length} câu) thành công!`,
+              : `🎉 Đã lưu đề "${title}" (${parsed.length} câu) vào kho máy này!`,
             '💖'
           );
         } else {
-          showCuteToast(`⚠️ Đề đã nạp vào phiên hiện tại (${parsed.length} câu), bộ nhớ trình duyệt gần đầy — hãy bấm Chia sẻ Link hoặc Xuất JSON để giữ đề nhé!`, '📦');
+          showCuteToast(`⚠️ Đề đã nạp vào phiên hiện tại (${parsed.length} câu), bộ nhớ trình duyệt gần đầy — hãy bấm Xuất JSON hoặc Tải bản đề để giữ đề nhé!`, '📦');
         }
 
         if (startImmediately) {
-          hideModalElement('modal-share-exam');
           hideModalElement('modal-submit-confirm');
           openStartExamModal(newExam.id, true);
         } else {
           switchTab('archive');
-          openShareExamModal(newExam.id, true);
         }
       } finally {
         isSavingCreatedExam = false;
       }
+    }
+
+    function downloadCurrentCreatorNormalizedTxt() {
+      if (window.ExamAutoFormatter && typeof window.ExamAutoFormatter.formatFromTextarea === 'function') {
+        const ta = document.getElementById('azota-textarea');
+        if (!ta || !ta.value.trim()) {
+          showCuteToast('⚠️ Chưa có nội dung đề thi để tải xuống!', '📄', 'warning');
+          return;
+        }
+        window.ExamAutoFormatter.formatFromTextarea(false);
+        window.ExamAutoFormatter.downloadNormalizedTxt();
+        return;
+      }
+      const ta = document.getElementById('azota-textarea');
+      const title = document.getElementById('cfg-title')?.value.trim() || 'De_Thi_Chuan_Hoa';
+      if (!ta || !ta.value.trim()) return;
+      downloadTextFile(`${title}.txt`, ta.value);
     }
 
     function editExamById(examId) {
@@ -11173,7 +10879,7 @@ ANSWER KEYS
     }
 
     // ---------------------------------------------------------------------
-    // 13. ARCHIVE & LEADERBOARD MANAGEMENT
+    // 13. LOCAL ARCHIVE MANAGEMENT
     // ---------------------------------------------------------------------
     function resetArchiveFilters() {
       const fSearch = document.getElementById('filter-search');
@@ -11184,17 +10890,52 @@ ANSWER KEYS
       if (fGrade) fGrade.value = 'ALL';
       if (fSubject) fSubject.value = 'ALL';
       if (fMode) fMode.value = 'ALL';
-      renderArchiveAndLeaderboard();
+      renderArchiveExams();
       showCuteToast('🔄 Đã đặt lại bộ lọc kho đề!', '✨', 'info');
     }
 
-    function renderArchiveAndLeaderboard() {
+    function openCreatorFromEmptyState() {
+      switchTab('create');
+      setTimeout(() => {
+        const dz = document.getElementById('drop-zone');
+        if (dz) {
+          try { dz.scrollIntoView({ behavior: 'smooth', block: 'center' }); } catch (e) { }
+          try { dz.focus(); } catch (e) { }
+        }
+      }, 120);
+    }
+
+    function buildEmptyExamsStateHTML() {
+      return `
+        <div id="empty-exams-state-card" class="col-span-full guide-solid-card p-7 sm:p-10 rounded-3xl border-2 border-dashed border-pink-300 text-center space-y-4 shadow-sm">
+          <div class="w-14 h-14 rounded-2xl bg-pink-50 border border-pink-200 text-pink-500 mx-auto flex items-center justify-center text-3xl">📄</div>
+          <p class="text-sm sm:text-base font-bold text-slate-700 max-w-xl mx-auto leading-relaxed">
+            Chưa có bài thi nào trên thiết bị này. Hãy tải file đề Word (.docx) lên để hệ thống tự chuẩn hóa và bắt đầu ôn luyện.
+          </p>
+          <div class="flex flex-wrap items-center justify-center gap-3 pt-1">
+            <button id="btn-empty-import-docx" type="button" onclick="openCreatorFromEmptyState()"
+              class="btn-3d btn-3d-pink cursor-pointer px-5 py-2.5 rounded-2xl bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white text-xs sm:text-sm font-extrabold inline-flex items-center gap-2">
+              <i data-lucide="file-up" class="w-4 h-4"></i>
+              <span>Nhập file đề (.docx) ngay</span>
+            </button>
+            <button id="btn-empty-open-guide" type="button" onclick="switchTab('guide')"
+              class="cursor-pointer px-4 py-2.5 rounded-2xl bg-amber-50 hover:bg-amber-100 text-amber-800 border-2 border-amber-200 text-xs sm:text-sm font-extrabold inline-flex items-center gap-2 transition-colors">
+              <i data-lucide="book-open-check" class="w-4 h-4"></i>
+              <span>Xem hướng dẫn sử dụng</span>
+            </button>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderArchiveExams() {
+      const safeExams = Array.isArray(examsList) ? examsList : [];
       const qSearch = (document.getElementById('filter-search')?.value || '').trim().toLowerCase();
       const qGrade = document.getElementById('filter-grade')?.value || 'ALL';
       const qSubject = document.getElementById('filter-subject')?.value || 'ALL';
       const qMode = document.getElementById('filter-mode')?.value || 'ALL';
 
-      const filtered = examsList.filter(ex => {
+      const filtered = safeExams.filter(ex => {
         if (!ex) return false;
         const exTitle = String(ex.title || '').toLowerCase();
         const exSubj = String(ex.subject || '').toLowerCase();
@@ -11207,267 +10948,24 @@ ANSWER KEYS
 
       const grid = document.getElementById('archive-exams-grid');
       if (grid) {
-        if (filtered.length === 0) {
-          const hasStoredExams = Array.isArray(examsList) && examsList.length > 0;
-          grid.innerHTML = hasStoredExams
-            ? `
-              <div class="col-span-full p-8 sm:p-10 rounded-3xl bg-white border-2 border-dashed border-pink-200 text-center space-y-3">
-                <div class="text-4xl">🔍</div>
-                <div class="text-base font-extrabold text-slate-800">Không tìm thấy đề thi nào khớp với bộ lọc</div>
-                <p class="text-xs sm:text-sm text-slate-500 max-w-md mx-auto">Kho hiện có ${examsList.length} đề thi ở khối lớp hoặc môn học khác.</p>
-                <button type="button" onclick="resetArchiveFilters()" class="btn-3d btn-3d-pink px-4 py-2 rounded-2xl bg-pink-500 hover:bg-pink-600 text-white text-xs sm:text-sm font-extrabold cursor-pointer inline-flex items-center gap-1.5">
-                  🔄 Đặt lại bộ lọc kho đề
-                </button>
-              </div>
-            `
-            : `
-              <div class="col-span-full p-8 sm:p-10 rounded-3xl bg-gradient-to-br from-pink-50 via-white to-emerald-50 border-2 border-dashed border-emerald-200 text-center space-y-3">
-                <div class="text-4xl">📚</div>
-                <div class="text-base font-extrabold text-slate-800">Kho lưu trữ đề thi đang trống</div>
-                <p class="text-xs sm:text-sm text-slate-500 max-w-md mx-auto">Hãy tải lên file Word/PDF, dán đề mới hoặc khôi phục 3 đề mẫu chuẩn 2026 để bắt đầu nhé!</p>
-                <div class="flex flex-wrap items-center justify-center gap-2.5 pt-1">
-                  <button type="button" onclick="switchTab('create')" class="btn-3d btn-3d-pink px-4 py-2 rounded-2xl bg-pink-500 hover:bg-pink-600 text-white text-xs sm:text-sm font-extrabold cursor-pointer">
-                    ➕ Tạo đề mới ngay
-                  </button>
-                  <button type="button" onclick="resetDefaultSampleData()" class="btn-3d btn-3d-emerald px-4 py-2 rounded-2xl bg-emerald-500 hover:bg-emerald-600 text-white text-xs sm:text-sm font-extrabold cursor-pointer">
-                    🔄 Khôi phục đề mẫu
-                  </button>
-                </div>
-              </div>
-            `;
+        if (safeExams.length === 0) {
+          grid.innerHTML = buildEmptyExamsStateHTML();
+        } else if (filtered.length === 0) {
+          grid.innerHTML = `
+            <div class="col-span-full guide-solid-card p-8 sm:p-10 rounded-3xl border-2 border-dashed border-pink-200 text-center space-y-3">
+              <div class="text-4xl">🔍</div>
+              <div class="text-base font-extrabold text-slate-800">Không tìm thấy đề thi nào khớp với bộ lọc</div>
+              <p class="text-xs sm:text-sm text-slate-500 max-w-md mx-auto">Kho hiện có ${safeExams.length} đề thi ở khối lớp hoặc môn học khác.</p>
+              <button type="button" onclick="resetArchiveFilters()" class="btn-3d btn-3d-pink px-4 py-2 rounded-2xl bg-pink-500 hover:bg-pink-600 text-white text-xs sm:text-sm font-extrabold cursor-pointer inline-flex items-center gap-1.5">
+                🔄 Đặt lại bộ lọc kho đề
+              </button>
+            </div>
+          `;
         } else {
           grid.innerHTML = filtered.map(ex => buildExamCardHTML(ex, true)).join('');
         }
       }
-
-      // Populate Leaderboard Exam Select Dropdown
-      const lbSelect = document.getElementById('leaderboard-exam-select');
-      if (lbSelect) {
-        const currentSelected = lbSelect.value || 'ALL';
-        lbSelect.innerHTML = `<option value="ALL">🌟 Tất cả đề thi (${examsList.length} đề)</option>` +
-          examsList.map(ex => `<option value="${escapeHTML(String(ex.id))}">${escapeHTML(ex.title)}</option>`).join('');
-        if ([...lbSelect.options].some(o => o.value === currentSelected)) {
-          lbSelect.value = currentSelected;
-        }
-      }
-
-      // Populate Leaderboard Class Filter Dropdown
-      const classSelect = document.getElementById('leaderboard-class-select');
-      if (classSelect) {
-        const currentClass = classSelect.value || 'ALL';
-        const distinctClasses = [...new Set(resultsList.map(r => String(r.studentClass || '').trim()).filter(Boolean))]
-          .sort((a, b) => a.localeCompare(b, 'vi'));
-        classSelect.innerHTML = `<option value="ALL">🏫 Tất cả lớp</option>` +
-          distinctClasses.map(c => `<option value="${escapeHTML(c)}">Lớp ${escapeHTML(c)}</option>`).join('');
-        if ([...classSelect.options].some(o => o.value === currentClass)) {
-          classSelect.value = currentClass;
-        }
-      }
-
-      renderLeaderboardTable();
       refreshIconsAndMath(document.getElementById('tab-archive'));
-    }
-
-    function filterLeaderboardByExam(examId) {
-      switchTab('archive');
-      updateNavMenuActiveState('leaderboard');
-      const lbSelect = document.getElementById('leaderboard-exam-select');
-      if (lbSelect) lbSelect.value = examId || 'ALL';
-      renderLeaderboardTable();
-      setTimeout(() => {
-        const sec = document.getElementById('leaderboard-section');
-        if (sec) sec.scrollIntoView({ behavior: 'smooth' });
-      }, 100);
-    }
-
-    function getFilteredSortedLeaderboard() {
-      const selectedExamId = document.getElementById('leaderboard-exam-select')?.value || 'ALL';
-      const selectedClass = document.getElementById('leaderboard-class-select')?.value || 'ALL';
-      const searchQ = (document.getElementById('leaderboard-student-search')?.value || '').trim().toLowerCase();
-
-      let list = [...resultsList];
-      if (selectedExamId !== 'ALL') {
-        list = list.filter(r => String(r.examId) === String(selectedExamId));
-      }
-      if (selectedClass !== 'ALL') {
-        list = list.filter(r => String(r.studentClass || '').trim() === selectedClass);
-      }
-      if (searchQ) {
-        list = list.filter(r =>
-          String(r.studentName || '').toLowerCase().includes(searchQ) ||
-          String(r.studentClass || '').toLowerCase().includes(searchQ) ||
-          String(r.examTitle || '').toLowerCase().includes(searchQ)
-        );
-      }
-
-      // Sort by highest score DESC, then fastest time ASC, then fewest violations ASC
-      list.sort((a, b) => {
-        const sDiff = Number(b.score || 0) - Number(a.score || 0);
-        if (sDiff !== 0) return sDiff;
-        const tDiff = Number(a.timeSpentSeconds || 0) - Number(b.timeSpentSeconds || 0);
-        if (tDiff !== 0) return tDiff;
-        return Number(a.violations || 0) - Number(b.violations || 0);
-      });
-
-      return list;
-    }
-
-    function resetLeaderboardFilters() {
-      const examSel = document.getElementById('leaderboard-exam-select');
-      const classSel = document.getElementById('leaderboard-class-select');
-      const searchInp = document.getElementById('leaderboard-student-search');
-      if (examSel) examSel.value = 'ALL';
-      if (classSel) classSel.value = 'ALL';
-      if (searchInp) searchInp.value = '';
-      renderLeaderboardTable();
-      showCuteToast('🔄 Đã đặt lại bộ lọc bảng xếp hạng!', '🏆', 'info');
-    }
-
-    function renderLeaderboardTable() {
-      const list = getFilteredSortedLeaderboard();
-      const countBadge = document.getElementById('leaderboard-count-badge');
-      if (countBadge) countBadge.textContent = `${list.length} lượt thi`;
-
-      const podiumEl = document.getElementById('leaderboard-podium');
-      const tableWrap = document.getElementById('leaderboard-table-wrap');
-      const tbody = document.getElementById('leaderboard-tbody');
-      const top3 = list.slice(0, 3);
-      const medals = [
-        { icon: '👑 Hạng Nhất', bg: 'from-amber-100 to-yellow-50 border-amber-300', badge: 'bg-amber-500 text-white' },
-        { icon: '🥈 Hạng Nhì', bg: 'from-emerald-100 to-teal-50 border-emerald-300', badge: 'bg-emerald-500 text-white' },
-        { icon: '🥉 Hạng Ba', bg: 'from-pink-100 to-rose-50 border-pink-300', badge: 'bg-pink-500 text-white' }
-      ];
-
-      if (top3.length === 0) {
-        if (tableWrap) tableWrap.classList.add('hidden');
-        if (tbody) tbody.innerHTML = '';
-        if (podiumEl) {
-          const hasAnyResults = Array.isArray(resultsList) && resultsList.length > 0;
-          podiumEl.innerHTML = hasAnyResults
-            ? `
-              <div class="col-span-full rounded-3xl border-2 border-dashed border-amber-300 bg-gradient-to-br from-amber-50 via-white to-pink-50 p-6 sm:p-8 text-center space-y-3">
-                <div class="text-4xl">🔍</div>
-                <div class="text-base font-extrabold text-slate-800">Không tìm thấy thí sinh nào khớp bộ lọc hiện tại</div>
-                <p class="text-xs sm:text-sm text-slate-500 max-w-md mx-auto">Hệ thống đang lưu ${resultsList.length} lượt nộp bài ở đề thi hoặc lớp khác.</p>
-                <button type="button" onclick="resetLeaderboardFilters()" class="btn-3d btn-3d-amber px-4 py-2 rounded-2xl bg-amber-400 hover:bg-amber-500 text-slate-900 text-xs sm:text-sm font-extrabold cursor-pointer inline-flex items-center gap-1.5">
-                  🔄 Đặt lại bộ lọc xếp hạng
-                </button>
-              </div>
-            `
-            : `
-              <div class="col-span-full rounded-3xl border-2 border-dashed border-amber-300 bg-gradient-to-br from-amber-50 via-white to-pink-50 p-6 sm:p-8 text-center space-y-3">
-                <div class="text-4xl">🏆</div>
-                <div class="text-base font-extrabold text-slate-800">Bảng vàng đang chờ chủ nhân Top 1!</div>
-                <p class="text-xs sm:text-sm text-slate-500 max-w-md mx-auto">Chưa có lượt nộp bài nào. Hãy chọn một đề thi thử và hoàn thành để ghi danh lên bục vinh quang nhé!</p>
-                <button type="button" onclick="switchTab('home')" class="btn-3d btn-3d-pink px-4 py-2 rounded-2xl bg-pink-500 hover:bg-pink-600 text-white text-xs sm:text-sm font-extrabold cursor-pointer inline-flex items-center gap-1.5">
-                  🚀 Về Trang chủ chọn đề thi
-                </button>
-              </div>
-            `;
-        }
-        return;
-      }
-
-      if (tableWrap) tableWrap.classList.remove('hidden');
-      if (podiumEl) {
-        podiumEl.innerHTML = top3.map((item, idx) => {
-          const m = medals[idx];
-          return `
-            <div class="rounded-3xl bg-gradient-to-br ${m.bg} border-2 p-5 shadow-sm flex items-center justify-between gap-4">
-              <div class="space-y-1 min-w-0">
-                <span class="px-3 py-0.5 rounded-full ${m.badge} text-xs font-bold">${m.icon}</span>
-                <h4 class="text-lg font-bold text-slate-800 pt-1 truncate">${escapeHTML(formatStudentDisplayName(item.studentName))}</h4>
-                <p class="text-xs font-bold text-slate-600">Lớp: ${escapeHTML(item.studentClass)} • ⏱️ ${formatSecondsToMMSS(item.timeSpentSeconds)}</p>
-                <p class="text-[11px] text-slate-500 line-clamp-1">${escapeHTML(item.examTitle)}</p>
-              </div>
-              <div class="w-16 h-16 rounded-2xl bg-white border-2 border-amber-200 flex flex-col items-center justify-center shrink-0 shadow-sm">
-                <span class="text-xl font-extrabold text-pink-600">${Number(item.score).toFixed(2)}</span>
-                <span class="text-[10px] font-bold text-slate-400">ĐIỂM</span>
-              </div>
-            </div>
-          `;
-        }).join('');
-      }
-
-      if (!tbody) return;
-      tbody.innerHTML = list.map((r, idx) => {
-        const rankBadge = idx === 0 ? '👑 1' : (idx === 1 ? '🥈 2' : (idx === 2 ? '🥉 3' : `#${idx + 1}`));
-        const safeResId = escapeHTML(String(r.id));
-        return `
-          <tr class="hover:bg-pink-50/50 transition-colors">
-            <td class="py-3.5 px-4 font-extrabold text-pink-600">${rankBadge}</td>
-            <td class="py-3.5 px-4 font-bold text-slate-800">${escapeHTML(formatStudentDisplayName(r.studentName))}</td>
-            <td class="py-3.5 px-4"><span class="px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-xs font-bold">${escapeHTML(r.studentClass)}</span></td>
-            <td class="py-3.5 px-4 max-w-xs truncate" title="${escapeHTML(r.examTitle)}">${escapeHTML(r.examTitle)}</td>
-            <td class="py-3.5 px-4 text-center"><span class="px-3 py-1 rounded-full bg-pink-100 text-pink-700 font-extrabold">${Number(r.score).toFixed(2)}</span></td>
-            <td class="py-3.5 px-4 text-center font-mono">${formatSecondsToMMSS(r.timeSpentSeconds)}</td>
-            <td class="py-3.5 px-4 text-center">${r.violations || 0} lần</td>
-            <td class="py-3.5 px-4 text-right whitespace-nowrap">
-              <div class="inline-flex items-center gap-1.5">
-                <button type="button" data-res-id="${safeResId}" onclick="viewSavedResultById(this.getAttribute('data-res-id'))" class="cursor-pointer px-3 py-1 rounded-xl bg-purple-100 hover:bg-purple-200 text-purple-800 text-xs font-bold">
-                  Xem chi tiết
-                </button>
-                <button type="button" data-res-id="${safeResId}" onclick="deleteResultById(this.getAttribute('data-res-id'))" title="Xóa lượt thi này" class="cursor-pointer p-1.5 rounded-xl bg-rose-100 hover:bg-rose-200 text-rose-700 text-xs font-bold">
-                  <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
-                </button>
-              </div>
-            </td>
-          </tr>
-        `;
-      }).join('');
-      refreshIconsAndMath(tbody);
-    }
-
-    function deleteResultById(resId) {
-      const idx = resultsList.findIndex(r => String(r.id) === String(resId));
-      if (idx === -1) return;
-      const target = resultsList[idx];
-      if (!window.confirm(`Bạn có chắc muốn xóa kết quả của "${target.studentName}" (${target.score} điểm) khỏi bảng xếp hạng không?`)) {
-        return;
-      }
-      resultsList.splice(idx, 1);
-      persistResultsToLocal();
-      renderHomeStatsAndExams();
-      renderArchiveAndLeaderboard();
-      showCuteToast('🗑️ Đã xóa bản ghi kết quả khỏi bảng xếp hạng!', '✨');
-    }
-
-    function exportLeaderboardCSV() {
-      const list = getFilteredSortedLeaderboard();
-      if (list.length === 0) {
-        showCuteToast('⚠️ Chưa có dữ liệu điểm phù hợp để xuất CSV!', '📊');
-        return;
-      }
-      let csv = '\uFEFFHạng,Họ và Tên,Lớp,Đề Thi,Mã Đề,Điểm Số,Số Câu/Ý Đúng,Tổng Câu/Ý,Thời Gian (MM:SS),Vi Phạm Tab,Thời Điểm Nộp,Mã Niêm Phong SHA-256\n';
-      list.forEach((r, idx) => {
-        const sealCode = r.integritySeal || computeResultIntegritySeal(r);
-        const row = [
-          idx + 1,
-          formatStudentDisplayName(r.studentName),
-          r.studentClass,
-          r.examTitle,
-          r.subCode || '101',
-          Number(r.score).toFixed(2),
-          r.correctUnits,
-          r.totalUnits,
-          formatSecondsToMMSS(r.timeSpentSeconds),
-          r.violations || 0,
-          r.submittedAt || '',
-          sealCode
-        ].map(toCsvCell).join(',');
-        csv += row + '\n';
-      });
-      const dateStr = new Date().toISOString().slice(0, 10);
-      downloadTextFile(`BangXepHang_THPT_AnNinh_${dateStr}.csv`, csv, 'text/csv;charset=utf-8;');
-      showCuteToast(`📊 Đã xuất bảng điểm gồm ${list.length} lượt thi (.CSV)!`, '🎉');
-    }
-
-    function viewSavedResultById(resId) {
-      const found = resultsList.find(r => String(r.id) === String(resId));
-      if (!found) return;
-      lastViewedResult = found;
-      renderResultView(found);
-      switchTab('result');
     }
 
     function reconstructAzotaFromQuestions(questions) {
@@ -11519,7 +11017,7 @@ ANSWER KEYS
       if (!ex) return;
       const content = ex.rawAzota || reconstructAzotaFromQuestions(ex.questions) || DEFAULT_AZOTA_SAMPLE;
       downloadTextFile(`${ex.title}.txt`, content);
-      showCuteToast(`📥 Đã tải xuống file đề "${ex.title}"!`, '📄');
+      showCuteToast(`📥 Đã tải xuống bản đề "${ex.title}" (.txt)!`, '📄');
     }
 
     function deleteExamById(examId) {
@@ -11537,172 +11035,17 @@ ANSWER KEYS
       }
       persistExamsToLocal();
       renderHomeStatsAndExams();
-      renderArchiveAndLeaderboard();
+      renderArchiveExams();
       showCuteToast('🗑️ Đã xóa đề thi khỏi kho lưu trữ!', '✨');
     }
 
     function resetDefaultSampleData() {
-      if (!window.confirm('Bạn có chắc muốn khôi phục bộ đề mẫu mặc định và đưa Lịch sử làm bài / Kho câu hay sai về trạng thái sạch ban đầu (0 lượt) không?')) {
-        return;
-      }
-      cancelEditExamMode(true);
-      seedDefaultExams();
-      resultsList = [];
-      wrongVaultList = [];
-      persistExamsToLocal();
-      persistResultsToLocal();
-      persistWrongVaultToLocal();
-      renderHomeStatsAndExams();
-      renderArchiveAndLeaderboard();
-      renderVaultTab();
-      showCuteToast('🔄 Đã khôi phục bộ đề mẫu và làm mới lịch sử / kho câu sai về 0!', '🌸');
+      eraseAllPersonalLocalData();
     }
 
     // ---------------------------------------------------------------------
-    // 14. SHARE MODAL, IMPORT / EXPORT DATA & UTILITIES
+    // 14. IMPORT / EXPORT BACKUP DATA (.JSON)
     // ---------------------------------------------------------------------
-    function openShareExamModal(examId, justSaved = false) {
-      const exam = findExamById(examId);
-      if (!exam) {
-        showCuteToast('⚠️ Không tìm thấy dữ liệu đề thi để chia sẻ!', '⚠️', 'warning');
-        return;
-      }
-      currentShareExam = exam;
-
-      const kicker = document.getElementById('share-modal-kicker');
-      const titleEl = document.getElementById('share-modal-title');
-      const statusEl = document.getElementById('share-modal-status');
-
-      if (kicker) kicker.textContent = justSaved ? '🎉 Đã lưu đề thi thành công!' : 'Phát hành bài thi trực tuyến';
-      if (titleEl) titleEl.textContent = exam.title || 'Chia sẻ đề thi';
-
-      const modalEl = showModalElement('modal-share-exam');
-
-      if (statusEl) {
-        statusEl.className = 'p-3.5 rounded-2xl bg-sky-50 border border-sky-200 text-xs font-semibold text-sky-900 leading-relaxed';
-        statusEl.innerHTML = '⏳ <strong>Đang tự động tối ưu hình ảnh &amp; tạo link ngắn chia sẻ đề thi...</strong>';
-      }
-      updateShareModalUrlDisplay('', 0);
-
-      refreshIconsAndMath(modalEl || document.getElementById('modal-share-exam'));
-    }
-
-    function updateShareModalUrlDisplay(shareUrl, imageCountOrHasImg) {
-      const linkInp = document.getElementById('share-link-input');
-      const warnWrap = document.getElementById('share-link-warning');
-      const warnTxt = document.getElementById('share-link-warning-text');
-      const canvas = document.getElementById('share-qr-canvas');
-      const qrFallback = document.getElementById('share-qr-fallback');
-      const dlBtn = document.getElementById('btn-download-qr');
-      const imgCount = typeof imageCountOrHasImg === 'number' ? imageCountOrHasImg : (imageCountOrHasImg ? 1 : 0);
-
-      if (linkInp) {
-        linkInp.value = shareUrl || 'Đang tự động tạo link ngắn & mã QR...';
-        linkInp.placeholder = shareUrl ? '' : 'Đang tự động tạo link ngắn & mã QR...';
-      }
-
-      if (warnWrap && warnTxt) {
-        if (shareUrl && shareUrl.length > 2400) {
-          warnWrap.classList.remove('hidden');
-          warnTxt.textContent = `⚠️ Link nén khá dài (${shareUrl.length} ký tự).`;
-        } else {
-          warnWrap.classList.add('hidden');
-        }
-      }
-
-      if (canvas && qrFallback && dlBtn) {
-        if (!shareUrl) {
-          canvas.classList.add('hidden');
-          dlBtn.classList.add('hidden');
-          qrFallback.textContent = 'Đang tạo mã QR sắc nét...';
-          qrFallback.classList.remove('hidden');
-          return;
-        }
-
-        qrFallback.classList.add('hidden');
-        canvas.classList.remove('hidden');
-        dlBtn.classList.remove('hidden');
-
-        if (window.QRCode && typeof QRCode.toCanvas === 'function' && shareUrl.length <= 2400) {
-          QRCode.toCanvas(
-            canvas,
-            shareUrl,
-            { width: 208, margin: 2, errorCorrectionLevel: 'L', color: { dark: '#1e293b', light: '#ffffff' } },
-            err => {
-              if (err) {
-                canvas.classList.add('hidden');
-                dlBtn.classList.add('hidden');
-                qrFallback.textContent = `Mã QR không hiển thị được do link quá dài (${shareUrl.length} ký tự).`;
-                qrFallback.classList.remove('hidden');
-              }
-            }
-          );
-        } else {
-          canvas.classList.add('hidden');
-          dlBtn.classList.add('hidden');
-          qrFallback.textContent = 'Hãy dùng nút "Sao chép link" hoặc "Xuất file đề (.JSON)" bên dưới.';
-          qrFallback.classList.remove('hidden');
-        }
-      }
-    }
-
-    function closeShareExamModal() {
-      hideModalElement('modal-share-exam');
-      currentShareExam = null;
-    }
-
-    async function copyShareExamLink() {
-      const inp = document.getElementById('share-link-input');
-      if (!inp || !inp.value) return;
-      const ok = await copyTextSafe(inp.value);
-      showCuteToast(ok ? '📋 Đã copy Link làm bài trực tuyến! Hãy gửi cho học sinh nhé.' : '⚠️ Hãy nhấn Ctrl+C để sao chép link trong ô!', ok ? '🔗' : '💡');
-    }
-
-    async function copyShareExamLinkWithoutImages() {
-      if (!currentShareExam) return;
-      const url = buildExamShareUrl(currentShareExam, true);
-      updateShareModalUrlDisplay(url, false);
-      const ok = await copyTextSafe(url);
-      showCuteToast(ok ? '📋 Đã tạo & copy Link rút gọn (không kèm ảnh)!' : '🔗 Đã tạo link rút gọn trong ô!', '✂️');
-    }
-
-    function downloadShareQR() {
-      const canvas = document.getElementById('share-qr-canvas');
-      if (!canvas || !currentShareExam) return;
-      const a = document.createElement('a');
-      a.href = canvas.toDataURL('image/png');
-      a.download = `QR_${(currentShareExam.title || 'DeThi').replace(/[^\w\d\-]+/g, '_')}.png`;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      showCuteToast('🖼️ Đã tải xuống ảnh mã QR!', '✨');
-    }
-
-    function exportSingleExamPackageJSON() {
-      if (!currentShareExam) return;
-      const pkg = {
-        exportedAt: new Date().toISOString(),
-        siteUrl: OFFICIAL_SITE_URL,
-        exams: [{ ...currentShareExam, password: '' }]
-      };
-      const safeTitle = (currentShareExam.title || 'DeThi').replace(/[^\w\d\-]+/g, '_');
-      downloadTextFile(`DeThi_${safeTitle}.json`, JSON.stringify(pkg, null, 2), 'application/json');
-      showCuteToast('📦 Đã xuất gói đề thi (.JSON)!', '💖');
-    }
-
-    function startExamFromShareModal() {
-      const targetExam = currentShareExam || window.lastCreatedExam;
-      if (!targetExam || !targetExam.id) {
-        showCuteToast('⚠️ Không tìm thấy dữ liệu đề thi để bắt đầu làm bài!', '⚠️', 'warning');
-        closeShareExamModal();
-        return;
-      }
-      const targetId = String(targetExam.id);
-      const isCreator = myCreatedExamIds.has(targetId);
-      closeShareExamModal();
-      openStartExamModal(targetId, isCreator);
-    }
-
     function triggerImportBackupJSON() {
       const inp = document.getElementById('import-json-input');
       if (inp) inp.click();
@@ -11821,7 +11164,7 @@ ANSWER KEYS
           }
 
           renderHomeStatsAndExams();
-          renderArchiveAndLeaderboard();
+          renderArchiveExams();
           if (typeof renderVaultTab === 'function') renderVaultTab();
           if (typeof renderStudyStreakUI === 'function') renderStudyStreakUI();
           if (typeof updateEdTechSummaryBadges === 'function') updateEdTechSummaryBadges();
@@ -11870,11 +11213,6 @@ ANSWER KEYS
       updateOnlineSyncBadge,
       mergeExamsById,
       mergeResultsById,
-      getShareBaseUrl,
-      compressSharePayload,
-      decompressSharePayload,
-      buildExamShareUrl,
-      handleIncomingExamFromUrl,
       buildExamCardHTML,
       copySampleAzota,
       downloadSampleAzotaFile,
@@ -11905,27 +11243,15 @@ ANSWER KEYS
       saveCreatedExam,
       editExamById,
       cancelEditExamMode,
+      downloadCurrentCreatorNormalizedTxt,
       resetArchiveFilters,
-      renderArchiveAndLeaderboard,
-      filterLeaderboardByExam,
-      getFilteredSortedLeaderboard,
-      resetLeaderboardFilters,
-      renderLeaderboardTable,
-      deleteResultById,
-      exportLeaderboardCSV,
-      viewSavedResultById,
+      openCreatorFromEmptyState,
+      buildEmptyExamsStateHTML,
+      renderArchiveExams,
       reconstructAzotaFromQuestions,
       downloadExamAzotaTxt,
       deleteExamById,
       resetDefaultSampleData,
-      openShareExamModal,
-      updateShareModalUrlDisplay,
-      closeShareExamModal,
-      copyShareExamLink,
-      copyShareExamLinkWithoutImages,
-      downloadShareQR,
-      exportSingleExamPackageJSON,
-      startExamFromShareModal,
       triggerImportBackupJSON,
       importBackupJSON,
       exportAllBackupJSON
@@ -13118,11 +12444,12 @@ ANSWER KEYS
     }
 
     function populateFlashcardFilters() {
+      const safeExams = Array.isArray(examsList) ? examsList : [];
       const subjEl = document.getElementById('fc-filter-subject');
       const examEl = document.getElementById('fc-filter-exam');
       if (subjEl) {
         const curSubj = subjEl.value || 'all';
-        const subjects = [...new Set(examsList.map(ex => ex.subject).filter(Boolean))];
+        const subjects = [...new Set(safeExams.map(ex => ex && ex.subject).filter(Boolean))];
         subjEl.innerHTML = `<option value="all">Tất cả môn học</option>` +
           subjects.map(s => `<option value="${escapeHTML(s)}">${escapeHTML(s)}</option>`).join('');
         subjEl.value = subjects.includes(curSubj) ? curSubj : 'all';
@@ -13130,8 +12457,8 @@ ANSWER KEYS
       if (examEl) {
         const curExam = examEl.value || 'all';
         examEl.innerHTML = `<option value="all">Tất cả đề trong kho</option>` +
-          examsList.map(ex => `<option value="${escapeHTML(ex.id)}">${escapeHTML(ex.title)}</option>`).join('');
-        examEl.value = examsList.some(e => e.id === curExam) ? curExam : 'all';
+          safeExams.filter(Boolean).map(ex => `<option value="${escapeHTML(ex.id)}">${escapeHTML(ex.title)}</option>`).join('');
+        examEl.value = safeExams.some(e => e && e.id === curExam) ? curExam : 'all';
       }
     }
 
@@ -13156,7 +12483,8 @@ ANSWER KEYS
           });
         });
       } else {
-        examsList.forEach(ex => {
+        (Array.isArray(examsList) ? examsList : []).forEach(ex => {
+          if (!ex) return;
           if (subj !== 'all' && ex.subject !== subj) return;
           if (examId !== 'all' && ex.id !== examId) return;
           (ex.questions || []).forEach((q, idx) => {
@@ -13254,7 +12582,7 @@ ANSWER KEYS
         if (qEl) {
           qEl.innerHTML = isFiltered
             ? '<div class="text-center space-y-2 py-2"><div class="text-3xl">🔍</div><div>Không có thẻ nào khớp bộ lọc hiện tại!</div><div class="text-xs sm:text-sm font-medium text-slate-500">Thử đặt lại bộ lọc để xem toàn bộ thẻ từ kho đề và Kho câu hay sai nhé.</div></div>'
-            : '<div class="text-center space-y-2 py-2"><div class="text-3xl">🃏</div><div>Chưa có thẻ Flashcard nào trong kho!</div><div class="text-xs sm:text-sm font-medium text-slate-500">Hãy tạo hoặc tải lên đề thi Trắc nghiệm / Đúng-Sai ở mục Quản lý LMS để tạo bộ thẻ tự động.</div></div>';
+            : '<div class="text-center space-y-2 py-2"><div class="text-3xl">🃏</div><div>Chưa có thẻ Flashcard nào trong kho!</div><div class="text-xs sm:text-sm font-medium text-slate-500">Hãy tải lên file đề Word (.docx) ở mục Tạo đề &amp; Nhập file để tạo bộ thẻ tự động.</div></div>';
         }
         const optsEl = document.getElementById('fc-front-options');
         if (optsEl) {
@@ -13565,10 +12893,11 @@ ANSWER KEYS
     }
 
     function initSpeedrunTab() {
+      const safeExams = Array.isArray(examsList) ? examsList : [];
       const subjEl = document.getElementById('speedrun-filter-subject');
       if (subjEl) {
         const cur = subjEl.value || 'all';
-        const subjects = [...new Set(examsList.map(ex => ex.subject).filter(Boolean))];
+        const subjects = [...new Set(safeExams.map(ex => ex && ex.subject).filter(Boolean))];
         subjEl.innerHTML = `<option value="all">Tổng hợp tất cả các môn</option>` +
           subjects.map(s => `<option value="${escapeHTML(s)}">${escapeHTML(s)}</option>`).join('');
         subjEl.value = subjects.includes(cur) ? cur : 'all';
@@ -13639,7 +12968,9 @@ ANSWER KEYS
       const subj = document.getElementById('speedrun-filter-subject')?.value || 'all';
       let pool = [];
 
-      examsList.forEach(ex => {
+      const safeExams = Array.isArray(examsList) ? examsList : [];
+      safeExams.forEach(ex => {
+        if (!ex) return;
         if (subj !== 'all' && ex.subject !== subj) return;
         (ex.questions || []).forEach(q => {
           if (Number(q.part) === 1 && Array.isArray(q.options) && q.options.length >= 2) {
@@ -13649,7 +12980,8 @@ ANSWER KEYS
       });
 
       if (pool.length === 0) {
-        examsList.forEach(ex => {
+        safeExams.forEach(ex => {
+          if (!ex) return;
           (ex.questions || []).forEach(q => {
             if (Number(q.part) === 1 && Array.isArray(q.options) && q.options.length >= 2) {
               pool.push({ q, exam: ex, topic: inferQuestionTopic(q, ex.subject) });
@@ -14226,7 +13558,6 @@ ANSWER KEYS
         create: 'bg-pink-50 text-pink-700 border-pink-200',
         guide: 'bg-amber-50 text-amber-800 border-amber-200',
         archive: 'bg-emerald-50 text-emerald-800 border-emerald-200',
-        leaderboard: 'bg-amber-50 text-amber-800 border-amber-200',
         vault: 'bg-rose-50 text-rose-700 border-rose-200',
         flashcard: 'bg-sky-50 text-sky-700 border-sky-200',
         speedrun: 'bg-orange-50 text-orange-700 border-orange-200',
@@ -14237,7 +13568,6 @@ ANSWER KEYS
         create: 'hover:bg-pink-50/80 hover:text-pink-700',
         guide: 'hover:bg-amber-50/80 hover:text-amber-800',
         archive: 'hover:bg-emerald-50/80 hover:text-emerald-800',
-        leaderboard: 'hover:bg-amber-50/80 hover:text-amber-800',
         vault: 'hover:bg-rose-50/80 hover:text-rose-700',
         flashcard: 'hover:bg-sky-50/80 hover:text-sky-700',
         speedrun: 'hover:bg-orange-50/80 hover:text-orange-700',
@@ -14255,14 +13585,6 @@ ANSWER KEYS
 
     function selectNavMenuItem(target) {
       closeNavMenuDropdown();
-      if (target === 'leaderboard') {
-        filterLeaderboardByExam('ALL');
-        return;
-      }
-      if (target === 'archive') {
-        switchTab('archive');
-        return;
-      }
       switchTab(target);
     }
 
@@ -14302,7 +13624,7 @@ ANSWER KEYS
       }
 
       if (tabName === 'home') renderHomeStatsAndExams();
-      if (tabName === 'archive') renderArchiveAndLeaderboard();
+      if (tabName === 'archive') renderArchiveExams();
       if (tabName === 'create' && !window._azotaInitialParsed) {
         parseAndPreviewAzota();
         window._azotaInitialParsed = true;
@@ -14372,9 +13694,11 @@ ANSWER KEYS
     }
 
     function renderHomeStatsAndExams() {
-      const totalExams = examsList.length;
-      const totalQuestions = examsList.reduce((acc, ex) => acc + (ex.questions ? ex.questions.length : 0), 0);
-      const totalAttempts = resultsList.length;
+      const safeExams = Array.isArray(examsList) ? examsList : [];
+      const safeResults = Array.isArray(resultsList) ? resultsList : [];
+      const totalExams = safeExams.length;
+      const totalQuestions = safeExams.reduce((acc, ex) => acc + (ex && Array.isArray(ex.questions) ? ex.questions.length : 0), 0);
+      const totalAttempts = safeResults.length;
       const avgScore = totalAttempts > 0
         ? (resultsList.reduce((acc, r) => acc + Number(r.score || 0), 0) / totalAttempts).toFixed(2)
         : '0.00';
@@ -14411,7 +13735,7 @@ ANSWER KEYS
         clearBtn.classList.toggle('flex', hasSearchOrGrade);
       }
 
-      const filteredHome = examsList.filter(ex => {
+      const filteredHome = safeExams.filter(ex => {
         if (!ex) return false;
         if (homeSelectedGrade !== 'ALL' && String(ex.grade || '') !== homeSelectedGrade) {
           return false;
@@ -14431,22 +13755,8 @@ ANSWER KEYS
 
       const homeGrid = document.getElementById('home-exams-grid');
       if (!homeGrid) return;
-      if (examsList.length === 0) {
-        homeGrid.innerHTML = `
-          <div class="col-span-full p-8 sm:p-10 rounded-3xl bg-gradient-to-br from-pink-50 via-white to-emerald-50 border-2 border-dashed border-pink-200 text-center space-y-3">
-            <div class="text-4xl">📚</div>
-            <div class="text-base sm:text-lg font-extrabold text-slate-800">Chưa có đề thi nào trong kho</div>
-            <p class="text-xs sm:text-sm text-slate-500 max-w-md mx-auto">Hãy tạo đề thi mới từ file Word/PDF/văn bản hoặc khôi phục bộ 3 đề mẫu chuẩn 2026 để bắt đầu ôn luyện ngay nhé!</p>
-            <div class="flex flex-wrap items-center justify-center gap-2.5 pt-1">
-              <button type="button" onclick="switchTab('create')" class="btn-3d btn-3d-pink px-4 py-2.5 rounded-2xl bg-pink-500 hover:bg-pink-600 text-white text-xs sm:text-sm font-extrabold cursor-pointer">
-                ➕ Tạo đề mới ngay
-              </button>
-              <button type="button" onclick="resetDefaultSampleData()" class="btn-3d btn-3d-emerald px-4 py-2.5 rounded-2xl bg-emerald-500 hover:bg-emerald-600 text-white text-xs sm:text-sm font-extrabold cursor-pointer">
-                🔄 Khôi phục 3 đề mẫu
-              </button>
-            </div>
-          </div>
-        `;
+      if (safeExams.length === 0) {
+        homeGrid.innerHTML = buildEmptyExamsStateHTML();
       } else if (filteredHome.length === 0) {
         homeGrid.innerHTML = `
           <div class="col-span-full p-8 sm:p-10 rounded-3xl bg-white border-2 border-dashed border-pink-200 text-center space-y-3">
@@ -14497,9 +13807,12 @@ ANSWER KEYS
 
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') {
+        if (window.ExamConfigEditor && typeof window.ExamConfigEditor.isOpen === 'function' && window.ExamConfigEditor.isOpen()) {
+          window.ExamConfigEditor.close();
+          return;
+        }
         closeNavMenuDropdown();
         closeStartExamModal();
-        closeShareExamModal();
         closeSubmitConfirmModal();
         closeLegalPrivacyModal();
         closeExamImageZoom();
@@ -14530,7 +13843,6 @@ ANSWER KEYS
         try { updateOnlineSyncBadge(); } catch (e) { }
         try {
           hideModalElement('modal-start-exam');
-          hideModalElement('modal-share-exam');
           hideModalElement('modal-submit-confirm');
           hideModalElement('modal-legal-privacy');
           hideModalElement('modal-image-zoom');
@@ -14538,23 +13850,14 @@ ANSWER KEYS
 
         try {
           const azotaTa = document.getElementById('azota-textarea');
-          if (azotaTa) azotaTa.value = DEFAULT_AZOTA_SAMPLE;
+          if (azotaTa) azotaTa.value = '';
         } catch (e) { }
 
         try { renderHomeStatsAndExams(); } catch (e) { }
         try { updateBackToTopButton(); } catch (e) { }
 
         try {
-          const sp = new URLSearchParams(window.location.search);
-          const hasShortId = Boolean(sp.get('id'));
-          const hasLocalIncoming = Boolean(sp.get('exam')) || (window.location.hash || '').startsWith('#de=');
-          if (hasShortId) {
-            // Luồng ?id=XXXXXX được xử lý độc quyền bởi js/share-exam.js
-          } else if (hasLocalIncoming) {
-            handleIncomingExamFromUrl();
-          } else {
-            restoreActiveExamDraftIfAny();
-          }
+          restoreActiveExamDraftIfAny();
         } catch (e) { }
       } finally {
         try { refreshIconsAndMath(document.body); } catch (e) { }
@@ -14571,9 +13874,6 @@ ANSWER KEYS
       try { refreshIconsAndMath(document.body); } catch (e) { }
     });
 
-    window.addEventListener('hashchange', () => {
-      handleIncomingExamFromUrl();
-    });
 
     Object.assign(window, {
       toggleNavMenuDropdown,
@@ -14601,7 +13901,7 @@ ANSWER KEYS
       formatStudentDisplayName,
       initPrivacyAndLegalUI,
       updatePrivacyMaskUI,
-      toggleLeaderboardPrivacyMask,
+      toggleStudentPrivacyMask,
       openLegalPrivacyModal,
       closeLegalPrivacyModal,
       switchLegalPrivacyTab,
@@ -14634,10 +13934,21 @@ ANSWER KEYS
       handleThemeSwitchChange,
       toggleThemeMode,
       initThemeMode,
-      bootstrapApp
+      bootstrapApp,
+      findExamById,
+      registerExamInMemory,
+      persistExamsToLocal,
+      clearActiveExamDraft,
+      renderArchiveExams,
+      openStartExamModal,
+      showCuteToast,
+      refreshIconsAndMath,
+      getPendingStartExamId: () => (pendingStartExam ? pendingStartExam.id : ''),
+      isPendingStartPreview: () => Boolean(pendingStartIsPreview)
     });
   </script>
-  <script src="js/share-exam.js" defer></script>
+  <script src="js/auto-formatter.js" defer></script>
+  <script src="js/exam-config-editor.js" defer></script>
 </body>
 
 </html>

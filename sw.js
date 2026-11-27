@@ -3,7 +3,7 @@
 // - Automatic purge of old CACHE_VERSION buckets during activate + clients.claim().
 // - Cache-First for external CDN libraries (KaTeX, Mammoth, SheetJS, PDF.js, Chart.js, DOMPurify, Tailwind, Lucide, Fonts).
 
-const CACHE_VERSION = 'v2026-11-26-04';
+const CACHE_VERSION = 'v2026-11-27-03';
 const APP_CACHE = `anninh-edutech-app-${CACHE_VERSION}`;
 const CDN_CACHE = `anninh-edutech-cdn-${CACHE_VERSION}`;
 const KEEP_CACHES = new Set([APP_CACHE, CDN_CACHE]);
@@ -11,7 +11,8 @@ const KEEP_CACHES = new Set([APP_CACHE, CDN_CACHE]);
 const APP_SHELL_URLS = [
   '/',
   '/index.html',
-  '/js/share-exam.js',
+  '/js/auto-formatter.js',
+  '/js/exam-config-editor.js',
   '/manifest.json',
   '/logo.png',
   '/icon.svg',
@@ -30,13 +31,11 @@ const CDN_PRECACHE_URLS = [
   'https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css',
   'https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js',
   'https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js',
+  'https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js',
   'https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js',
   'https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js',
   'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js',
   'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js',
-  'https://cdn.jsdelivr.net/npm/lz-string@1.5.0/libs/lz-string.min.js',
-  'https://cdn.jsdelivr.net/npm/qrcode@1.5.1/build/qrcode.min.js',
-  'https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js',
   'https://cdn.jsdelivr.net/npm/dompurify@3.1.6/dist/purify.min.js',
   'https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js',
   'https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js',
@@ -223,7 +222,7 @@ async function networkFirstApp(request) {
 }
 
 self.addEventListener('fetch', (event) => {
-  if (event.request.method !== 'GET' || new URL(event.request.url).pathname.startsWith('/api/')) return;
+  if (event.request.method !== 'GET') return;
   const { request } = event;
   if (!request) return;
 
